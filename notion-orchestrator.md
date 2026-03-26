@@ -1,10 +1,11 @@
 ---
 name: notion-orchestrator
 description: |
-  《數位時代》Notion 產稿主腦。掃描「AI產稿中心 v2（Claude Code）」資料庫中所有「未開始」條目，自動判斷稿件類型，派發對應子代理處理，並將成品寫回 Notion。
+  《數位時代》Notion 產稿主腦。掃描「AI產稿中心 v2（Claude Code）」資料庫中「未開始」條目，自動判斷稿件類型，派發對應子代理處理，並將成品寫回 Notion。支援依負責人篩選，只處理指定成員的待辦稿件。
 
   請在以下情境下主動使用此 Skill：
   - 使用者說「跑今天的稿件」、「處理 Notion 的待辦」、「掃描產稿資料庫」
+  - 使用者說「處理 [姓名] 名下的稿件」、「幫我跑 [姓名] 的待辦」、「[姓名] 有哪些未開始的稿件」
   - 任何需要批次處理 Notion 產稿資料庫的情境
 ---
 
@@ -20,19 +21,22 @@ description: |
 
 | 欄位 | 類型 | 說明 |
 |------|------|------|
-| 標題 | Title | 原始標題 |
+| 標題 | Title | 原始標題（通常為英文或待翻譯的來源標題） |
+| 建議標題 | 文字 | 編輯建議的中文標題，子代理動筆前應優先採用 |
 | 稿件類型 | 下拉 | `即時新聞` / `深度分析` / `潤稿` / `社群貼文` / `文章查核` / `教學文` |
+| 負責人 | 下拉 | 先泰 / 柔瑋 / 美欣 / 若彤 / 建鈞 / 祈安 / 宗穎 |
 | 來源 1 | URL | 主要來源網址 |
 | 來源 2 | URL | 第二來源（選填） |
 | 來源 3 | URL | 第三來源（選填） |
 | 備註 | 文字 | **人類給 AI 的明確指示，動筆前必讀，內容優先於所有預設寫法** |
-| 重點摘要 | 文字 | AI 填入三大核心重點，格式為：`1. xxx\n2. xxx\n3. xxx`（每點 50 字以內） |
+| 摘要 | 文字 | AI 填入稿件摘要，**75 個全形字元以內（含標點符號）** |
+| 重點一 | 文字 | AI 填入第一大重點（50 字以內） |
+| 重點二 | 文字 | AI 填入第二大重點（50 字以內） |
+| 重點三 | 文字 | AI 填入第三大重點（50 字以內） |
 | 狀態 | Status | `未開始` → `進行中` → `完成` / `失敗` |
 | 完成時間 | 日期 | AI 完成後填入當天日期 |
-| 產出內容 | 文字 | AI 產出的稿件全文 |
-| 社群貼文 | 文字 | 備註要求同時產出社群貼文時填入；主稿一律填入「產出內容」 |
-| 字數 | 數字 | 產出內容的字數，完成後由 AI 填入 |
-| 負責人 | 下拉 | 指派給哪位成員：先泰 / 柔瑋 / 美欣 / 若彤 / 建鈞 / 祈安 / 宗穎；orchestrator 依觸發者姓名篩選 |
+| 社群貼文 | 文字 | AI 產出的社群貼文內容（僅 `社群貼文` 類型填入） |
+| 字數 | 數字 | 稿件全文的字數，完成後由 AI 填入 |
 | 建立時間 | 日期 | 自動記錄，不需填寫 |
 
 ---
@@ -41,48 +45,56 @@ description: |
 
 ### Step 1：掃描待處理條目
 
-使用 `Bash` 工具透過 Notion API 查詢資料庫，**不要使用 notion-fetch**（notion-fetch 對資料庫只會回傳 schema，無法列出條目）。
+使用 `Bash` 工具直接呼叫 Notion API，以屬性條件精確篩選，不受頁面是否有內文影響。
 
-#### 查詢指令範本
+**Token**：存於 `~/.claude/settings.local.json` 的 `NOTION_TOKEN` 環境變數，使用時以 `$NOTION_TOKEN` 帶入。
 
-**情境 A：指定負責人**（使用者說「跑先泰的稿件」）
+**兩種篩選模式：**
+
+| 使用者指令 | curl 指令中的 filter |
+| ----------- | --------- |
+| 「跑今天的稿件」、「處理所有待辦」等通用指令 | 僅篩選 `狀態 = 未開始` |
+| 「處理先泰的稿件」、「跑柔瑋的待辦」等指定負責人指令 | `狀態 = 未開始` AND `負責人 = [指定姓名]` |
+
+**通用模式（所有未開始稿件）：**
+
 ```bash
-curl -s \
-  -X POST \
+curl -s -X POST "https://api.notion.com/v1/databases/a438232ce0a94fe6b70d9f2e9199a32a/query" \
+  -H "Authorization: Bearer $NOTION_TOKEN" \
+  -H "Notion-Version: 2022-06-28" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "filter": {
+      "property": "狀態",
+      "status": { "equals": "未開始" }
+    }
+  }'
+```
+
+**指定負責人模式（例如先泰）：**
+
+```bash
+curl -s -X POST "https://api.notion.com/v1/databases/a438232ce0a94fe6b70d9f2e9199a32a/query" \
   -H "Authorization: Bearer $NOTION_TOKEN" \
   -H "Notion-Version: 2022-06-28" \
   -H "Content-Type: application/json" \
   -d '{
     "filter": {
       "and": [
-        {"property": "狀態", "status": {"equals": "未開始"}},
-        {"property": "負責人", "select": {"equals": "先泰"}}
+        { "property": "狀態", "status": { "equals": "未開始" } },
+        { "property": "負責人", "select": { "equals": "先泰" } }
       ]
-    },
-    "sorts": [{"property": "建立時間", "direction": "ascending"}]
-  }' \
-  "https://api.notion.com/v1/databases/a438232ce0a94fe6b70d9f2e9199a32a/query"
+    }
+  }'
 ```
 
-**情境 B：不指定負責人**（使用者說「跑所有待辦」）
-```bash
-curl -s \
-  -X POST \
-  -H "Authorization: Bearer $NOTION_TOKEN" \
-  -H "Notion-Version: 2022-06-28" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "filter": {"property": "狀態", "status": {"equals": "未開始"}},
-    "sorts": [{"property": "建立時間", "direction": "ascending"}]
-  }' \
-  "https://api.notion.com/v1/databases/a438232ce0a94fe6b70d9f2e9199a32a/query"
-```
+負責人選項：`先泰` / `柔瑋` / `美欣` / `若彤` / `建鈞` / `祈安` / `宗穎`
 
-從 JSON 回應中提取每筆條目的：`id`（頁面 ID）、`標題`、`稿件類型`、`來源 1/2/3`、`備註`、`負責人`。
+API 回傳 JSON，從每筆結果的 `properties` 欄位讀取：標題（`標題.title[0].plain_text`）、負責人（`負責人.select.name`）、稿件類型（`稿件類型.select.name`）、來源（`來源 1.url`、`來源 2.url`、`來源 3.url`）、備註（`備註.rich_text[0].plain_text`）、建議標題（`建議標題.rich_text[0].plain_text`）、頁面 ID（`id`）。
 
-列出符合條件的清單，按 `建立時間` 升序排列（先建立的先處理）。
+篩選後列出待處理清單，並在開始前告知使用者：「找到 N 筆待處理稿件（負責人：[姓名 或 全部]），開始處理。」
 
-若沒有任何待處理條目，直接回報：「今日無待處理稿件。」並結束流程。
+若沒有符合條件的條目，直接回報：「目前無待處理稿件。」並結束流程。
 
 ---
 
@@ -116,7 +128,7 @@ curl -s \
 **模糊情境處理：**
 
 - **深度分析 vs 教學文難以判斷時**（例如：部落格長文同時具備分析性與教學性）→ **暫停，主動詢問使用者**，說明文章特徵並請確認要用哪種類型，不自動猜測
-- **其他無法判斷的情況** → 預設使用 `news-daily`，並在產出內容開頭標註 `[自動判斷為 daily 稿，請人工確認]`
+- **其他無法判斷的情況** → 預設使用 `news-daily`，並在頁面內文開頭標註 `[自動判斷為即時新聞，請人工確認]`
 
 #### 2c. 派發子代理
 
@@ -124,24 +136,53 @@ curl -s \
 
 傳給子代理的 prompt 包含：
 - 原始標題
+- 建議標題（若有，子代理應優先以此為稿件標題）
 - 來源 1（必填）、來源 2、來源 3（選填，有則一併傳入）
 - **備註（人類指示）**：若備註欄有內容，視為編輯的明確指令，**必須在動筆前先讀完，並在整篇稿件中落實**。備註優先於所有預設寫法。
 
 子代理負責讀取來源內容並產出完整稿件。
 
+**Bloomberg 網址特殊處理：**
+
+若來源網址包含 `bloomberg.com`，子代理應使用以下方式讀取，而非 web_fetch 或 Playwright MCP：
+
+```bash
+node "/Users/terrylee/Claude Project/bloomberg-fetch.js" "<URL>"
+```
+
+- 此腳本使用 `~/.claude/bloomberg-session.json` 的登入 session 讀取付費內文
+- 若輸出錯誤訊息包含「Session 已過期」或「找不到 session 檔」，停止並告知使用者執行：
+  ```bash
+  node "/Users/terrylee/Claude Project/bloomberg-login.js"
+  ```
+- Session 更新後重新處理該條目
+
 #### 2d. 寫回 Notion
 
-子代理完成後，使用 `notion-update-page` 將結果寫入該條目：
-- `重點摘要`：三大核心洞察，格式為 `1. xxx\n2. xxx\n3. xxx`，每點 50 字以內
-- `產出內容`：所有類型的主稿全文一律填入此欄
-- `社群貼文`：僅在備註中明確要求同時產出社群貼文時才填入；純社群貼文任務的正文仍填 `產出內容`
-- `字數`：計算 `產出內容` 的字數後填入
-- `狀態`：改為「完成」
-- `完成時間`：填入當天日期
+子代理完成後，分兩步寫回：
+
+**步驟一：用 `replace_content` 寫入頁面內文（稿件全文）**
+
+稿件全文一律用 `replace_content` 寫入頁面內文，不寫進任何屬性欄位。原因：`update_properties` 對含 Markdown code block 的長文有解析問題，會觸發 JSON 錯誤。
+
+`社群貼文` 類型例外：貼文內容仍寫入 `社群貼文` 屬性欄位（內容短、無 code block，`update_properties` 可正常處理）。
+
+**步驟二：用 `update_properties` 寫入短欄位**
+
+```
+摘要       → 75 個全形字元以內，一句話說明稿件核心價值
+重點一     → 50 字以內
+重點二     → 50 字以內
+重點三     → 50 字以內
+字數       → 計算頁面內文的字數後填入（數字）
+狀態       → 「完成」
+完成時間   → 當天日期
+```
 
 **若來源網址無法讀取（403、付費牆、逾時），或子代理執行中發生錯誤：**
-- `產出內容` 填入：`⚠️ 處理失敗，請人工確認。（原因：[說明]）`
-- `狀態` 改為「失敗」（讓你一眼識別需要人工介入的條目）
+
+- 用 `replace_content` 寫入：`⚠️ 處理失敗，請人工確認。（原因：[說明]）`
+- `狀態` 改為「失敗」
 
 ---
 
