@@ -15,7 +15,7 @@ description: |
 
 ## 風格規範
 
-在開始任何工作前，先使用 `Read` 工具讀取 `/Users/terrylee/.claude/bwt-style-guide.md`，作為本文的統一風格規範。
+在開始任何工作前，先使用 `Read` 工具讀取 `~/.claude/agents/bwt-style-guide.md`，作為本文的統一風格規範。
 
 ---
 
