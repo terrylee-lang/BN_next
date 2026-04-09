@@ -157,4 +157,5 @@ projects/     ← 中長期專案文件
 - 現在可以試試貼一個英文新聞連結，說「幫我編譯」
 - Skills 會由團隊統一更新，如果是用 git clone 安裝的，執行 `git -C ~/.claude/agents pull` 即可更新
 - 如果想讓 Claude Code 記住個人偏好，直接告訴它「記住這個」，它會自動建立記憶
+- 進階設定（research 筆記格式、稿件潛力評分、自動交叉檢查、Wiki Ingest 規則等）可參考 Terry 的 CLAUDE.md：`~/Claude Project/CLAUDE.md`
 - 有問題找 Terry
