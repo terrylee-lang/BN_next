@@ -54,12 +54,17 @@ description: |
 
 ### 4. 格式不符（Format Issues）
 
-檢查 `research/` 所有筆記是否包含標準欄位：Summary、Key Points、Quotes / Evidence、My Commentary、Related。缺少任一欄位則標記。
+檢查 `research/` 所有筆記是否符合標準格式。分兩層檢查：
+
+**A. Frontmatter**：必須包含 `title`、`source`、`created` 三個欄位（`author` 為選填，不檢查）。缺少任一必填欄位則標記。
+
+**B. 內文區塊**：必須包含 Summary、Key Points、Quotes / Evidence、My Commentary（含「稿件潛力」子區塊）、Related。缺少任一區塊則標記。
 
 輸出格式：
 ```
 【格式不符】
-- research/qux.md — 缺少 My Commentary、Related
+- research/qux.md — 缺少 frontmatter: source
+- research/baz.md — 缺少 My Commentary > 稿件潛力
 ```
 
 ### 5. 矛盾偵測（Contradiction Detection）
