@@ -60,7 +60,7 @@ description: |
 ### Step 5：執行套用
 
 依照使用者指示：
-- `memory` 類型 → 寫入或更新 `~/.claude/projects/-Users-terrylee-Claude-Project/memory/` 下對應的記憶檔，並更新 `MEMORY.md` 索引
+- `memory` 類型 → 寫入或更新當前專案的 memory 目錄（由 Claude Code 依據 cwd 自動管理，路徑格式為 `~/.claude/projects/[cwd-encoded]/memory/`，例如 cwd 為 `/Users/alice/work`，目錄為 `~/.claude/projects/-Users-alice-work/memory/`），並更新 `MEMORY.md` 索引。使用 `ls ~/.claude/projects/` 確認當前專案的實際目錄名
 - `skill` 類型 → 提出具體的修改建議，由使用者確認後再動 skill 檔案
 
 ---

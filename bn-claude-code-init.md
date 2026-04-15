@@ -60,6 +60,7 @@ daily-notes/  ← 每日工作日誌
 archive/      ← 發布後值得收藏的文章
 people/       ← 重要人物資料卡
 projects/     ← 中長期專案文件
+personal/     ← 工作以外的私人內容（不參與自動寫回、不被 lint-vault 掃描）
 ```
 
 同時建立兩個自動維護的索引檔：
@@ -97,6 +98,7 @@ projects/     ← 中長期專案文件
 
 | Skill | 觸發方式 |
 | --- | --- |
+| notion-orchestrator | 說「跑今天的稿件」、「跑 [負責人] 的稿件」、「處理 Notion 待辦」 |
 | news-daily | 貼外文新聞連結，說「幫我編譯」 |
 | deep-analysis | 提供長文或 PDF，說「幫我寫深度分析」 |
 | draft-polish | 貼草稿，說「幫我潤稿」 |
@@ -104,6 +106,8 @@ projects/     ← 中長期專案文件
 | social-post | 貼文章連結，說「幫我寫社群貼文」 |
 | article-checker | 說「幫我查核」、「幫我 fact check」 |
 | headline-generator | 說「幫我想標題」、「幫我下標」 |
+| retrospective | 說「幫我覆盤」、「跑 retrospective」 |
+| lint-vault | 說「幫我檢查 vault」、「跑 lint」 |
 ```
 
 ### 4-5. 內容讀取規則
