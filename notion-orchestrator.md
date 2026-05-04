@@ -141,8 +141,10 @@ API 回傳 JSON，從每筆結果的 `properties` 欄位讀取：標題（`標�
 | 來源格式 | 判斷方式 | 處理 |
 |---------|---------|------|
 | **本地路徑** | 以 `/` 或 `~/` 開頭，副檔名為 `.md` | orchestrator 用 `Read` 讀取檔案內容，將全文直接寫進子代理 prompt。若 Read 失敗（檔案不存在、路徑錯誤），視同來源失敗，記錄失敗原因，不傳給子代理 |
-| **URL** | 以 `http://` 或 `https://` 開頭 | 維持原邏輯，將 URL 傳給子代理，由子代理自行 web_fetch |
+| **URL（優先匹配 inbox/）** | 以 `http://` 或 `https://` 開頭 | **先掃 `~/Claude Project/inbox/` 所有 md 檔案的 frontmatter `source` 欄位**。匹配策略：嚴格相等優先；其次比對 hostname + path（忽略 query string、fragment、尾端斜線）。命中 → `Read` 本機檔案全文，寫進子代理 prompt（附上原始檔名供溯源）。未命中 → 將 URL 傳給子代理，由子代理自行 web_fetch |
 | **空白** | 欄位無值 | 跳過 |
+
+**為什麼優先匹配 inbox/：** Terry 透過 Obsidian Web Clipper 抓下的素材，frontmatter `source` 即為原始網址，等於「網址 → 本機檔案」自動對照表。本機讀取無 fetch 失敗風險、無付費牆問題，且避開官方網站偶發的反爬限制。
 
 傳給子代理的 prompt 包含：
 - 原始標題

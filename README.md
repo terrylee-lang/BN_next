@@ -67,6 +67,7 @@ Token 為公司內部整合金鑰，可供全體同仁共用，請向 Terry 索�
 | `tutorial-article.md` | `[編輯部]` | 教學文：X 方法論 / 工具技巧 → 教學型文章 |
 | `notion-orchestrator.md` | `[編輯部]` | 主腦：掃描「AI產稿中心 v2」Notion 資料庫，自動派發 Skill 批次產稿 |
 | `lint-vault.md` | `[編輯部]` | Vault 健康檢查：掃描 Obsidian vault 孤兒筆記、缺連結、過時內容 |
+| `visual-brief.md` | `[編輯部]` | 主視覺發想：稿件 → 給 Claude Design 或其他設計工具的結構化視覺 brief |
 | `bwt-style-guide.md` | `[編輯部]` | 《數位時代》統一風格規範（其他 Skills 依賴讀取） |
 
 ---
@@ -107,13 +108,14 @@ Claude 會自動掃描 AI產稿中心 v2，篩選「未開始」條目，依稿�
 
 ### 與 Skills 的整合方式
 
-**deep-analysis / draft-polish 完成後**，Claude 會自動判斷是否將研究內容寫回 vault（此行為由個人 `CLAUDE.md` 中的 Wiki Ingest 規則驅動，需在你的工作資料夾根目錄建立對應的 CLAUDE.md；`bn-claude-code-init.md` 初始化指南會協助生成）：
+**Wiki Ingest 統一在每日收工時批次處理**（由個人 `CLAUDE.md` 中的規則驅動，需在你的工作資料夾根目錄建立對應的 CLAUDE.md；`bn-claude-code-init.md` 初始化指南會協助生成）：
 
-- 涉及的公司、產業主題 → `research/`
-- 涉及的人物 → `people/`
+- 說「收工」或「每日總結」觸發收工流程
+- Step 2.5 掃描今日所有產稿（Notion 稿件、draft/ 新增、研究型對話），列出值得建筆記的公司、產業、人物、技術主題
+- Terry 一次批次決定「建 / 合併 / 跳過」
 - 每次寫入後同步更新 `research/_index.md`
 
-**執行流程**：任務完成後 Claude 列出建議寫回項目 → 確認後寫入，不需手動整理。
+**為什麼不在每次產稿後即時跑**：批次處理比中斷式 checkpoint 更低摩擦，也避免一次性主題堆積成無價值 stub。
 
 ### 快速上手
 
@@ -130,6 +132,53 @@ Claude 會自動掃描 AI產稿中心 v2，篩選「未開始」條目，依稿�
 
 > **更新標準流程**：每次更新 Skills 後，在此區塊補上版本號、日期、異動說明，再 commit & push。
 > 版本號規則：新增 Skill → 次版號 +1（v2.x.0）；修改既有 Skill → 修訂號 +1（v2.x.x）。
+
+---
+
+### v2.7.0 — 2026-05-04
+
+**新增 Skill**
+
+- `visual-brief.md`：主視覺發想 Skill，將稿件翻譯為結構化視覺 brief，作為 Claude Design 等設計工具的輸入。編輯不需直接下設計 prompt，就能產出風格一致的主視覺
+
+**bwt-style-guide（風格規範大幅擴充）**
+
+- 適用範圍明確擴大：除產稿 Skill 外，凡是 Claude 產出且寫進 vault / memory 的 Markdown 檔案（research、projects、archive、daily-notes、memory、Notion 寫回等），一律適用所有風格規則
+- 新增 **SI 單位前綴譯法**：tera-（太瓦 TW）、giga-（吉瓦 GW）、mega-（百萬瓦 MW）；優先保留英文縮寫，避免「兆瓦」歧義
+- 新增 **日期格式規範**：月日寫成「4 月 27 日」不用「4/27」斜線；ISO 格式僅限 frontmatter / URL 等機器讀取欄位
+- 新增 **技術性稿件白話化原則（五條）**：技術名詞第一次出現加中文白話、小標問句化、技術細節壓縮為對讀者影響、抽象百分比改具體例子、官方語直譯改白話翻譯。AI／程式／晶片／API 主題預設啟用，字數彈性允許超出原規範 30–60%
+
+**article-checker（強制驗證規則）**
+
+- 新增「商業行為動詞」與「技術術語」精準度檢查（收購 vs 授權、zero-day exploit vs security vulnerability 不可語意升級）
+- 新增 **規則 A：時效性財務數字必須 web_search 抓最新值**（ARR、估值、融資、用戶數、市值），警戒「二手引述舊里程碑」陷阱
+- 新增 **規則 B：一手素材覆蓋檢查**（官方 X、newsroom、SEC filing、財報），單靠 Bloomberg／NYT 等二手報導常裁掉關鍵規格
+- 新增 **規則 C：未成交事項語氣控制**（target / expected / reportedly 不可譯為確定式；IPO 估值以區間呈現；併購未交割不可寫「買下」）
+
+**全產稿 Skill：URL → inbox/ frontmatter source 匹配**
+
+- `news-daily`、`deep-analysis`、`tutorial-article`、`social-post`、`notion-orchestrator` 收到 URL 時，先掃 `~/Claude Project/inbox/` 所有 md 檔案的 frontmatter `source` 欄位（嚴格相等優先；其次比對 hostname + path，忽略 query string／fragment／尾端斜線），命中即 Read 本機全文，未命中才走 `web_fetch`
+- 為什麼：Web Clipper 抓下的素材 frontmatter `source` 即原始網址，自動對照本機檔案；本機讀取無 fetch 失敗、無付費牆、避開反爬限制
+
+**deep-analysis（自檢清單擴充）**
+
+- 新增第 14 條：事實必須能回溯至資料來源區，禁止「來源未列、正文有寫」幽靈段落
+- 新增第 15 條：商業動詞（收購／授權／投資）與技術術語必須與來源原文精準對應
+
+**news-daily**
+
+- 摘要規則：明訂下限 50 全形字元、目標 60–75，避免事件交代不足；字元數計算規則明確化（中文／全形標點 = 1，英文／數字／空格 = 0.5），寫完標註實際字元數供驗證
+- 新增禁用詞：「一句話來說」「先說結論」等公式化引導句一律 0 次。即時新聞的「結論先行」靠倒金字塔導言完成，不靠引導語
+
+**lint-vault（同步 research 新格式）**
+
+- 內文區塊檢查改為 `## 為什麼現在重要` / `## 發生了什麼` / `## 我怎麼看` / `## 延伸` 四區塊（舊 Summary／Key Points 格式視為歷史遺留，提示但不報錯）
+- 新增 H1 主張句檢查：H1 應為完整主張（至少 10 字），不是單純主題標籤
+
+**README / bn-claude-code-init**
+
+- Vault 整合段落：Wiki Ingest 改為「每日收工批次處理」（Step 2.5），不再每次產稿後即時跑——降低中斷摩擦、避免一次性主題堆積成 stub
+- bn-claude-code-init：內容讀取優先順序加入 inbox frontmatter source 匹配；風格規範段落補上技術白話化原則
 
 ---
 

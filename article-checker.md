@@ -54,10 +54,61 @@ description: |
 - 數字（融資金額、市值、營收、用戶數）是否與公開資料一致
 - 時間點、事件順序是否正確
 - 引用的研究、報告、統計數據是否存在且正確
+- 商業行為動詞是否與來源原文一致？（收購 vs 授權、投資 vs 合作等，語意不同的動詞不可混用）
+- 技術術語是否精準？（如 zero-day exploit vs security vulnerability，不可自行升級嚴重程度）
 
 查核方式：
 - 對有疑問的具體陳述使用 `web_search` 核實
 - 若無法找到可靠來源驗證，在報告中標記為「**無法核實**」而非假設正確
+
+#### ⚡ 強制驗證規則（Mandatory Verification Rules）
+
+以下三類資訊不論素材看起來多明確、來源多權威，都必須額外遵守特殊查核規則。這三條是從實際產稿失誤反推出的底線，不是可選步驟。
+
+##### 規則 A：時效性財務數字必須 web_search 抓最新值
+
+**適用情境**：ARR（年化營收）、營收、估值、融資輪金額、用戶數、市值、WAU／MAU 等過去 12 個月內快速變動的財務或營運指標。
+
+**規則**：
+- 不論稿件素材看似多清楚（即使素材已有明確數字與出處），上述時效性指標必須再用 `web_search` 抓 (1) 當事公司最新公告、(2) 第二個獨立來源，交叉驗證。
+- 特別警戒「二手引述的舊里程碑」陷阱：一手媒體（NYT、Bloomberg）在最新報導中引用的數字，可能其實是連結回數月前的舊稿、作為「成長速度描述」用。在今天的稿件脈絡中搬用，會讓讀者把舊里程碑誤認為當前規模。
+- 若最新數字與素材差距 > 30%，列為事實錯誤、要求修正。
+- 若素材引用的是「時點性里程碑」（如「2 年內破 1 億」），保留時要補時間標籤（「2025 年 1 月達 1 億 ARR」），並在後面補上更新後的最新數字，避免讀者誤讀為當前規模。
+
+**觸發詞清單**：ARR、年化營收、annual recurring revenue、annualized revenue、估值 valuation、融資 funding round、Series X、週活 WAU、月活 MAU、市值 market cap、市占率。
+
+**實戰案例**：2026-04 SpaceX-Cursor 稿件中，NYT 原文「hitting $100 million in annual recurring revenue...in less than two years」連結回 2025-02-20 舊稿。在 2026-04 直接搬用「1 億美元 ARR」，事實上 Cursor 當時已在 2025-11 Series D 跨過 10 億美元、2026-02 再衝 20 億——**10 到 20 倍量級差**。
+
+##### 規則 B：一手素材覆蓋檢查
+
+**適用情境**：稿件主題是單一事件（併購、產品發表、官方公告、融資宣布）。
+
+**規則**：
+- 產稿前檢查是否已覆蓋「當事公司官方管道」：
+  - 官方 X／Twitter 帳號（特別是 CEO 或公司主帳號）
+  - 官方部落格／newsroom
+  - SEC filing、新聞稿、財報
+  - 法說會逐字稿（若已公開）
+- 若稿件素材只有二手報導（Bloomberg、NYT、Reuters、The Information 等），**列為「一手素材覆蓋不足」**，要求補查官方原文。
+- 二手報導會引述官方公告，但常裁掉關鍵規格（算力、價格、技術參數、產品細節）。這些細節必須回一手素材抓。
+
+**實戰案例**：2026-04 SpaceX-Cursor 交易，Bloomberg 和 NYT 都引用 SpaceX 的 X 推文，但略過「SpaceX's million H100 equivalent Colossus training supercomputer」這個核心規格。只讀 Bloomberg／NYT 的稿件會錯失「百萬顆 H100 等效算力」這個讓 Cursor 願意綁定的關鍵脈絡。
+
+##### 規則 C：未成交事項的語氣控制
+
+**適用情境**：IPO 估值、併購金額、擬定中的融資輪、分析師預估、未公告的產品規劃、官方未確認的路線圖。
+
+**規則**：
+- 原文用詞 `target`、`targeting`、`expected`、`plans to`、`in talks to`、`reportedly`、`proposed`、`intends to` **不可譯為確定式**，必須保留「目標／預計／洽談中／據傳／外電預期／擬定中」等軟化語氣。
+- IPO 估值、未上市公司估值必須以「區間」或「約」表示。例如「目標約 1.75~2 兆美元」「估值上看 2 兆美元」，不可寫「估值 2 兆美元」把單一媒體的目標值升格為既定事實。
+- 查原始報導時，比對多家外電對同一估值的說法。若有區間差（如 Bloomberg 寫 $2T、其他媒體寫 $1.75T），以區間呈現。
+- 併購協議未完成交割前，不可寫「SpaceX 買下 Cursor」，正確寫法是「SpaceX 取得收購選擇權」「SpaceX 協議以 600 億美元收購」。
+
+**觸發詞清單**：IPO、估值 valuation（未上市公司）、收購選擇權 option to acquire、擬定中 proposed、據傳 reportedly、意圖 intends to、目標 targeting、預計 expected、洽談中 in talks to。
+
+**實戰案例**：2026-04 SpaceX-Cursor 稿件最初寫「SpaceX 目標上市估值超過 2 兆美元」，把 Bloomberg 單一來源的「targeting a $2 trillion valuation」升格為「超過 2 兆」的既定事實。正確寫法是引用外電共識區間「外電預期估值目標約 1.75~2 兆美元」。
+
+---
 
 #### 來源矛盾處理（Contradiction Protocol）
 

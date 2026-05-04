@@ -56,15 +56,18 @@ description: |
 
 檢查 `research/` 所有筆記是否符合標準格式。分兩層檢查：
 
-**A. Frontmatter**：必須包含 `title`、`source`、`created` 三個欄位（`author` 為選填，不檢查）。缺少任一必填欄位則標記。
+**A. Frontmatter**：必須包含 `title`、`source`、`created` 三個欄位（`author`、`updated`、`tags` 為選填，不檢查）。缺少任一必填欄位則標記。
 
-**B. 內文區塊**：必須包含 Summary、Key Points、Quotes / Evidence、My Commentary（含「稿件潛力」子區塊）、Related。缺少任一區塊則標記。
+**B. 內文區塊**：必須包含四個 H2 區塊 — `## 為什麼現在重要`、`## 發生了什麼`、`## 我怎麼看`、`## 延伸`（或其語義等效）。缺少任一區塊則標記。**舊格式筆記**（含 Summary / Key Points / My Commentary 等區塊）視為歷史遺留，不報錯，但提示「可考慮改寫為新格式」。
+
+**C. H1 檢查**：H1 應該是完整主張句（至少 10 字），不是單純主題標籤。例如「Harness Engineering 不是新工種」是主張，「Harness Engineering 概念」不是。違反則標記「建議改寫 H1 為一句主張」。
 
 輸出格式：
 ```
 【格式不符】
 - research/qux.md — 缺少 frontmatter: source
-- research/baz.md — 缺少 My Commentary > 稿件潛力
+- research/baz.md — 缺少 ## 我怎麼看
+- research/foo.md — H1 偏標籤式（建議改為主張句）
 ```
 
 ### 5. 矛盾偵測（Contradiction Detection）

@@ -114,16 +114,17 @@ personal/     ← 工作以外的私人內容（不參與自動寫回、不被 l
 ```markdown
 ## 內容讀取優先順序
 1. 本地檔案路徑（以 `/` 或 `~/` 開頭，`.md`）→ 使用 Read 工具直接讀取
-2. web_fetch 直接讀取
-3. 失敗 → 停止並向使用者索取原文（可用 Dia 瀏覽器萃取 Markdown 貼入）
-4. X / Twitter 連結 → 直接告知無法讀取，請使用者貼入文字
-5. 不使用 Playwright 作為內容讀取備援
+2. 網址 → inbox/ frontmatter source 匹配：若來源為 URL，先掃 `~/Claude Project/inbox/` 所有 md 檔案的 frontmatter `source`（嚴格相等優先；其次 hostname + path，忽略 query string、fragment、尾端斜線），命中則 Read 本機全文
+3. web_fetch 直接讀取（inbox 未命中時）
+4. 失敗 → 停止並向使用者索取原文（可用 Dia 瀏覽器萃取 Markdown 貼入）
+5. X / Twitter 連結 → 直接告知無法讀取，請使用者貼入文字
+6. 不使用 Playwright 作為內容讀取備援
 ```
 
 ### 4-6. 寫作風格規範
 ```markdown
 ## 寫作風格規範
-所有產稿 Skill 啟動前會讀取 `~/.claude/agents/bwt-style-guide.md`，內含兩岸用語轉換表、人名公司名規範、禁止詞彙表、署名格式。
+所有產稿 Skill 啟動前會讀取 `~/.claude/agents/bwt-style-guide.md`，內含兩岸用語轉換表、人名公司名規範、禁止詞彙表、技術性稿件白話化原則、署名格式。
 ```
 
 ### 4-7. 注意事項
@@ -162,5 +163,5 @@ personal/     ← 工作以外的私人內容（不參與自動寫回、不被 l
 - 現在可以試試貼一個英文新聞連結，說「幫我編譯」
 - Skills 會由團隊統一更新，如果是用 git clone 安裝的，執行 `git -C ~/.claude/agents pull` 即可更新
 - 如果想讓 Claude Code 記住個人偏好，直接告訴它「記住這個」，它會自動建立記憶
-- 進階設定（research 筆記格式、稿件潛力評分、自動交叉檢查、Wiki Ingest 規則等）可參考 Terry 的 CLAUDE.md：`~/Claude Project/CLAUDE.md`
+- 進階設定（research 筆記格式、自動交叉檢查、Wiki Ingest 規則等）可參考 Terry 的 CLAUDE.md：`~/Claude Project/CLAUDE.md`
 - 有問題找 Terry
