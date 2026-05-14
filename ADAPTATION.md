@@ -118,7 +118,7 @@ description: |
 
 如果你看中某支 `[編輯部]` Skill 想挪用，以下是它們的硬依賴點：
 
-### `news-daily` / `deep-analysis` / `draft-polish` / `tutorial-article` / `social-post`
+### `news-daily` / `deep-analysis` / `draft-polish` / `tutorial-article` / `social-post` / `etf-explainer`
 
 需要調整：
 - **風格規範檔**：`bwt-style-guide.md` 改成你部門的

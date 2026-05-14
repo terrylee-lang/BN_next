@@ -65,10 +65,13 @@ Token 為公司內部整合金鑰，可供全體同仁共用，請向 Terry 索�
 | `draft-polish.md` | `[編輯部]` | 潤稿：AI 草稿 → 去 AI 味、符合編輯風格的正式稿件 |
 | `social-post.md` | `[編輯部]` | 社群貼文：文章 → Facebook / IG 貼文（含《數位時代》品牌風格） |
 | `tutorial-article.md` | `[編輯部]` | 教學文：X 方法論 / 工具技巧 → 教學型文章 |
+| `etf-explainer.md` | `[編輯部]` | ETF 懶人包：ETF 規格 + 公開說明書 + 媒體素材 → SEO 流量型懶人包稿件（9 個 H2 + Q&A） |
 | `notion-orchestrator.md` | `[編輯部]` | 主腦：掃描「AI產稿中心 v2」Notion 資料庫，自動派發 Skill 批次產稿 |
 | `lint-vault.md` | `[編輯部]` | Vault 健康檢查：掃描 Obsidian vault 孤兒筆記、缺連結、過時內容 |
 | `visual-brief.md` | `[編輯部]` | 主視覺發想：稿件 → 給 Claude Design 或其他設計工具的結構化視覺 brief |
-| `bwt-style-guide.md` | `[編輯部]` | 《數位時代》統一風格規範（其他 Skills 依賴讀取） |
+| `bwt-style-guide.md` | `[編輯部]` | 《數位時代》統一寫作風格規範（兩岸用語、日期、禁用詞彙、技術白話化等；其他 Skills 依賴讀取） |
+| `bwt-design-standard.md` | `[編輯部]` | 美術製作標準總綱（BN Design System 完整 design tokens：色彩、字體、間距、圓角、強調系統；所有產出視覺配件的 Skill 都應遵守） |
+| `bwt-html-table-component.md` | `[編輯部]` | HTML 表格元件子規範（inline style 範本 + 精緻化細節：斑馬紋、左側橘條等；引用 `bwt-design-standard.md` 取得 tokens）；**目前僅 `etf-explainer` 套用**，未來評估擴散至其他 Skill |
 
 ---
 
@@ -135,6 +138,18 @@ Claude 會自動掃描 AI產稿中心 v2，篩選「未開始」條目，依稿�
 
 ---
 
+### v2.7.1 — 2026-05-06
+
+**notion-orchestrator（安全與寫回格式修正）**
+
+- Step 1 token 處理改用 inline 環境變數注入模式（`NOTION_TOKEN=$(jq ...) curl ...` 同行寫法），不再 export 到 shell session。明確列出禁止事項：`export`、`echo`、寫入暫存檔、`set -x`、字面值貼 prompt
+- Step 2 起強制走 MCP（`mcp__claude_ai_Notion__*`）：fetch、update-page、create-pages 不再呼叫 curl + Notion API。MCP 自動處理 markdown↔block 雙向轉換，避免手動建 block JSON 踩坑
+- 新增頁面內文精確 block 規格：3 個 paragraph 行內粗體（重點一／二／三）→ divider → paragraph 行內粗體（摘要）→ divider → 正文。明確禁止 `bulleted_list_item` 與 `heading_2` 小標
+- 教學文例外：頂部不放重點 paragraph，章節結構即為重點脈絡
+- 觸發背景：5/6 子代理為了 fetch Notion 從 settings 讀 NOTION_TOKEN 並 export 到 shell，且寫回時用 heading + bullet 而非 paragraph 行內粗體
+
+---
+
 ### v2.7.0 — 2026-05-04
 
 **新增 Skill**
@@ -157,7 +172,7 @@ Claude 會自動掃描 AI產稿中心 v2，篩選「未開始」條目，依稿�
 
 **全產稿 Skill：URL → inbox/ frontmatter source 匹配**
 
-- `news-daily`、`deep-analysis`、`tutorial-article`、`social-post`、`notion-orchestrator` 收到 URL 時，先掃 `~/Claude Project/inbox/` 所有 md 檔案的 frontmatter `source` 欄位（嚴格相等優先；其次比對 hostname + path，忽略 query string／fragment／尾端斜線），命中即 Read 本機全文，未命中才走 `web_fetch`
+- `news-daily`、`deep-analysis`、`tutorial-article`、`social-post`、`etf-explainer`、`notion-orchestrator` 收到 URL 時，先掃 `~/Claude Project/inbox/` 所有 md 檔案的 frontmatter `source` 欄位（嚴格相等優先；其次比對 hostname + path，忽略 query string／fragment／尾端斜線），命中即 Read 本機全文，未命中才走 `web_fetch`
 - 為什麼：Web Clipper 抓下的素材 frontmatter `source` 即原始網址，自動對照本機檔案；本機讀取無 fetch 失敗、無付費牆、避開反爬限制
 
 **deep-analysis（自檢清單擴充）**

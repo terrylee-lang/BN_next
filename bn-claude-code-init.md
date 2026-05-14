@@ -38,6 +38,7 @@ rm -rf /tmp/bn-skills
 - `draft-polish.md`（潤稿去 AI 味）
 - `tutorial-article.md`（教學型文章）
 - `social-post.md`（社群貼文生成）
+- `etf-explainer.md`（ETF 懶人包生成）
 - `article-checker.md`（文章查核）
 - `headline-generator.md`（標題生成）
 - `notion-orchestrator.md`（Notion 產稿主腦）
@@ -104,6 +105,7 @@ personal/     ← 工作以外的私人內容（不參與自動寫回、不被 l
 | draft-polish | 貼草稿，說「幫我潤稿」 |
 | tutorial-article | 貼方法論素材，說「幫我寫教學文」 |
 | social-post | 貼文章連結，說「幫我寫社群貼文」 |
+| etf-explainer | 貼 ETF 代號或公開說明書，說「幫我寫 00XXX 懶人包」 |
 | article-checker | 說「幫我查核」、「幫我 fact check」 |
 | headline-generator | 說「幫我想標題」、「幫我下標」 |
 | retrospective | 說「幫我覆盤」、「跑 retrospective」 |

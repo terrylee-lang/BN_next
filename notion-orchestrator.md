@@ -45,9 +45,16 @@ description: |
 
 ### Step 1：掃描待處理條目
 
-使用 `Bash` 工具直接呼叫 Notion API，以屬性條件精確篩選，不受頁面是否有內文影響。
+使用 `Bash` 工具直接呼叫 Notion API，以屬性條件精確篩選，不受頁面是否有內文影響。MCP 的 `notion-search` 不支援結構化 filter，無法用於這個批次查詢場景，所以查詢階段保留 curl。**這是整個流程唯一接觸 NOTION_TOKEN 的地方，Step 2 起一律改用 MCP（見下方 callout）。**
 
-**Token**：存於 `~/.claude/settings.local.json` 的 `NOTION_TOKEN` 環境變數，使用時以 `$NOTION_TOKEN` 帶入。
+**Token 安全規範（必讀）：**
+
+- Token 存於 `~/.claude/settings.local.json` 的 `env.NOTION_TOKEN`
+- **禁止** `export NOTION_TOKEN=...`：會把 token 留在整個 Bash session 的環境變數中，後續 tool result 與背景指令都可能洩漏
+- **禁止** `echo $NOTION_TOKEN`、寫入暫存檔、`set -x` 或 `bash -x` 執行 curl：會把 token 印到 stdout / stderr，進入 transcript
+- **禁止**把 token 字面值貼入 prompt 或記憶
+- **唯一允許的模式**：**inline command substitution**——把 `$(jq -r ...)` 直接寫在 curl 的 `-H "Authorization: Bearer ..."` 參數裡。token 只在 fork 出去執行 curl 的那一瞬間存在，呼叫結束即釋放，不污染 session、不進 shell history。
+- ⚠️ **不可使用 `NOTION_TOKEN=$(...) curl -H "...$NOTION_TOKEN..."` 寫法**：在 zsh/bash 中，`VAR=val cmd args` 的 args 是由**父 shell** 展開、而非繼承 cmd 的環境，所以 `$NOTION_TOKEN` 會被展開成空字串，導致 curl 永遠 401。此 bug 已踩過坑（2026-05-07），切勿再犯。
 
 **兩種篩選模式：**
 
@@ -60,7 +67,7 @@ description: |
 
 ```bash
 curl -s -X POST "https://api.notion.com/v1/databases/a438232ce0a94fe6b70d9f2e9199a32a/query" \
-  -H "Authorization: Bearer $NOTION_TOKEN" \
+  -H "Authorization: Bearer $(jq -r '.env.NOTION_TOKEN' ~/.claude/settings.local.json)" \
   -H "Notion-Version: 2022-06-28" \
   -H "Content-Type: application/json" \
   -d '{
@@ -75,7 +82,7 @@ curl -s -X POST "https://api.notion.com/v1/databases/a438232ce0a94fe6b70d9f2e919
 
 ```bash
 curl -s -X POST "https://api.notion.com/v1/databases/a438232ce0a94fe6b70d9f2e9199a32a/query" \
-  -H "Authorization: Bearer $NOTION_TOKEN" \
+  -H "Authorization: Bearer $(jq -r '.env.NOTION_TOKEN' ~/.claude/settings.local.json)" \
   -H "Notion-Version: 2022-06-28" \
   -H "Content-Type: application/json" \
   -d '{
@@ -98,11 +105,27 @@ API 回傳 JSON，從每筆結果的 `properties` 欄位讀取：標題（`標�
 
 ---
 
+> **🔒 從 Step 2 起一律使用 MCP（`mcp__claude_ai_Notion__*`）**
+>
+> 所有逐頁操作（fetch 內文、更新屬性欄位、寫回稿件全文、改狀態）一律走 MCP 工具：
+> - `mcp__claude_ai_Notion__notion-fetch` — 讀單頁
+> - `mcp__claude_ai_Notion__notion-update-page` — 改屬性、取代頁面內文
+> - `mcp__claude_ai_Notion__notion-create-pages` — 建立新頁
+>
+> **禁止 Step 2 之後再呼叫 curl + Notion API**。原因：
+> 1. MCP 自動處理 markdown ↔ block 雙向轉換，避免手動建 block JSON（5/6 寫回時用 heading_2 + bullet 而非 paragraph 行內粗體，正是手動 block 結構的踩坑案例）
+> 2. MCP 回應已預處理為 markdown，token 比 block JSON 省 3-4 倍
+> 3. Token 不再進入 shell process，安全層級提升一級
+>
+> 唯一例外：Step 1 的批次查詢（MCP 無對應工具）。
+
+---
+
 ### Step 2：並行處理所有條目
 
 #### 2a. 批量標記為「進行中」
 
-對所有待處理條目，**依序逐一**呼叫 `notion-update-page`，將每筆的 `狀態` 改為「進行中」（此步驟仍循序，避免 Notion API 頻率限制）。
+對所有待處理條目，**依序逐一**呼叫 `mcp__claude_ai_Notion__notion-update-page`，將每筆的 `狀態` 改為「進行中」（此步驟仍循序，避免 Notion API 頻率限制）。
 
 #### 2b. 判斷稿件類型
 
@@ -202,13 +225,43 @@ API 回傳 JSON，從每筆結果的 `properties` 欄位讀取：標題（`標�
 
 所有稿件查核完成後，**依序逐一**寫回（此步驟仍循序，避免 Notion API 頻率限制）。每篇分兩步寫回：
 
-**步驟一：用 `replace_content` 寫入頁面內文（稿件全文）**
+**步驟一：用 `mcp__claude_ai_Notion__notion-update-page`（replace_content 模式）寫入頁面內文**
 
-稿件全文一律用 `replace_content` 寫入頁面內文，不寫進任何屬性欄位。原因：`update_properties` 對含 Markdown code block 的長文有解析問題，會觸發 JSON 錯誤。
+頁面內文採以下精確結構（即時新聞、深度分析、潤稿、文章查核共用）：
 
-`社群貼文` 類型例外：貼文內容仍寫入 `社群貼文` 屬性欄位（內容短、無 code block，`update_properties` 可正常處理）。
+```
+**重點一**：xxx
+**重點二**：xxx
+**重點三**：xxx
+---
+**摘要**：xxx
+---
+（正文）
+```
 
-**步驟二：用 `update_properties` 寫入短欄位**
+Block 規格：
+- 3 個 `paragraph`，行內粗體「**重點一**：」「**重點二**：」「**重點三**：」開頭
+- **不要**用 `bulleted_list_item`、**不要**加 `## 三大重點` 這種 `heading_2` 小標
+- 1 個 `divider`
+- 1 個 `paragraph`，行內粗體「**摘要**：」開頭
+- 1 個 `divider`
+- 正文（保留各段小標 `heading_2` / `heading_3`）
+
+**例外（教學文 tutorial-article）**：教學文章節結構本身即為重點脈絡，**不放頂部三大重點 paragraph**，僅放摘要：
+
+```
+**摘要**：xxx
+---
+（正文）
+```
+
+**例外（社群貼文 social-post）**：貼文內容寫入「社群貼文」屬性欄位，頁面內文不寫稿。
+
+寫入方式：餵 markdown 字串給 MCP，MCP 自動轉成上述 block 結構。**禁止手動建構 block JSON**——5/6 寫回時用 heading_2 + bullet 而非 paragraph 行內粗體，正是手動建 block 的踩坑案例。
+
+稿件全文一律用 `replace_content` 寫入頁面內文，不寫進長文屬性欄位。原因：`update_properties` 對含 Markdown code block 的長文有解析問題，會觸發 JSON 錯誤。
+
+**步驟二：用 `mcp__claude_ai_Notion__notion-update-page`（update_properties 模式）寫入短欄位**
 
 ```
 摘要       → 75 個全形字元以內，一句話說明稿件核心價值
@@ -229,7 +282,7 @@ API 回傳 JSON，從每筆結果的 `properties` 欄位讀取：標題（`標�
 
 #### 2f. 寫回驗證
 
-每篇稿件寫回 Notion 後，立即用 `notion-fetch` 讀取該頁面，確認：
+每篇稿件寫回 Notion 後，立即用 `mcp__claude_ai_Notion__notion-fetch` 讀取該頁面，確認：
 
 1. 頁面內文非空（不是 `blank-page`，至少包含第一段內文）
 2. `摘要`、`重點一` 等屬性欄位已有值
