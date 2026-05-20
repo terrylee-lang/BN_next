@@ -7,6 +7,35 @@
 
 ---
 
+## v2.7.2 — 2026-05-15
+
+**news-daily / article-checker（官方公告編譯六項查核同步補強）**
+
+- `news-daily` 新增 **Step 2c：官方公告型素材處理流程**——當素材主體是單一公司官方公告（OpenAI／Apple／Google 等官方部落格、release notes、newsroom、產品發表會，及 9to5Mac／TechCrunch／The Verge 等轉述）時，動筆前必須完成六項 pre-check：
+  1. publish date 字串提取（不依賴 URL path segment，必須用頁面內可見日期；補台灣時間轉換）
+  2. 產品架構 verb 對應檢查（control/access/monitor → 遠端操控／存取／監看，禁用「進駐」「跑在」「整合進」等升級詞）
+  3. 平台／版本支援度分階表（GA／preview／coming soon／Enterprise only 必須明寫）
+  4. 技術名詞處理規則（secure relay 不擴寫成「加密通道」、sandboxed 不擴寫成「容器化」；白話化是「解釋」不是「擴寫」）
+  5. 合規／法律術語語氣保守（HIPAA／GDPR／SOC 2 等必加「符合資格的客戶」「視部署條件而定」等限定詞，禁用「終於可以 X」）
+  6. 旁支新聞分流（與原文主標題對照，砍掉非本次公告主體的次要訊息）
+- 出稿前自查清單新增第 14 條（六小項自查），順手修正原檔兩個 `11.` 編號重複的 bug
+- `article-checker` 新增 **規則 D：官方公告型稿件六項強制查核**（D-1 至 D-6），與 news-daily 的 Step 2c 形成兩道閘門：
+  - D-1：日期必對應官方頁面 publish date 字串
+  - D-2：產品架構 verb 升級檢查（擴寫黑名單）
+  - D-3：平台／版本支援度逐項對應
+  - D-4：技術名詞擴寫黑名單（secure relay／sandboxed／TLS／in-memory cache／zero-trust）
+  - D-5：合規語氣保守度檢查
+  - D-6：旁支新聞混入檢查
+- 觸發背景：2026-05-15 OpenAI Codex 手機版公告稿件，七個失準點（日期 5/7 vs 5/14、「Codex 進駐手機版」、Windows 漏寫 coming soon、secure relay 擴寫成加密通道、HIPAA 寫太滿、結尾混入 Pro 方案 100 美元與 GPT-5.5）。原本的 article-checker 攔不到任何一項，因為這些不屬於既有查核維度（人名／公司名／財務數字／引言／技術術語）。產稿端、查核端兩邊都需要規則，單改一邊只攔一道閘門
+- 同步新增 memory：`feedback_official_announcement_translation.md`（高優先級）
+
+**bwt-style-guide（教學文／方法論稿開頭與結尾規則）**
+
+- 新增第 6 條規則：開頭從「讀者利益」切入，避免「某公司宣布／某 CEO 主張」的權威切入；結尾用「先 X，再 Y；先 X，再 Y」遞進句式收束，比文學比喻更有記憶點
+- 觸發背景：codex polish 教學文修潤學到的兩個動作（原 memory `feedback_codex_polish_lessons.md` 四動作中的前兩條升為共用規範）
+
+---
+
 ## v2.7.1 — 2026-05-06
 
 **notion-orchestrator（安全與寫回格式修正）**
