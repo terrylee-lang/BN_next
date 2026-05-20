@@ -15,6 +15,7 @@
 | 子規範 | 涵蓋元件 | 套用 Skill |
 |---|---|---|
 | [`bwt-html-table-component.md`](bwt-html-table-component.md) | HTML 表格元件 | 目前僅 `etf-explainer`；未來評估擴散 |
+| [`bwt-iframe-visual-component.md`](bwt-iframe-visual-component.md) | iframe 嵌入式互動視覺配件（tracker、時間軸、橫條排行等） | `visual-asset` |
 | （未來）`bwt-key-numbers.md` | 關鍵數字呈現元件 | 未建立 |
 | （未來）`bwt-feature-card.md` | 文章 feature card | 未建立 |
 | （未來）`bwt-callout-box.md` | 編按 / 引用框 | 未建立 |

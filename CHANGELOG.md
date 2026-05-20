@@ -7,6 +7,31 @@
 
 ---
 
+## v2.8.0 — 2026-05-20
+
+**新增 `visual-asset` Skill（互動視覺配件生成）**
+
+- 新增 `visual-asset.md`：將文章資料、清單、CSV 轉化為符合 BN 視覺規範的 HTML 配件，支援兩種產品類型：
+  - **iframe 嵌入式互動配件**（時間軸、氣泡圖、橫條排行、地圖等）：嵌入文章內、桌機 + 手機雙軌、自動托管至 GitHub Pages（`terrylee-lang/bnext-visuals`），產出可直接貼到後台的 iframe 嵌入碼
+  - **16:9 主視覺圖卡**（1920×1080 PNG）：文章封面／社群分享／Notion 封面用，單張靜態圖
+- 動手前先判斷產品類型；與 `visual-brief`（主視覺發想）、`bwt-html-table-component`（表格元件）的職責分工於檔內說明
+
+**新增 `bwt-iframe-visual-component.md` 子規範**
+
+- iframe 互動視覺配件的具體實作規範：HTML 結構模板、桌機 + 手機雙軌設計強制規則、Logo 加入規範
+- Design tokens（色彩、字體、間距、圓角）一律引用 `bwt-design-standard.md`，本檔不重複定義
+- 目前僅 `visual-asset` Skill 套用
+
+**bwt-design-standard 同步更新**
+
+- 子規範索引表新增 `bwt-iframe-visual-component.md` 條目，與既有 `bwt-html-table-component.md` 並列
+
+**README 同步更新**
+
+- Skill 列表新增 `visual-asset.md` 與 `bwt-iframe-visual-component.md` 兩條目（編輯部專用）
+
+---
+
 ## v2.7.2 — 2026-05-15
 
 **news-daily / article-checker（官方公告編譯六項查核同步補強）**

@@ -69,9 +69,11 @@ Token 為公司內部整合金鑰，可供全體同仁共用，請向 Terry 索�
 | `notion-orchestrator.md` | `[編輯部]` | 主腦：掃描「AI產稿中心 v2」Notion 資料庫，自動派發 Skill 批次產稿 |
 | `lint-vault.md` | `[編輯部]` | Vault 健康檢查：掃描 Obsidian vault 孤兒筆記、缺連結、過時內容 |
 | `visual-brief.md` | `[編輯部]` | 主視覺發想：稿件 → 給 Claude Design 或其他設計工具的結構化視覺 brief |
+| `visual-asset.md` | `[編輯部]` | 互動視覺配件：文章資料 → iframe 嵌入式 HTML 配件（時間軸、橫條排行、地圖等），桌機 + 手機雙軌設計，托管至 GitHub Pages |
 | `bwt-style-guide.md` | `[編輯部]` | 《數位時代》統一寫作風格規範（兩岸用語、日期、禁用詞彙、技術白話化等；其他 Skills 依賴讀取） |
 | `bwt-design-standard.md` | `[編輯部]` | 美術製作標準總綱（BN Design System 完整 design tokens：色彩、字體、間距、圓角、強調系統；所有產出視覺配件的 Skill 都應遵守） |
 | `bwt-html-table-component.md` | `[編輯部]` | HTML 表格元件子規範（inline style 範本 + 精緻化細節：斑馬紋、左側橘條等；引用 `bwt-design-standard.md` 取得 tokens）；**目前僅 `etf-explainer` 套用**，未來評估擴散至其他 Skill |
+| `bwt-iframe-visual-component.md` | `[編輯部]` | iframe 互動視覺配件子規範（HTML 結構模板 + 雙軌設計強制規則 + Logo 加入規範；引用 `bwt-design-standard.md` 取得 tokens）；目前僅 `visual-asset` 套用 |
 
 ---
 
