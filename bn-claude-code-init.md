@@ -32,7 +32,14 @@ rm -rf /tmp/bn-skills
 ```
 
 安裝完成後，確認 `~/.claude/agents/` 內有以下檔案：
-- `bwt-style-guide.md`（共用風格規範）
+
+**共用規範**
+- `bwt-style-guide.md`（寫作風格規範：兩岸用語、禁用詞、技術白話化等）
+- `bwt-design-standard.md`（美術製作標準總綱：BN Design System 完整 tokens）
+- `bwt-iframe-visual-component.md`（iframe 配件子規範）
+- `bwt-html-table-component.md`（HTML 表格元件子規範）
+
+**產稿 Skills**
 - `news-daily.md`（即時新聞編譯）
 - `deep-analysis.md`（深度分析長文）
 - `draft-polish.md`（潤稿去 AI 味）
@@ -42,6 +49,12 @@ rm -rf /tmp/bn-skills
 - `article-checker.md`（文章查核）
 - `headline-generator.md`（標題生成）
 - `notion-orchestrator.md`（Notion 產稿主腦）
+
+**視覺製品 Skills**
+- `visual-brief.md`（主視覺發想 brief）
+- `visual-asset.md`（iframe 互動配件 + 16:9 主視覺圖卡）
+
+**工具型 Skills**
 - `retrospective.md`（工作覆盤）
 - `lint-vault.md`（Vault 健康檢查）
 
@@ -108,6 +121,8 @@ personal/     ← 工作以外的私人內容（不參與自動寫回、不被 l
 | etf-explainer | 貼 ETF 代號或公開說明書，說「幫我寫 00XXX 懶人包」 |
 | article-checker | 說「幫我查核」、「幫我 fact check」 |
 | headline-generator | 說「幫我想標題」、「幫我下標」 |
+| visual-brief | 說「幫我想主視覺」、「幫我寫視覺 brief」 |
+| visual-asset | 說「幫我做配件」、「做張圖表」、「做主視覺」、「做 16:9 圖卡」 |
 | retrospective | 說「幫我覆盤」、「跑 retrospective」 |
 | lint-vault | 說「幫我檢查 vault」、「跑 lint」 |
 ```

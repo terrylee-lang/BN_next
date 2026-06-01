@@ -109,7 +109,7 @@ description: |
 
 ### 8. Memory 健康檢查（Memory Lint）
 
-掃描 `~/.claude/projects/-Users-terrylee-Claude-Project/memory/` 下所有記憶檔案（不含 `MEMORY.md` 索引本身），檢查三類問題：
+掃描 `~/.claude/projects/-Users-terrylee-Claude-Project/memory/` 下所有記憶檔案（不含 `MEMORY.md` 索引本身），檢查六類問題：
 
 **A. 過時**：記憶內容涉及已變更的事實（例如提到的檔案路徑已不存在、流程已改、工具已換）。
 
@@ -117,12 +117,46 @@ description: |
 
 **C. 可合併**：多條記憶涵蓋同一主題，可以整合成一條更精簡的記憶。
 
+**D. retention 標記過期**：掃描所有 memory 檔的 frontmatter `retention:` 欄位：
+
+- `sunset-by: YYYY-MM` 已到日期 → 列入重評清單
+- `retention: quarterly` 且檔案 mtime 距今 > 90 天 → 列入重評清單
+- 沒有 `retention:` 欄位的 memory → 列入「補欄位」清單（給 Terry 機會補標 permanent / quarterly / sunset-by）
+
+**E. 升級候選（同主題 ≥ 3 條）**：掃描 MEMORY.md 描述欄位，找出同一主題群（譬如 Notion 寫回、視覺配件、技術白話化、查核準確性）累積 ≥ 3 條 feedback memory 的群組，建議整併到對應 Skill 規範檔。
+
+**F. 容量警戒**：
+
+- 主 vault memory 條目 ≥ 50 → 列入報告開頭警示
+- MEMORY.md 字元數 > 12,000 → 強制建議當天執行 audit
+
+**Project memory 額外檢查**：`project_*` memory 若提到的專案已完成、或 mtime 距今 > 60 天無更新跡象，建議移到 vault `projects/`。
+
 輸出格式：
 ```
 【Memory 健康檢查】
+
+容量狀態：當前 44 條 / 50 條警戒線（72%）、MEMORY.md 8,315 字元
+
+[A] 過時：
 - feedback_xxx.md — 提到的路徑 ~/old/path 已不存在，建議更新或移除
-- feedback_aaa.md 與 feedback_bbb.md 對同一主題給出不同建議，建議合併
-- project_xxx.md 與 project_yyy.md 內容高度重疊，建議整合為一條
+
+[B] 矛盾：
+- feedback_aaa.md 與 feedback_bbb.md 對同一主題給出不同建議
+
+[C] 可合併：
+- project_xxx.md 與 project_yyy.md 內容高度重疊
+
+[D] retention 標記過期：
+- feedback_xxx.md — sunset-by 2026-04 已過期，建議重評
+- feedback_yyy.md — quarterly 標記但 100 天未更新，建議重評
+- feedback_zzz.md — 未標 retention，建議補標
+
+[E] 升級候選（同主題 ≥ 3 條）：
+- 「Notion 寫回」主題群有 X 條 memory，建議整併到 notion-orchestrator skill
+
+[F] Project 條目時效：
+- project_xxx.md — 提到的專案已 60 天無更新，建議移到 vault projects/
 ```
 
 ---
@@ -131,6 +165,11 @@ description: |
 
 ```
 # Vault Lint 報告｜{日期}
+
+## 容量警戒（report header）
+- research/ 筆記數：N 篇（30 篇門檻）
+- memory 條目數：N 條（50 條警戒線）
+- MEMORY.md 字元數：N（12,000 字元警戒）
 
 ## 孤兒筆記（N 筆）
 ...
@@ -150,14 +189,14 @@ description: |
 ## Draft 清理提醒（N 筆）
 ...
 
-## Memory 健康檢查（N 筆）
+## Memory 健康檢查（A-F 共 N 筆）
 ...
 
 ---
 以上問題不會自動修正，請告知哪些需要處理。
 ```
 
-若 research/ 超過 30 篇，在分隔線前加上筆記量門檻提醒。
+容量警戒區塊永遠輸出，作為 dashboard 開頭。若 research/ 超過 30 篇、memory 超過 50 條、或 MEMORY.md 超過 12,000 字元，在該行末加 ⚠️ 標記。
 
 ---
 

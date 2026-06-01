@@ -87,7 +87,7 @@ Token 為公司內部整合金鑰，可供全體同仁共用，請向 Terry 索�
 處理 Notion 的待辦
 ```
 
-Claude 會自動掃描 AI產稿中心 v2，篩選「未開始」條目，依稿件類型派發對應 Skill，完成後寫回 Notion。
+Claude 會自動掃描 AI產稿中心 v2，篩選待辦條目（「未開始」，並回收上一輪未寫回的「進行中」空白頁），依稿件類型派發對應 Skill，完成後寫回 Notion。
 
 ---
 
@@ -135,7 +135,7 @@ Claude 會自動掃描 AI產稿中心 v2，篩選「未開始」條目，依稿�
 
 ## 版本紀錄
 
-最新版本：**v2.7.1（2026-05-06）** — notion-orchestrator 安全修正與寫回格式統一
+最新版本：**v2.9.0（2026-06-01）** — 新增 bwt-visual-checklist 子規範、lint-vault memory 健康檢查擴充、notion-orchestrator 進行中孤兒頁回收
 
 完整異動紀錄請見 [CHANGELOG.md](./CHANGELOG.md)。
 

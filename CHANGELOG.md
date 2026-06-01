@@ -7,6 +7,32 @@
 
 ---
 
+## v2.9.0 — 2026-06-01
+
+**新增 `bwt-visual-checklist.md` 子規範（視覺配件工作流與交付 Checklist）**
+
+- 從 memory 與既有規範收斂出單一 checklist：產品類型判斷（iframe vs 16:9 圖卡）、16:9 主視覺 SOP、iframe spot-check 8 項、禁用破折號、本地優先 iterate、預覽用 URL 不截圖
+- 下游引用更新：`bwt-design-standard.md`（子規範清單）、`visual-asset.md`（讀取順序與破折號規則改引此檔）、`bn-claude-code-init.md`（安裝清單補視覺製品 Skills 與共用規範分層）
+
+**`lint-vault.md` — Memory 健康檢查擴充（3 類 → 6 類）**
+
+- 新增 D 類 retention 標記過期（`sunset-by` 到期、`quarterly` > 90 天、缺 `retention:` 欄位）
+- 新增 E 類升級候選（同主題 ≥ 3 條 feedback memory 建議整併進 Skill）
+- 新增 F 類容量警戒（memory ≥ 50 條、MEMORY.md > 12,000 字元）
+- `project_*` memory 完成或 > 60 天無更新建議移 vault `projects/`
+
+**`bwt-style-guide.md` — 白話化規則補充**
+
+- 新增文學成語／軍事用詞對照表（事必躬親→親力親為等），要求出稿前 grep 自查
+- 新增白話轉場詞密度節制（「白話說」「換句話說」單篇 ≤ 2 次）
+
+**`notion-orchestrator.md` — 兩項更新**
+
+- 摘要欄位公式依稿件類型分流：即時新聞以「講清楚事件」為先、不用疑問句結尾；教學／分析／潤稿可用「題旨 + 關鍵提問」
+- **新增「進行中空白頁回收」規則**：掃描除「未開始」外一律加掃「進行中」，對內文為空的孤兒頁判定為上一輪寫回失敗、併入重跑（2026-06-01 踩坑：先泰名下五篇全卡在進行中空白頁）
+
+---
+
 ## v2.8.0 — 2026-05-20
 
 **新增 `visual-asset` Skill（互動視覺配件生成）**

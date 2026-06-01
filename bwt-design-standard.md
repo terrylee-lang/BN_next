@@ -16,6 +16,7 @@
 |---|---|---|
 | [`bwt-html-table-component.md`](bwt-html-table-component.md) | HTML 表格元件 | 目前僅 `etf-explainer`；未來評估擴散 |
 | [`bwt-iframe-visual-component.md`](bwt-iframe-visual-component.md) | iframe 嵌入式互動視覺配件（tracker、時間軸、橫條排行等） | `visual-asset` |
+| [`bwt-visual-checklist.md`](bwt-visual-checklist.md) | 視覺配件工作流與交付 Checklist（產品類型判斷、16:9 SOP、iframe spot-check、禁用破折號、本地優先 iterate） | `visual-asset`、跨 skill 配件情境 |
 | （未來）`bwt-key-numbers.md` | 關鍵數字呈現元件 | 未建立 |
 | （未來）`bwt-feature-card.md` | 文章 feature card | 未建立 |
 | （未來）`bwt-callout-box.md` | 編按 / 引用框 | 未建立 |

@@ -47,7 +47,7 @@ Design System 是 default，不是鐵則。當戲劇化／辨識度元素確實�
 
 **節制原則仍適用**：BN Orange「節制」不是「不用」，speaker label 級別的小範圍染色不算違反「大範圍鋪色」禁令。
 
-詳細哲學紀錄於 memory：`feedback-reader-experience-trumps-style`。
+詳細哲學與 spot-check checklist 見 [`bwt-visual-checklist.md`](bwt-visual-checklist.md)。
 
 ---
 
@@ -63,7 +63,8 @@ Design System 是 default，不是鐵則。當戲劇化／辨識度元素確實�
 
 1. `~/.claude/agents/bwt-design-standard.md` — 共通美術規範（色彩、字體、字級、設計原則）
 2. `~/.claude/agents/bwt-iframe-visual-component.md` — iframe 配件子規範（HTML 結構、雙軌設計、相容性）
-3. `~/.claude/agents/bwt-style-guide.md` — 寫作風格（兩岸用語、人名、禁用詞）
+3. `~/.claude/agents/bwt-visual-checklist.md` — 視覺配件工作流與交付 Checklist（產品類型判斷、16:9 SOP、iframe spot-check、禁用破折號、本地優先 iterate）
+4. `~/.claude/agents/bwt-style-guide.md` — 寫作風格（兩岸用語、人名、禁用詞）
 
 ⚠️ **配色強制**：所有配件必須用 BN Orange `#FF6B1A` + Paper `#FAF7F1` warm ivory + BN Black `#1A1A1A`。**禁止自創品牌色**（如 `#c0392b` 深紅、純白 `#fff`、深藍非 BN Navy 等）。
 
@@ -207,7 +208,7 @@ resize 1280x800 → navigate 配件 URL → await document.fonts.ready → 等 1
   ```
 - **存放**：`~/Claude Project/draft/YYYYMMDD-<類型>-<主題>-keyvisual.html` + `.png` + 圖檔素材同目錄
 - **配色**：BN tokens（同 iframe 配件）
-- **禁止破折號**：見 [`memory/feedback_no_dash_in_visuals.md`]
+- **禁止破折號**：見 [`bwt-visual-checklist.md`](bwt-visual-checklist.md)「五、文字禁忌」
 
 ### 字體預設（給 1920×1080 viewport，**起步要大**）
 
