@@ -135,7 +135,7 @@ Claude 會自動掃描 AI產稿中心 v2，篩選待辦條目（「未開始」�
 
 ## 版本紀錄
 
-最新版本：**v2.9.0（2026-06-01）** — 新增 bwt-visual-checklist 子規範、lint-vault memory 健康檢查擴充、notion-orchestrator 進行中孤兒頁回收
+最新版本：**v2.9.3（2026-07-01）** — notion-orchestrator 前景阻塞式派發硬性規則（防背景派工假等待僵住）；本次並補推先前未 commit 的 v2.9.1／2.9.2 變更與 ETF 長青維護功能，repo 補齊至當前
 
 完整異動紀錄請見 [CHANGELOG.md](./CHANGELOG.md)。
 

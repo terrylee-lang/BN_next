@@ -7,6 +7,59 @@
 
 ---
 
+## v2.9.3 — 2026-07-01
+
+**notion-orchestrator 新增「前景阻塞式派發」硬性規則（防背景派工提前結束回合）**
+
+源頭：先泰名下 3 篇即時新聞（Fable 5／Mythos 5 解禁、Claude Sonnet 5、Gemini Nano Banana 2 Lite／Omni Flash）。orchestrator、news-daily、article-checker 三層各自用背景（`run_in_background`）派工後提前結束回合，反覆「假等待」僵住——已停止的代理不會因子代理完成而自動醒來（完成通知送到主迴圈／父代理，不喚醒已結束回合者），Step 2c-bis→2f 永遠走不到，稿件停在草稿、Notion 頁面全空，靠人工多次喚醒才走完寫回。既有 2f-bis 防的是「假完成回報」，攔不住這個「派完就結束回合」的上游肇因。
+
+- `notion-orchestrator.md`：Step 2c 新增「派工方式硬性規則」——子代理一律前景（阻塞）派發（同一則訊息放多個 `Agent` 呼叫取得並發），禁止 `run_in_background`／非同步；必須在同一回合阻塞等所有子代理回傳才往下走 2c-bis→2f；2d 查核代理同理；附自我檢查（發現自己「正要派完就結束回合等通知」即為 bug）
+- `notion-orchestrator.md`：2f-bis 補「孿生防線」交叉引用——本節防「沒寫回卻回報完成」，Step 2c 防「派完就結束回合、永遠走不到寫回」，同屬一個失敗家族的一體兩面
+
+**補記錄：ETF 長青內容「發布後維護」功能（先前 session 完成、未即時 commit，本次一併補推）**
+
+此功能實作於先前 session 但未寫入 CHANGELOG、也未推送，本次補上紀錄後隨這批一起上。內容為「ETF 懶人包是長青內容，發布後需定期更新成分股／配息／費率」的維護機制：
+
+- `etf-explainer.md`：新增「發布後：歸檔與長期維護」一節——ETF 稿發布後移入 `archive/` 並定位為 living document（SSoT），附維護卡格式（線上位置／一手來源／配套配件／時效數據與複查時點）與「數月後成分股／配息變動時」的更新流程
+- `lint-vault.md`：過時判定新增第 3 類 C「ETF 長青稿複查」——掃描 `archive/` 中 `-etf-` 稿的維護卡「下次複查：YYYY-MM」時點，到期提醒；`valid` 時效標記掃描範圍由 `research/` 擴及 `archive/`
+
+---
+
+## v2.9.2 — 2026-06-08
+
+**notion-orchestrator 新增「完成的唯一定義」硬性閘門（防假完成回報）**
+
+源頭：先泰名下 2 篇即時新聞，子代理產出草稿後直接回報「完成」，實際 Notion 兩頁仍停在「進行中」空白頁，靠人工回 Notion 核對才發現。既有 Step 2f 寫回驗證若確實執行就會攔下，缺口在「跳過 2e／2f 卻回報成功」。
+
+- `notion-orchestrator.md`：Step 2f 後新增 2f-bis 子節。規定一筆稿件只有在 Step 2f 的 `notion-fetch` 實際回傳「內文非 blank-page ＋ 摘要／重點有值」後才能標「完成」；禁止以「草稿已產出」冒充「已寫回」；無法寫回時一律回報「僅產出草稿、尚未寫回」並附草稿全文，不得標完成、也不得標進行中後就結束（會變成下一輪才被 Step 1 回收的孤兒頁）
+
+---
+
+## v2.9.1 — 2026-06-04
+
+**新增「單一受訪者／單一觀點來源的斷言收斂與觀點歸屬」原則（查核式收斂回饋升規範）**
+
+源頭：先泰一篇 deep-analysis（Lenny's Podcast 逐字稿）經查核式收斂後的 10 處改動，收斂為可複用原則。把「受訪者觀點」誤寫成「作者強判斷」是 Podcast／talk 逐字稿類來源的系統性失誤。
+
+- `deep-analysis.md`：「寫作原則」段新增完整原則（斷言收斂、觀點歸屬、不做無來源群體歸納、小標不替受訪者下結論，含對照表），出稿前自查清單補第 16、17 條
+- `draft-polish.md`：新增精簡版同名原則（NotebookLM 草稿同屬單一講者來源高發區），自查清單補第 6 條，指向 deep-analysis.md 完整說明
+- `article-checker.md`：Step 4 邏輯錯誤分析新增「斷言過度／來源歸屬不當」查核項，作為涵蓋所有稿型的 QC 網
+
+**受訪者身分前置（同次回饋 A 項）**
+
+- `deep-analysis.md`：「單一受訪者」原則補第 5 點（身分職稱與 credibility 必須在前兩段一次交代、不前缺後補）；開場 Hook 同步要求帶出受訪者身分
+
+**破折號全面收緊為 0 次（產出文章一律不使用「——／—」）**
+
+- `bwt-style-guide.md`：破折號規則由「限次數」改為「全文 0 次」，適用範圍涵蓋產稿與所有存檔 vault 筆記；唯對話即時生成放寬
+- `draft-polish.md`（每 600 字最多 2 次 → 0）、`etf-explainer.md`（最多 2 次 → 0）同步歸零
+- `article-checker.md`：Step 3 新增破折號 0 次查核（先前 QC 網未檢查破折號，是落實漏洞）
+- `news-daily.md`：修正一個自身使用破折號的 ✅ 示範句
+- `bwt-iframe-visual-component.md`：配件破折號由「最多 1 次」改為「0 次」，對齊 `bwt-visual-checklist.md`（修掉兩檔長期矛盾）
+- news-daily／tutorial-article 無自有破折號條文，透過 bwt-style-guide 繼承生效
+
+---
+
 ## v2.9.0 — 2026-06-01
 
 **新增 `bwt-visual-checklist.md` 子規範（視覺配件工作流與交付 Checklist）**

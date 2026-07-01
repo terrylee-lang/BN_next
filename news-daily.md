@@ -276,7 +276,7 @@ description: |
 
 **例：**
 - ❌ 「他們剛剛因為它要求這樣做而把它逼走」
-- ✅ 「戰爭部剛以此為由將 Anthropic 逼走，卻接受了 OpenAI 的相同條款——（NBC News 引述 Charlie Bullock 在 X 上發文）」
+- ✅ 「戰爭部剛以此為由將 Anthropic 逼走，卻接受了 OpenAI 的相同條款（NBC News 引述 Charlie Bullock 在 X 上發文）」
 
 ---
 
