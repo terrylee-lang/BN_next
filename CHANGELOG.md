@@ -7,6 +7,30 @@
 
 ---
 
+## v2.9.6 — 2026-07-07
+
+**依 75 個 session 的 transcript 實證診斷，補三個高頻失準點的結構化防線**
+
+源頭：掃描 2026-06-07~07-07 全部 75 個 session（含 33 筆使用者真實糾正、47 次可預測工具錯誤）後的診斷結論。最大宗糾正（14 筆）是「證據級別與語氣錯配」——未確定事項寫成已確定（美超微 IPO 條件）與已確定事實被過度 hedge（Ternus 接班人）雙向震盪；次大宗（6 筆）是相對時間詞見報即失效；Notion 參數同形錯誤一週內跨 session 重犯 26 次。
+
+- `article-checker.md`：強制驗證規則新增**規則 E（確定性口徑五級對照）**——L1 已完成～L5 推論的證據級別 → 語氣對照表，雙向查核（寫太滿與 hedge 過頭都列事實錯誤），法律指控需一手文件；**規則 F（相對時間詞掃描）**——「明日／目前／即將」等機械式掃描改絕對日期、兩階段事件動詞對應、事件歸因時間錨定
+- `notion-orchestrator.md`：Step 1 MCP 工具區新增**參數小抄**——notion-fetch 參數名只有 `id`（值可放 URL）、replace_content 用 `new_str`、狀態欄合法值「完成」、date 展開格式、archived 頁面檢查
+- `bwt-visual-checklist.md`：修正「禁用破折號」節殘留的舊版內文規範描述（≤1 次／2,000 字已於 7/2 廢止，統一為全文 0 次），消除與 bwt-style-guide 的規範矛盾
+
+---
+
+## v2.9.5 — 2026-07-02（補記錄）
+
+**全 Skills model／effort 分層 + 事實查核鐵律章節（7/2 盤整 session 完成、未即時記錄，本次補上）**
+
+源頭：Terry 反映頻繁撞到 5 小時 token 上限，盤整發現全系統一律以最高規格模型執行所有任務（含機械式掃描），且 15 條查核類 memory 靠 recall 召回不可靠、反覆再犯。
+
+- 13 個 Skill frontmatter 新增 `model:` + `effort:` 分層：深度層保 Opus + high（deep-analysis、draft-polish、etf-explainer、notion-orchestrator）；輕量層降 Sonnet（news-daily、social-post、headline-generator、visual-brief=medium、lint-vault=low、retrospective=medium、tutorial-article、visual-asset、article-checker=high）
+- `bwt-style-guide.md`：新增「事實查核鐵律」章節——15 條查核類 memory（來源可回溯、動詞精準、欄位標題逐字核對、累積占比、SEC 文件分類、官方公告六模式等）濃縮為 18 條要點，血淚案例錨點全保留
+- `lint-vault.md`：排除清單補 `.claude-refs/` 與 `_archived-*` 檔案
+
+---
+
 ## v2.9.4 — 2026-07-01
 
 **文末「資料來源 + 署名」格式強化，並在管線各手加強制保留（防多輪查核後文末被打散）**

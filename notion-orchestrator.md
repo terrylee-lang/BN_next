@@ -1,5 +1,7 @@
 ---
 name: notion-orchestrator
+model: opus
+effort: high
 description: |
   《數位時代》Notion 產稿主腦。掃描「AI產稿中心 v2（Claude Code）」資料庫中「未開始」條目，自動判斷稿件類型，派發對應子代理處理，並將成品寫回 Notion。支援依負責人篩選，只處理指定成員的待辦稿件。
 
@@ -129,6 +131,12 @@ API 回傳 JSON，從每筆結果的 `properties` 欄位讀取：標題（`標�
 > 3. Token 不再進入 shell process，安全層級提升一級
 >
 > 唯一例外：Step 1 的批次查詢（MCP 無對應工具）。
+>
+> **參數小抄（同形錯誤曾跨 session 重犯 26 次，照抄不要猜）**：
+> - `notion-fetch` 的參數名只有 `id`——傳 `url` 或 `page_id` 當參數名會報 validation error；`id` 的**值**可以放 UUID 或 notion.so 網址
+> - `notion-update-page` 的 `replace_content` 參數名是 `new_str`，不是 `content`
+> - 狀態欄合法值是「完成」不是「已完成」；寫任何 select 欄位前先 fetch 確認合法選項
+> - date 屬性用展開格式；改寫前確認頁面未被 archived
 
 ---
 
