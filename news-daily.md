@@ -1,5 +1,7 @@
 ---
 name: news-daily
+model: sonnet
+effort: medium
 description: |
   《數位時代》即時新聞編譯 Skill。將外文新聞（英文或其他外語）或單篇台灣媒體報導，編譯為符合《數位時代》風格的繁體中文即時新聞稿。
 

@@ -1,5 +1,7 @@
 ---
 name: tutorial-article
+model: sonnet
+effort: high
 description: |
   《數位時代》教學型文章 Skill。將 X（Twitter）創作者的方法論、病毒式貼文、或任何 AI 工具使用技巧，轉化為符合《數位時代》風格的實用教學文章。
 

@@ -1,5 +1,7 @@
 ---
 name: social-post
+model: sonnet
+effort: medium
 description: |
   《數位時代》社群貼文生成 Skill。將文章連結或文字貼給你，就可以生成符合《數位時代》臉書／社群風格的中文貼文。
 

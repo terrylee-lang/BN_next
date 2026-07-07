@@ -1,5 +1,7 @@
 ---
 name: headline-generator
+model: sonnet
+effort: medium
 description: |
   《數位時代》與《商周》風格標題生成 Skill。針對文章內容，從固定核心角度＋動態補充角度產出約40字、SEO 友善的繁體中文標題，並給出具體推薦與選擇理由。主要用於文章發布前的標題定案流程。
 

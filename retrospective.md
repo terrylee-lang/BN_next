@@ -1,5 +1,7 @@
 ---
 name: retrospective
+model: sonnet
+effort: medium
 description: |
   工作覆盤 Skill。在一個工作 session 結束後，掃描這次對話的內容，整理出值得保留的偏好、流程與教訓，產生記憶或 skill 更新建議，由使用者選擇套用。
 

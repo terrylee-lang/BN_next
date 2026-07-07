@@ -1,5 +1,7 @@
 ---
 name: visual-brief
+model: sonnet
+effort: medium
 description: |
   《數位時代》主視覺發想 Skill。將一篇稿件（內文或 Notion／draft／archive 連結）轉化為結構化的「視覺 brief」，作為 Claude Design 或其他設計工具的輸入，讓編輯不需直接下設計 prompt，就能產出風格一致的主視覺。
 

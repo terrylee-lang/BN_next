@@ -1,5 +1,7 @@
 ---
 name: draft-polish
+model: opus
+effort: high
 description: |
   《數位時代》專用潤稿 Skill。當使用者提供 NotebookLM 生成的文章草稿（通常來自 YouTube 影片轉稿），協助去除 AI 味、調整文章結構、補齊資料來源，輸出符合《數位時代》編輯風格的 Markdown 分析長文。
   

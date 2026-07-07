@@ -1,5 +1,7 @@
 ---
 name: lint-vault
+model: sonnet
+effort: low
 description: |
   Obsidian Vault 健康檢查 Skill。掃描 ~/Claude Project/ 所有筆記，找出孤兒筆記、缺連結、過時內容、格式不符等問題，輸出待辦清單供 Terry 決定是否修正。
 
@@ -204,7 +206,7 @@ description: |
 
 ## 注意事項
 
-- `_index.md`、`_register.md`、`.gitkeep`、`daily-notes/` 不列入一般掃描範圍
+- `_index.md`、`_register.md`、`_archived-*.md`、`.gitkeep`、`.claude-refs/`、`daily-notes/` 不列入一般掃描範圍（`.claude-refs/` 存 Claude 執行用的 SOP，如收工流程；`_archived-*` 為 memory 歸檔快照，皆非 vault 筆記）
 - `archive/` 存的多是發布後凍結的稿件，不檢查 research/ 標準格式欄位；**但參與第 3 類的 `valid` 時效標記掃描，且 ETF 長青稿（`-etf-`）額外檢查維護卡「下次複查」時點**
 - `personal/` 完全排除，不掃描任何項目
 - `draft/` 僅參與第 7 類清理提醒，不參與格式、連結等檢查

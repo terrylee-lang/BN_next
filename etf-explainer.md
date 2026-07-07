@@ -1,5 +1,7 @@
 ---
 name: etf-explainer
+model: opus
+effort: high
 description: |
   《數位時代》台股 ETF 懶人包生成 Skill。將新發行 ETF 的官方資料（統一投信、元大投信、富邦投信等官網成分股頁面）、公開說明書 PDF、媒體懶人包整合為 SEO 流量型懶人包稿件，回答一般財經小白民眾「這是什麼／成分股／配息／怎麼買」四大疑問。
 

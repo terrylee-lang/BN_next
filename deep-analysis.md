@@ -1,5 +1,7 @@
 ---
 name: deep-analysis
+model: opus
+effort: high
 description: |
   《數位時代》深度分析長文 Skill。將 PDF、網頁長文、YouTube 影片、Podcast 逐字稿等原始素材，從零生成深度商業分析文章（以內容完整度為準，不超過 2,500 字）。
 

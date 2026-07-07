@@ -1,5 +1,7 @@
 ---
 name: visual-asset
+model: sonnet
+effort: high
 description: |
   《數位時代》互動視覺配件 Skill。將文章資料、清單、CSV 轉化為符合 BN 視覺規範的 HTML 配件，桌機 + 手機雙軌設計，自動托管至 GitHub Pages（terrylee-lang/bnext-visuals），產出可直接貼到後台的 iframe 嵌入碼。
 
