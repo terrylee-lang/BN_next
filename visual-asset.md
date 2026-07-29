@@ -25,41 +25,14 @@ description: |
 
 ---
 
-## 設計優先序（最高原則）
+## 設計判斷與動手前自檢
 
-設計判斷照以下優先序：
+rubric 全數住 [`bwt-visual-checklist.md`](bwt-visual-checklist.md)（唯一居所），啟動時必讀：
 
-1. **服務讀者閱讀體驗**（辨識度、戲劇張力、reading flow）— 最高原則
-2. **BN Design System**（[`bwt-design-standard.md`](bwt-design-standard.md)）— default 起點
-3. **個案戲劇化元素** — 若服務讀者可從寬納入
-
-Design System 是 default，不是鐵則。當戲劇化／辨識度元素確實服務讀者（譬如法庭 Q&A 律師雙色用 BN brand tokens 做語意對映、簡訊 iMessage 直覺氣泡、證物編號 footer 增加真實感），可以靈活納入——**不要為了忠於規範犧牲閱讀體驗**。
-
-### 判斷光譜
-
-| 設計選擇 | 偏向 default | 偏向從寬 |
-|---|---|---|
-| 律師雙色用 BN tokens 語意對映 | — | ✅ 服務辨識度 |
-| 簡訊 iMessage 風氣泡 | — | ✅ 服務直覺 |
-| 證物編號 footer | — | ✅ 服務戲劇真實感 |
-| 章節 H2 用 BN Orange 純文字 | ✅ 對齊 BN | — |
-| 加 box-shadow / drop-shadow | ✅ 絕對禁止 | — |
-| 加 gradient 漸層 | ✅ 絕對禁止 | — |
-| 純白底色 | ✅ 絕對禁止 | — |
-
-**節制原則仍適用**：BN Orange「節制」不是「不用」，speaker label 級別的小範圍染色不算違反「大範圍鋪色」禁令。
-
-詳細哲學與 spot-check checklist 見 [`bwt-visual-checklist.md`](bwt-visual-checklist.md)。
+- **設計優先序與判斷光譜**（服務讀者 > Design System default > 戲劇化從寬）→ checklist §一
+- **掃既有規範、禁止憑外部觀察自建色票**（2026-05-19 `#FF5500` 教訓）→ checklist §二
 
 ---
-
-## 動手前自檢（避免色票漂移）
-
-⚠️ **絕不憑外部觀察自建色票系統**——禁止用 Playwright 抓 bnext.com.tw computed styles、其他媒體參考、品牌印象等來源建立「自己的」design tokens。所有 design tokens 一律以 [`bwt-design-standard.md`](bwt-design-standard.md) 為**唯一 source of truth**。
-
-實測值（官網 computed styles）反映「臨時實作」，不是品牌目標規範。Design System bundle（`~/Claude Project/projects/bn-design-system/`）才是 Terry 授權的品牌正規範。兩者不一致時，**以 Design System 為準**。
-
-歷史教訓：2026-05-19 曾用 Playwright 實測 BN 官網建立 `#FF5500` 純白底的衝突 spec，差點覆寫既有 Design System（`#FF6B1A` + warm ivory）。發現後拍板路徑 A：以 Design System 為準。
 
 ## 必讀規範（啟動前依序讀取）
 
@@ -76,14 +49,7 @@ Design System 是 default，不是鐵則。當戲劇化／辨識度元素確實�
 
 ### Step 0：判斷產品類型（最重要，避免整套白工）
 
-動手前先分辨兩種產品：
-
-| 訊號 | iframe 嵌入配件 | 16:9 主視覺圖卡 |
-|---|---|---|
-| 使用者怎麼說 | 「做配件」「做個 tracker」「嵌入內文」「互動圖表」 | 「做主視覺」「做 cover」「文章封面」「社群分享圖」「Notion 封面」「16:9 圖卡」 |
-| 輸出 | HTML + iframe 嵌入碼，托管 GitHub Pages | 1920×1080 PNG |
-| 互動 | 雙軌（桌機 + 手機）有 hover、預覽工具列 | 無互動，純靜態圖 |
-| 字體尺寸 | 對齊內文閱讀（多偏小） | 視覺衝擊（要大） |
+動手前先分辨兩種產品：iframe 嵌入配件 vs 16:9 主視覺圖卡。**判斷訊號表見 [`bwt-visual-checklist.md`](bwt-visual-checklist.md) §二**（唯一居所）。
 
 不確定時主動問：「這要嵌入內文（iframe 互動配件）還是當文章封面／社群分享（1920×1080 PNG 圖卡）？」
 
@@ -109,15 +75,11 @@ Design System 是 default，不是鐵則。當戲劇化／辨識度元素確實�
 
 ### Step 3：產出 HTML 到 `draft/`
 
-依 [`bwt-iframe-visual-component.md`](bwt-iframe-visual-component.md) 的 HTML 結構模板撰寫。**強制雙軌**：包含 `@media (max-width: 640px)` 區塊。
+依 [`bwt-iframe-visual-component.md`](bwt-iframe-visual-component.md) 的 HTML 結構模板撰寫。**強制雙軌**：以 `@container (max-width: 640px)` 為主軌（`@media` 僅作漸進增強 fallback，規則見該檔「雙軌設計強制規則」）。
 
 存到 `draft/YYYYMMDD-news-主題視覺配件.html`，讓 Terry 預覽。
 
-**Logo 加入策略**：
-- 若資料涉及具名公司，預設用 Google s2 Favicon API：`<img src="https://www.google.com/s2/favicons?sz=64&domain=<domain>.com" width="24" height="24" onerror="this.style.visibility='hidden'">`
-- 失敗自動隱藏（onerror），避免破圖
-- ⚠️ **不要用 Clearbit**（2024 年被 HubSpot 收購後 API 已停用）
-- 未來如需更高解析度 logo，批次下載到 `~/Claude Project/projects/bnext-visuals/_assets/logos/<company-slug>.png`，把 src 換成 `../../_assets/logos/<company>.png`
+**Logo 加入策略**：Google s2 Favicon API、自托管判斷與 SOP、顯示尺寸，一律依 [`bwt-iframe-visual-component.md`](bwt-iframe-visual-component.md)「Logo 加入規範」（唯一居所，含 Clearbit 禁令）。
 
 ### Step 4：上線 Repo（Terry 確認 OK 後）
 
@@ -159,7 +121,7 @@ Design System 是 default，不是鐵則。當戲劇化／辨識度元素確實�
 
 ```html
 <iframe src="https://terrylee-lang.github.io/bnext-visuals/<年份>/<檔名>.html"
-        width="100%" height="<桌機實際高度>"
+        width="100%" height="<Playwright 實測桌機高度 + 100px buffer>"
         style="border:0; max-width:880px; display:block; margin:24px auto;"
         loading="lazy"
         title="<配件標題>"></iframe>
@@ -171,14 +133,11 @@ Design System 是 default，不是鐵則。當戲劇化／辨識度元素確實�
 | 中型（4 卡陣列、橫排比較） | 1,200–1,400（Anthropic playbook 桌機實測 1,109） |
 | 長型 tracker（編年清單） | 3,800–4,000（裁員 tracker 桌機實測 3,815） |
 
-⚠️ **每個新配件產出後必須跑 Playwright 量精準桌機 height，不靠估算**——歷史上估算誤差曾達 1,000+ px。流程：
-```
-resize 1280x800 → navigate 配件 URL → await document.fonts.ready → 等 1500ms → 量 document.documentElement.scrollHeight → +91px buffer = iframe height
-```
+⚠️ **每個新配件產出後必須跑 Playwright 量精準桌機 height，不靠估算**——歷史上估算誤差曾達 1,000+ px。量測流程與 buffer 參數以 [`bwt-iframe-visual-component.md`](bwt-iframe-visual-component.md)「iframe 高度策略」為準（本檔不自帶參數）。
 
 **取捨**：桌機讀者完美貼合；手機讀者會在 iframe 內部 scroll（手指 swipe 在 iframe 內 scroll、到邊界自動切回頁面 scroll，現代瀏覽器處理 OK）。
 
-**真正解（長期）**：請 IT 在 Alpine.js iframe widget 加 postMessage 監聽，所有 iframe 自動 auto-resize。配件端已內建發送機制，IT 加接收端後現存配件無需更新嵌入碼即可受惠。詳見 [`bwt-iframe-visual-component.md`](bwt-iframe-visual-component.md) 的「iframe 高度自動同步」段。
+**高度策略＝純寫死，全面禁止 postMessage**（2026-05-18 CMS listener 教訓，見同上章節）。若未來 IT 修復 CMS listener 再重新評估動態同步。
 
 需要強制 CDN 刷新時，URL 後加 `?v=YYYYMMDD`。
 
@@ -189,110 +148,17 @@ resize 1280x800 → navigate 配件 URL → await document.fonts.ready → 等 1
 - **Public Repo**：所有上傳到 `bnext-visuals` 的檔案公開可見。**禁止放未發布稿件、API key、客戶資料、財報內部數據**。每次上傳前自查。
 - **GitHub Pages + Jekyll 陷阱**：repo root 必須有 `.nojekyll` 空檔，否則 Jekyll 會自動忽略 `_` 開頭目錄（如 `_assets/`），導致 self-hosted logo / CSS 全部 404。新建 repo 時第一個 commit 就要把 `.nojekyll` 加進去。
 - **CDN 快取**：改完 HTML 後 1–5 分鐘才刷新。
-- **Logo 來源穩定性**：Google s2 Favicon API 為 Google 維護的公開服務，穩定可用。若特定公司 favicon 設計過於低解析度或不美觀，可手動下載高品質版本到 `_assets/logos/` 自托管。
-- **共用 CSS**：累積到 3–4 個配件後，把 BN 配色變數、字體 stack 抽到 `_assets/base.css`，新配件 `<link>` import。
+- **Logo 與共用 CSS**：logo 來源與自托管、base.css 抽出門檻，見 [`bwt-iframe-visual-component.md`](bwt-iframe-visual-component.md)（唯一居所）。
 
 ---
 
-## 16:9 主視覺圖卡子規範
+## 16:9 主視覺圖卡（工作流）
 
-當 Step 0 判斷為主視覺圖卡（非 iframe 配件）時，套用以下規格：
+當 Step 0 判斷為主視覺圖卡（非 iframe 配件）時：
 
-### 預設規格
-- **尺寸**：1920×1080（16:9）PNG
-- **輸出**：HTML 設計 → Chrome headless 截圖
-  ```bash
-  "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" \
-    --headless=new --disable-gpu --hide-scrollbars \
-    --force-device-scale-factor=1 --window-size=1920,1080 \
-    --virtual-time-budget=8000 \
-    --screenshot=output.png file:///path/to/html
-  ```
-- **存放**：`~/Claude Project/draft/YYYYMMDD-<類型>-<主題>-keyvisual.html` + `.png` + 圖檔素材同目錄
-- **配色**：BN tokens（同 iframe 配件）
-- **禁止破折號**：見 [`bwt-visual-checklist.md`](bwt-visual-checklist.md)「五、文字禁忌」
-
-### 字體預設（給 1920×1080 viewport，**起步要大**）
-
-| 元素 | 預設 | 不要低於 |
-|------|------|---------|
-| h1 主標 | 60–72px | 56px |
-| 副標 / deck | 30–36px | 28px |
-| Kicker | 22–26px | 20px |
-| 卡片產品名（item-name） | 28–32px | 26px |
-| 卡片描述（item-desc） | 22–26px | 20px |
-| 卡片序號（item-num） | 22–26px | 20px |
-| Footer | 18–22px | 16px |
-
-**經驗**（2026-05-20）：1920×1080 視覺空間很大，字體不要保守起步。不確定時往上選；下端空白多 = 字還能放大。
-
-### Layout 預算（1920×1080）
-
-| 區塊 | 高度 |
-|------|------|
-| Banner（素材圖 cover） | 300–340px |
-| h1 + 副標 + meta | 180–240px |
-| 卡片區（5 卡橫排） | 350–400px |
-| Footer | 70–90px |
-| Padding 上下 | 80–90px |
-
-### Banner 素材圖置中 SOP
-
-不要憑視覺猜 `object-position`，用 PIL 量原圖 logo 垂直位置：
-
-```python
-from PIL import Image
-img = Image.open('banner.webp')
-gray = img.convert('L')
-# 掃描 dark rows（logo 通常為深色文字）
-row_dark = [(y, sum(1 for x in range(img.width) if gray.getpixel((x,y))<100))
-            for y in range(img.height)]
-row_dark.sort(key=lambda t: -t[1])
-logo_y = sorted([t[0] for t in row_dark[:30]])[15]
-print(f"Logo vertical: {logo_y/img.height:.1%}")
-```
-
-logo 在原圖 50% → `object-position: center center`
-logo 在原圖 60% → `object-position: center 60%`
-
-### 渲染後 spot-check checklist
-
-每次截圖後立刻檢查：
-1. Banner logo 真正上下／左右置中（看圖確認，不是「我以為」）
-2. 副標單行收完，無「孤行」尾字
-3. 5 個卡片小標單行不折行、不孤詞
-4. 卡片內 desc 起始位置切齊（用 `item-name { min-height }` 預留兩行高度）
-5. 圖卡下端是否還有大塊空白 → 有就放大字體或加內容，不要浪費
-
-### HTML 結構模板
-
-```html
-<!DOCTYPE html>
-<html lang="zh-Hant">
-<head>
-<meta charset="UTF-8">
-<title>主標 ｜ 數位時代</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Inter:wght@400;500;600;700;900&display=swap">
-<style>
-  /* BN tokens：對齊 bwt-design-standard.md */
-  /* 注意：html, body 固定 1920×1080，overflow hidden */
-  html, body { width: 1920px; height: 1080px; overflow: hidden; }
-</style>
-</head>
-<body>
-<div class="key-visual">
-  <div class="banner">...</div>
-  <div class="content">
-    <header>...</header>
-    <div class="cards-row">5 張卡片</div>
-    <footer>...</footer>
-  </div>
-</div>
-</body>
-</html>
-```
-
-完整實作範例：`~/Claude Project/draft/20260520-news-google-io-keyvisual.html`
+- **SOP 全量（規格、字體預設表、layout 預算、PIL 置中量測、Chrome headless 渲染、spot-check）唯一居所在 [`bwt-visual-checklist.md`](bwt-visual-checklist.md) §三**，參數以該檔為準
+- **存放**（本檔負責的工作流部分）：`~/Claude Project/draft/YYYYMMDD-<類型>-<主題>-keyvisual.html` + `.png` + 圖檔素材同目錄
+- 交付：渲染後的 PNG 成品可直接附圖（不同於 iframe 配件的「給 URL 不給截圖」原則）
 
 ---
 
@@ -302,3 +168,4 @@ logo 在原圖 60% → `object-position: center 60%`
 |---|---|
 | 2026-05-18 | 初版建立。從 `bnext-visuals/2026/05-layoffs-tracker` 案例抽取工作流。 |
 | 2026-05-20 | 新增「16:9 主視覺圖卡」產品類型與 Step 0 類型判斷。預設字體尺寸表、Banner logo 置中 SOP、spot-check checklist。從 Google I/O 懶人包案例抽取。 |
+| 2026-07-28 | 瘦身為純工作流：rubric（設計優先序、產品類型表、色票教訓）與 16:9 SOP 全量移居 `bwt-visual-checklist.md`；修 @media→@container 主軌；刪 postMessage「配件端已內建發送機制」過期描述與死引用（高度＝純寫死＋100px buffer）；logo 與量測參數指向 `bwt-iframe-visual-component.md` 不再自帶。 |

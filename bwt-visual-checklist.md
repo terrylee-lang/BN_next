@@ -1,10 +1,6 @@
 # 子規範｜視覺配件工作流與交付 Checklist
 
-此檔為《數位時代》[美術製作標準總綱](bwt-design-standard.md) 的**子規範**，規範視覺配件的**工作流紀律與交付前自查清單**。Design tokens 與元件結構不在本檔範圍，請參照：
-
-- [`bwt-design-standard.md`](bwt-design-standard.md)：色彩、字體、字級、間距、設計原則
-- [`bwt-iframe-visual-component.md`](bwt-iframe-visual-component.md)：iframe 配件 HTML 結構、雙軌設計
-- [`bwt-html-table-component.md`](bwt-html-table-component.md)：文章內表格元件
+此檔為《數位時代》[美術製作標準總綱](bwt-design-standard.md) 的**子規範**，規範視覺配件的**工作流紀律、rubric 與交付前自查清單**。Design tokens 與元件結構不在本檔範圍；子規範索引以 [`bwt-design-standard.md`](bwt-design-standard.md) 的索引表為唯一目錄，本檔不重複維護。
 
 ---
 
@@ -34,6 +30,18 @@ Design System 是 default，不是鐵則。當戲劇化／辨識度元素確實�
 
 **節制原則仍適用**：BN Orange「節制」不是「不用」，speaker label 級別的小範圍染色不算違反「大範圍鋪色」禁令。無理由的裝飾（box-shadow、gradient、純白底）仍禁。
 
+### 判斷光譜
+
+| 設計選擇 | 偏向 default | 偏向從寬 |
+|---|---|---|
+| 律師雙色用 BN tokens 語意對映 | — | ✅ 服務辨識度 |
+| 簡訊 iMessage 風氣泡 | — | ✅ 服務直覺 |
+| 證物編號 footer | — | ✅ 服務戲劇真實感 |
+| 章節 H2 用 BN Orange 純文字 | ✅ 對齊 BN | — |
+| 加 box-shadow / drop-shadow | ✅ 絕對禁止 | — |
+| 加 gradient 漸層 | ✅ 絕對禁止 | — |
+| 純白底色 | ✅ 絕對禁止 | — |
+
 **Why**：2026-05-19 教訓——拍板「以 Design System 為準」後曾把所有戲劇化元素拿掉（律師雙色、簡訊氣泡、Email 縮排線），讀者辨識度與 reading flow 被犧牲。Terry 回饋：「設計元件要能服務讀者的閱讀體驗，這是最高原則，至於其他可以從寬處理」。
 
 ---
@@ -62,6 +70,15 @@ Design System 是 default，不是鐵則。當戲劇化／辨識度元素確實�
 ---
 
 ## 三、16:9 主視覺圖卡 SOP
+
+本節是 16:9 圖卡 SOP 的**唯一全量版本**（參數以此檔為準）；`visual-asset` Skill 只保留指路。
+
+### 規格與輸出
+
+- **尺寸**：1920×1080（16:9）PNG
+- **輸出**：HTML 設計 → Chrome headless 截圖
+- **配色**：BN tokens（同 iframe 配件，見 `bwt-design-standard.md`）
+- **HTML 關鍵設定**：`html, body { width: 1920px; height: 1080px; overflow: hidden; }`
 
 ### 動手前必做
 
@@ -101,9 +118,33 @@ Design System 是 default，不是鐵則。當戲劇化／辨識度元素確實�
 
 ### 技術 SOP
 
-- 圖檔 logo 位置量測：`python3 -c "from PIL import Image; ..."` 找 dark rows mean → vertical %
-- 渲染：`/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --headless=new --window-size=1920,1080 --screenshot=... <file URL>`
-- 確認 PNG 尺寸：`file *.png` 看 `1920 x 1080`
+**Banner 素材圖置中量測（PIL）**——不要憑視覺猜 `object-position`，量原圖 logo 垂直位置：
+
+```python
+from PIL import Image
+img = Image.open('banner.webp')
+gray = img.convert('L')
+# 掃描 dark rows（logo 通常為深色文字）
+row_dark = [(y, sum(1 for x in range(img.width) if gray.getpixel((x,y))<100))
+            for y in range(img.height)]
+row_dark.sort(key=lambda t: -t[1])
+logo_y = sorted([t[0] for t in row_dark[:30]])[15]
+print(f"Logo vertical: {logo_y/img.height:.1%}")
+```
+
+logo 在原圖 50% → `object-position: center center`；在原圖 60% → `object-position: center 60%`
+
+**渲染（Chrome headless）**：
+
+```bash
+"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" \
+  --headless=new --disable-gpu --hide-scrollbars \
+  --force-device-scale-factor=1 --window-size=1920,1080 \
+  --virtual-time-budget=8000 \
+  --screenshot=output.png file:///path/to/html
+```
+
+**確認 PNG 尺寸**：`file *.png` 看 `1920 x 1080`
 
 ---
 
@@ -160,19 +201,13 @@ Design System 是 default，不是鐵則。當戲劇化／辨識度元素確實�
 
 ### 禁用破折號
 
-視覺配件（iframe 互動配件、16:9 主視覺圖卡、社群分享圖、文章封面 Banner）的所有文案，**一律禁用**全形破折號「——」與半形 em dash「—」。
+破折號規則本體以 [`bwt-style-guide.md`](bwt-style-guide.md) 為準：**全文 0 次**，內文與配件（iframe 互動配件、16:9 主視覺圖卡、社群分享圖、文章封面 Banner）一體適用。需要停頓、補充或對比時，改用逗號、句號、頓號、冒號或拆成兩句。
 
-這個規範自 2026-07-02 起與內文一致：`bwt-style-guide.md` 已將內文破折號規範改為**全文 0 次**（舊版為 ≤1 次／2,000 字，已廢止），配件則從 2026-05-20 起就是 0 次。
+**統一自查指令**（所有視覺檔共用這一套，finalise 前必跑）：
 
-**Why**：2026-05-20 Terry 處理 Google I/O 懶人包配件時明確要求「配件都不要用」。
-
-**How to apply**：
-- 任何 visual-asset、bwt-iframe-visual-component、social-post 配件設計，文案改用其他分隔符（、／／冒號／句號／換行）
-- 即使內文還允許節制使用，配件設計時都要主動掃描刪除
-- 寫好配件 HTML 後在 finalise 前 grep 一輪「——」「—」確認 0 命中：
-  ```bash
-  grep -cE "[—－]" *.html  # 應為 0
-  ```
+```bash
+grep -cE "[—－]" *.html  # 應為 0
+```
 
 ### 其他文字規範
 

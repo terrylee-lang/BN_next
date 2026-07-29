@@ -7,6 +7,59 @@
 
 ---
 
+## v3.0.0 — 2026-07-28
+
+**全系統總體檢：活矛盾修復、約束單點化、交接包改造**
+
+源頭：Terry 指出兩件事——(1) 舊 Skills 隱含「高效流水線」目的已過時，當前重心是獨創性內容、與 Codex 配合的多輪查核、配件發想；(2) 既有 Skills 以舊式 prompt（逐步腳本＋防呆條款堆疊）寫成，對 Claude 5 家族模型已不合用。經 5 份平行 audit 逐行盤點（證據存 Terry 個人 vault `projects/skills-renewal-2026h2/`），共 16 檔規範改寫，淨減 576 行。**硬約束（事實查核鐵律、design tokens、Notion 參數小抄、兩岸用語、SEO 骨架）全部保留**，砍除對象為同一約束多處複寫、對當前模型多餘的手把手腳本、歷史補丁堆疊。
+
+### 一、活矛盾修復（規範互相打架，照哪份做都可能錯）
+
+- **「值得注意的是」口徑**：`bwt-style-guide` 原列禁用詞、個人風格指紋檔卻列為建議用詞 → 統一為**每篇最多 1 次**。`etf-explainer` 同步（原列為「空洞開場白」禁用）；`article-checker` 該詞保留於旁支訊息偵測清單，但加註「此處是偵測訊號、非禁詞」
+- **轉場詞規則**：原「≤2 次」vs「至少 2-3 次」數字互斥 → 改為**同一轉場詞不重複使用**，不設總次數
+- **iframe 高度策略**：`bwt-iframe-visual-component` 決策表寫「postMessage 動態同步」、同檔高度策略章寫「禁 postMessage 純寫死」、`visual-asset` 又稱「配件端已內建發送機制」並引用不存在的段落 → 統一為**純寫死＋100px buffer，禁 postMessage**（2026-05-18 實測教訓保留為理由：CMS Alpine widget 有 listener 但接收後高度異常、點擊後 footer 出現空白）
+- **RWD 寫法**：`visual-asset` 強制 `@media` vs iframe 子規範強制 `@container` 禁 `@media` → 統一為 **`@container` 主軌、`@media` 僅作 fallback**（inline 表格元件在文章欄約 600px 寬時，`@media` 會誤判為大螢幕而排錯版）
+- **量測參數漂移**：buffer 91/100px、等待 1200/1500ms 兩處不一致 → 統一 1280×800 → `fonts.ready` → 等 1500ms → 量 `scrollHeight` → +100px
+- **logo 尺寸**：規範寫 24px，實際部署配件無一使用 → 依部署實務定為源圖 `sz=64`、顯示 32px、密集清單 20-22px
+- **inbox 去留**：`notion-orchestrator` 要求「請使用者一次確認」，與專案端 2026-07-09 零決策原則矛盾 → 整段改為一行指針
+- **破折號**：三處口徑（2,000 字 1 個／完全禁用／節制）→ 統一**全面禁用**，自查 pattern 合一為 `grep -cE "[—－]"`
+
+### 二、約束單點化（載體合併，約束本身不變）
+
+- **`bwt-style-guide` 升為跨 Skill 共用段落的唯一權威**（21,484 → 約 28,000 bytes）：吸收來源讀取優先序（含付費牆政策、PDF 處理、Playwright 禁令）、AI 味句式總表與替代表、文末資料來源＋署名格式、Notion 寫回格式、首段獨立閱讀原則、他國金額取捨。各 Skill 原處改為一行指針
+- **全稿種正文上限統一 3,500 字**，預估超過須在大綱規劃階段警示；`etf-explainer` 3,500-4,500 為明定例外（SEO 流量文）；roundup 2,000 字上限併入 style-guide
+- **標題字數以 `headline-generator` 為唯一權威**（25-35 字），`tutorial-article` 原「≤30 字」改為指向
+- **官方公告六項 pre-check 三份併一份**（原存在於 news-daily 兩處＋style-guide 一處）
+- `etf-explainer`：7 大硬約束原散見角色原則／章節內文／checklist 各 2-3 次 → 統一收進「出稿驗收 Checklist」唯一載體；檔內兩份重複 checklist 合併；硬編的槓桿 ETF 持股數字改為「產稿當下查官方值」
+- 視覺六檔職責單一化：rubric 歸 `bwt-visual-checklist`、workflow 歸 `visual-asset`、design tokens 目錄唯一歸 `bwt-design-standard`（iframe 子規範內的色票字體「節錄」刪除改引用）
+- `bwt-html-table-component`：逐字重述自家範本的元素 inline style 清單改為變體差異表
+
+### 三、article-checker 三軸改造
+
+- **規則 A-F、矛盾協議、Step 0 機械檢查原樣保留**（全部 load-bearing），實戰案例壓縮至每規則 ≤2
+- Step 4 重寫為**論點挑戰軸**：不只挑錯字與事實，要挑戰論證——主張是否有證據支撐、反例是否被忽略、因果是否過度推論；每項輸出附嚴重度＋建議處理
+- **新增 Codex 協作協議**（原版 0 字提及 Codex，實際品管流程僅存在於個人層設定）：意見三分類處理（事實類衝突先 `web_search` 再決定，不盲從也不硬頂）、每輪修改集中執行、文末資料來源兩行改完必回查（多輪修改最易跑掉處）、逐輪強度遞減定義（第一輪全查 → 第二輪只查上輪改動處 → 第三輪起僅格式與抽查）
+- 砍除：貨幣搜尋對照表（改一行「匯率一律即時 `web_search`」）、emoji 報告模板、重複注意事項
+
+### 四、其他修正
+
+- `deep-analysis`：「四個具體動作」實列五項的計數 bug
+- `visual-asset`：2 處死引用（不存在的段落錨點、不存在的範例檔）
+- `bwt-iframe-visual-component`：logo 登錄表補齊落後的 3 檔（spacex／starlink／xai），並改為以 `ls _assets/logos/` 實際目錄為準
+- `visual-brief`：補上與 `bwt-visual-checklist`／`bwt-design-standard` 的連結（原為引用鏈孤島）
+- 各 Skill 對個人風格指紋檔的引用改為條件句（「若存在則讀」），使用共用 repo 但無此個人檔的同事不受影響
+
+### 五、交接包（新同事一次安裝）
+
+- `bn-claude-code-init.md` 升級為**互動式安裝主體**（由 Claude Code 讀取後引導安裝，跨 CLI／VSCode）
+- 新增 `CLAUDE-template.md`：全域 CLAUDE.md 可改寫範本，含 Skill 工具 vs Agent 工具兩張名單對照、Notion MCP 參數小抄、產稿 Skill 觸發語對照、付費牆政策
+- 新增 `SMOKE-TEST.md`：功能性安裝驗證（每項含指令→預期結果→失敗怎麼修），取代原本僅有的靜態檔案檢查
+- 補 `bnext-service` MCP 說明（原全 repo 0 提及）
+- 配件托管改為**各自託管**：新同事在自己 GitHub 帳號建 bnext-visuals 並開 Pages（iframe 網址永久嵌在已發布文章，不宜綁他人帳號）
+- `lint-vault.md`：個人專屬路徑參數化
+
+---
+
 ## v2.9.9 — 2026-07-15
 
 **article-checker：新增 Step 0 機械檢查（bwt-lint 腳本掛鉤，環境有才跑）**

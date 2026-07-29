@@ -29,7 +29,7 @@ git -C ~/.claude/agents pull
 | Claude Code | 必要 | 需登入 claude.ai 帳號 |
 | Notion MCP | 編輯部需要 | 在 Claude Code 設定中連接 Notion，供 `notion-orchestrator` 使用 |
 | NOTION_TOKEN | 編輯部需要 | 見下方說明 |
-| Playwright MCP | 選配 | `claude mcp add playwright npx @playwright/mcp@latest`。僅用於需互動操作的頁面（如付費牆登入後取內容）；**不作為一般網頁讀取的備援**，一般網頁讀取失敗應直接回報使用者並索取原文 |
+| Playwright MCP | 選配 | `claude mcp add playwright npx @playwright/mcp@latest`。僅用於需互動操作的頁面（付費牆內容一律直接向使用者索取原文，不用 Playwright 繞過）；**不作為一般網頁讀取的備援**，一般網頁讀取失敗應直接回報使用者並索取原文 |
 
 ### 設定 NOTION_TOKEN
 
@@ -74,6 +74,7 @@ Token 為公司內部整合金鑰，可供全體同仁共用，請向 Terry 索�
 | `bwt-design-standard.md` | `[編輯部]` | 美術製作標準總綱（BN Design System 完整 design tokens：色彩、字體、間距、圓角、強調系統；所有產出視覺配件的 Skill 都應遵守） |
 | `bwt-html-table-component.md` | `[編輯部]` | HTML 表格元件子規範（inline style 範本 + 精緻化細節：斑馬紋、左側橘條等；引用 `bwt-design-standard.md` 取得 tokens）；**目前僅 `etf-explainer` 套用**，未來評估擴散至其他 Skill |
 | `bwt-iframe-visual-component.md` | `[編輯部]` | iframe 互動視覺配件子規範（HTML 結構模板 + 雙軌設計強制規則 + Logo 加入規範；引用 `bwt-design-standard.md` 取得 tokens）；目前僅 `visual-asset` 套用 |
+| `bwt-visual-checklist.md` | `[編輯部]` | 視覺任務入口與驗收 rubric（設計優先序、產品類型判斷、16:9 主視覺 SOP、交付 checklist）；**所有視覺類任務動手前先讀此檔**，由它指路其餘視覺規範 |
 
 ---
 
@@ -135,9 +136,11 @@ Claude 會自動掃描 AI產稿中心 v2，篩選待辦條目（「未開始」�
 
 ## 版本紀錄
 
-最新版本：**v2.9.4（2026-07-01）** — 文末「資料來源 + 署名」格式強化並在查核／寫回各手加強制保留（防多輪查核後文末被打散、署名遺失）
+最新版本：**v3.0.0（2026-07-28）** — 全系統總體檢：修復 8 處規範互相打架的活矛盾（「值得注意的是」口徑、轉場詞、iframe 高度策略、RWD 寫法、破折號等）、約束單點化（`bwt-style-guide` 升為跨 Skill 共用段落唯一權威、全稿種字數上限統一 3,500 字）、`article-checker` 三軸改造（新增 Codex 協作協議）、交接包改造（新增 `CLAUDE-template.md`＋`SMOKE-TEST.md`，`bn-claude-code-init.md` 升級為互動式安裝主體）
 
 完整異動紀錄請見 [CHANGELOG.md](./CHANGELOG.md)。
+
+> **新同事從零安裝**：在 Claude Code 中請它讀取 [bn-claude-code-init.md](./bn-claude-code-init.md)，它會引導完成 clone、產生個人化 CLAUDE.md、MCP 連接、配件托管建置，最後跑 [SMOKE-TEST.md](./SMOKE-TEST.md) 驗證。
 
 > **更新流程**：每次更新 Skills 後，在 [CHANGELOG.md](./CHANGELOG.md) 補上版本號、日期、異動說明，再 commit & push。
 > 版本號規則：新增 Skill → 次版號 +1（v2.x.0）；修改既有 Skill → 修訂號 +1（v2.x.x）。

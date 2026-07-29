@@ -146,5 +146,5 @@ description: |
 ## 其他資源
 
 - 想看編輯部怎麼把 inbox 素材流程化：參考主 repo 的 [README](./README.md) 與 `bn-claude-code-init.md`
-- 想看 Terry 的 Obsidian vault 設計：CLAUDE.md（非公開，找 Terry 索取範例）
+- 想看 vault 設計與全域設定：本 repo 的 [CLAUDE-template.md](./CLAUDE-template.md)（可直接改寫成你自己的 `~/.claude/CLAUDE.md`），安裝流程見 [bn-claude-code-init.md](./bn-claude-code-init.md)
 - Claude Code 官方文件：[docs.claude.com/en/docs/claude-code](https://docs.claude.com/en/docs/claude-code)

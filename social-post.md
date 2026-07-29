@@ -28,7 +28,7 @@ description: |
 
 ## Step 0：取得文章內容與來源判斷
 
-若使用者提供的是本地檔案路徑（以 `/` 或 `~/` 開頭，副檔名為 `.md`），使用 `Read` 工具直接讀取。若為連結，**先掃 `~/Claude Project/inbox/` 所有 md 檔案的 frontmatter `source`**（嚴格相等優先；其次 hostname + path，忽略 query string、fragment、尾端斜線），命中則 `Read` 本機檔案全文；未命中才使用 `web_fetch` 讀取全文。若失敗（逾時、403、空白），**立即停止並回報使用者**，請使用者提供文字內容或更換來源。
+文章讀取依 `bwt-style-guide.md`「來源讀取優先序」執行（本地檔案 → inbox frontmatter 比對 → web_fetch → 失敗即停並回報）。
 
 讀取後，**先判斷文章是否為專欄文章**，再判斷內容類型。
 

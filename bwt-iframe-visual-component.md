@@ -26,7 +26,7 @@
 | **文字色強制 `#1A1A1A`** | 避免後台白底主題吃字（同 bwt-html-table-component 規則） |
 | **底色強制 Paper `#FAF7F1`** | 跟 BN 文章視覺一致，絕不用純白 |
 | **強制雙軌設計（桌機 + 手機）** | 手機讀者佔比 > 60%，不可犧牲 |
-| **iframe 高度 postMessage 動態同步** | 配件主動發 height，後台 script 接收後改 iframe.style.height。寫死高度會導致桌機讀者看到大段空白（手機長、桌機短）。**寫死高度作為 fallback** 用於後台 strip script 時 |
+| **iframe 高度＝純寫死＋100px buffer** | 全面禁止 postMessage（見下方「iframe 高度策略」章）。以 Playwright 實測桌機 scrollHeight + 100px buffer 寫死 |
 
 ---
 
@@ -41,12 +41,7 @@
 <title>配件標題 ｜ 數位時代</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Inter:wght@400;500;600;700&display=swap">
 <style>
-  /* tokens（對齊 bwt-design-standard.md） */
-  /* Brand */
-  /* BN Orange #FF6B1A、BN Navy #0F1A2E、BN Black #1A1A1A */
-  /* Surface: Paper #FAF7F1、Paper2 #F5F3EF、Paper3 #ECE8DF */
-  /* Neutral: Warm300 #D4D0C8、Cool600 #5C6470 */
-  /* ...其餘自行展開... */
+  /* tokens：一律展開自 bwt-design-standard.md（唯一色票居所），不自行另立色號 */
 </style>
 </head>
 <body>
@@ -109,7 +104,7 @@
 }
 ```
 
-所有雙軌規則用 `@container`，**不要用 `@media`**：
+雙軌規則以 `@container` 為**主軌**；`@media` 僅作漸進增強 fallback，**至多一條**：
 
 ```css
 @container (max-width: 640px) {
@@ -117,7 +112,7 @@
 }
 ```
 
-**例外**：`body`、`html` 等不在 wrapper 內的元素，必須用 `@media`，因為 body 不是 container 內部。例如：
+**例外**：`body`、`html` 等不在 wrapper 內的元素，必須用 `@media`，因為 body 不是 container 內部（此類不計入 fallback 額度）。例如：
 
 ```css
 @media (max-width: 640px) {
@@ -139,8 +134,7 @@
 ### 為什麼用 container query
 
 - **正確性**：container query 看 wrapper 寬度，不看 viewport。讀者在桌機讀者（viewport 1200px）寬度大、wrapper 880px → 桌機 layout；讀者在手機 viewport 390px、wrapper ~378px → 手機 layout。行為與 media query 等價。
-- **可預覽**：透過 JS 改變 wrapper 寬度（例如 `style.maxWidth = '390px'`），container query 自動觸發 mobile 規則，**不需要重複寫一份 CSS**。這是「預覽工具」能運作的基礎。
-- **瀏覽器支援**：Chrome 105+（2022/9）、Safari 16+（2022/9）、Firefox 110+（2023/2）皆支援，現代瀏覽器無虞。
+- **可預覽**：透過 JS 改變 wrapper 寬度（例如 `style.maxWidth = '390px'`），container query 自動觸發 mobile 規則，**不需要重複寫一份 CSS**。這是「預覽工具」能運作的基礎。現代瀏覽器（2023 起）皆支援。
 
 ### 替代版設計選擇
 
@@ -154,40 +148,12 @@
 
 ---
 
-## 配色（節錄自 bwt-design-standard.md）
+## 配色與字體
 
-| 用途 | Token | Hex |
-|---|---|---|
-| 頁面底色 / 卡片底 | Paper | `#FAF7F1` |
-| 卡片標題列底 / 強調區塊 | Paper 3 | `#ECE8DF` |
-| 深色 editorial 卡片底（如月份分隔列） | BN Navy | `#0F1A2E` |
-| 內文 / 公司名 | BN Black | `#1A1A1A` |
-| 副文字 / metadata / 註腳 | Cool 600 | `#5C6470` |
-| 關鍵數字 / AI 動因標籤 | BN Orange | `#FF6B1A` |
-| 邊框 / 分隔線 | Warm 300 | `#D4D0C8` |
-| 細分隔線 | Hairline | `rgba(15, 26, 46, 0.12)` |
+一律以 [`bwt-design-standard.md`](bwt-design-standard.md) 為準（唯一 tokens 居所），本檔不節錄色票表與字體表。iframe 配件特有補充僅兩點：
 
-**節制原則**：BN Orange 在每個配件最多用於 1–2 種元素（如「關鍵數字 + AI 動因標籤」），不可大範圍鋪。
-
----
-
-## 字體規範（節錄）
-
-字體 stack 強制包含繁中 fallback：
-
-```css
-body {
-  font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", -apple-system, sans-serif;
-}
-
-/* 數字 / 統計 / 表格 cell */
-.num, .stat-num, .event-num {
-  font-family: "Inter", "Noto Sans TC", sans-serif;
-  font-feature-settings: 'tnum' 1;
-}
-```
-
-中文行高 `1.7–1.8`，英文／數字行高 `1.2–1.4`。
+- BN Orange 在每個配件最多用於 1–2 種元素（如「關鍵數字 + AI 動因標籤」），不可大範圍鋪
+- 英文／數字行高 `1.2–1.4`（中文行高 1.7–1.8 依總綱）
 
 ---
 
@@ -205,15 +171,17 @@ body {
 ```
 
 - Google s2 是 Google 維護的公開 favicon API，免費、穩定
-- `sz=64` 抓 64×64 解析度（顯示 32×32 在 retina 下夠用）
+- 源圖一律 `sz=64`（retina 下清晰）；**顯示尺寸預設 32×32**，密集清單／品牌牆可縮至 20–22px（部署實例：排行列 32px、六月起密集 grid 20–22px）。本檔是 logo 尺寸唯一居所，其他檔不另立值
 - `onerror="this.style.visibility='hidden'"` 失敗時隱藏框、但保留 grid 位置（避免版面跳動）
 - 公司 domain 不確定或品牌 logo 設計太陽春時，省略 logo 即可（不要硬塞）
 
 ⚠️ **歷史警告**：早期版本曾使用 Clearbit Logo API（`logo.clearbit.com`），但 2024 年 Clearbit 被 HubSpot 收購後 API 已停用。**禁止使用 Clearbit**。
 
-**已知 Google s2 抓不到的公司**
+**已知 Google s2 抓不到（或不敷使用）的公司**
 
-部分公司的 favicon 沒被 Google 索引，s2 API 會回 301 redirect 到 fallback globe 圖示——讀者看到「地球」當 logo。這些公司**必須**走自托管：
+部分公司的 favicon 沒被 Google 索引，s2 API 會回 301 redirect 到 fallback globe 圖示——讀者看到「地球」當 logo。這類公司**必須**走自托管。
+
+**查詢以實際目錄為準**（登錄表註定追不上）：產配件涉及具名公司時，先 `ls ~/Claude Project/projects/bnext-visuals/_assets/logos/` 看已有哪些自托管檔。截至 2026-07-28 共 7 檔：
 
 | 公司 | 原因 | 自托管路徑 |
 |---|---|---|
@@ -221,7 +189,11 @@ body {
 | Lowe's | Google s2 只給 16×16，放大模糊 | `_assets/logos/lowes.svg` |
 | eBay | Google s2 只給 16×16，放大模糊 | `_assets/logos/ebay.svg` |
 | Cisco（思科） | Google s2 只給 16×16，放大模糊 | `_assets/logos/cisco.svg` |
-| （未來發現其他公司） | 持續補登 | 同上格式 |
+| SpaceX | 高品質 SVG 已入庫（SpaceX IPO 配件） | `_assets/logos/spacex.svg` |
+| Starlink | 高品質 SVG 已入庫（SpaceX IPO 配件） | `_assets/logos/starlink.svg` |
+| xAI | 高品質 SVG 已入庫 | `_assets/logos/xai.svg` |
+
+新增自托管檔後**不需**回填此表（表僅為快照）；`ls` 目錄永遠是準的。
 
 **識別問題的方法**：產出配件後用 `curl -sL "https://www.google.com/s2/favicons?sz=64&domain=<domain>" -o /tmp/x.png && file /tmp/x.png` 看實際尺寸。如果回傳是 16×16（非 64×64），代表 Google 沒高解析度版本，應立即走自托管。
 
@@ -256,19 +228,15 @@ body {
 
 **結論：禁止在配件加 postMessage 發送高度的 JS**。回到純寫死 iframe height 模式。
 
-### 嵌入碼（純 iframe、無 script）
+### 嵌入碼
 
-```html
-<iframe src="https://terrylee-lang.github.io/bnext-visuals/<年份>/<檔名>.html"
-        width="100%" height="<桌機實際高度 + 100px buffer>"
-        style="border:0; max-width:880px; display:block; margin:24px auto;"
-        loading="lazy"
-        title="<配件標題>"></iframe>
-```
+嵌入碼模板（純 iframe、無 script）唯一居所在 `visual-asset.md`「iframe 嵌入碼模板」段；height 一律填**量測流程算出的值**。
 
 ### 高度量測必須用 Playwright（不靠估算）
 
-我之前估算每個 div 累積高度，誤差大到 1,000px。產配件後必須用 Playwright 量精準 scrollHeight：
+估算每個 div 累積高度誤差曾大到 1,000+ px。產配件後必須用 Playwright 量精準 scrollHeight，**統一量測流程**（唯一參數居所，本檔為準）：
+
+**resize 1280×800 → navigate 配件 URL → `await document.fonts.ready` → 等 1500ms → 量 `document.documentElement.scrollHeight` → +100px buffer = iframe height**
 
 ```javascript
 // Playwright 量測流程
@@ -276,27 +244,22 @@ await page.setViewportSize({ width: 1280, height: 800 });
 await page.goto('https://terrylee-lang.github.io/bnext-visuals/...');
 await page.evaluate(async () => {
   await document.fonts.ready;
-  await new Promise(r => setTimeout(r, 1200));
+  await new Promise(r => setTimeout(r, 1500));
   return document.documentElement.scrollHeight;
 });
+// 量得值 + 100 = iframe height
 ```
 
-實測案例（2026-05-18）：
-- 裁員追蹤桌機實際 **3,815px**（我之前估 2,500–2,800，誤差 1,000+）
-- iframe height 建議：**3,900–4,000**（容納完整內容 + 小 buffer）
+實測案例（2026-05-18）：裁員追蹤桌機實際 **3,815px**（估算 2,500–2,800，誤差 1,000+）→ iframe height = 3,815 + 100 = **3,915**。
 
 ### 取捨
 
 桌機讀者：完美貼合（iframe 容器 ≈ 配件高度）。
 手機讀者：iframe 內部會 scroll（因為手機 layout 內容比桌機更長）。手指 swipe 在 iframe 區內 scroll iframe，到邊界自動切回頁面 scroll，現代瀏覽器處理 OK。
 
-### 長期真正解：跟 IT 提
+### 未來重新評估的條件
 
-請 IT 排查 CMS Alpine iframe widget 的 message listener 邏輯，可能：
-1. **修掉「點擊 expand」副作用**（讓 widget 不要在 click 時改 iframe height）
-2. **或讓 widget 正確處理 postMessage**（接收 height、設 iframe.style.height = h + buffer）
-
-目前不確定 widget 內部行為，配件端不主動發 postMessage 是最安全的做法。
+若未來 IT 修復 CMS Alpine iframe widget 的 message listener（修掉「點擊 expand」副作用、或正確處理 height），再重新評估動態同步。在那之前，配件端一律不發 postMessage。
 
 ## 預覽工具（編輯內部使用，讀者不可見）
 
@@ -309,81 +272,13 @@ await page.evaluate(async () => {
 - **視覺**：BN Navy 底色 + Paper 文字，active 鈕用 BN Orange
 - **行為**：點擊「桌機」→ `wrapper.style.maxWidth = '880px'`；點擊「手機」→ `wrapper.style.maxWidth = '390px'`。配合 wrapper 的 `transition: max-width 0.25s` 達成平滑切換。
 
-### HTML / CSS / JS 模板
+### 實作需求（不附全量模板，抄 repo 現成配件即可）
 
-放在 `</div>`（wrapper close）後、`</body>` 前。CSS 加在 `<style>` 內：
-
-```html
-<div class="preview-toolbar" id="previewToolbar" role="toolbar" aria-label="預覽模式切換">
-  <span class="label">預覽</span>
-  <button type="button" class="active" data-mode="desktop" aria-pressed="true">桌機</button>
-  <button type="button" data-mode="mobile" aria-pressed="false">手機</button>
-</div>
-
-<script>
-(function() {
-  if (!new URLSearchParams(location.search).has('preview')) return;
-  var toolbar = document.getElementById('previewToolbar');
-  var wrapper = document.querySelector('.wrapper');
-  if (!toolbar || !wrapper) return;
-  toolbar.classList.add('show');
-  toolbar.addEventListener('click', function(e) {
-    var btn = e.target.closest('button[data-mode]');
-    if (!btn) return;
-    var mode = btn.dataset.mode;
-    toolbar.querySelectorAll('button').forEach(function(b) {
-      b.classList.toggle('active', b === btn);
-      b.setAttribute('aria-pressed', b === btn ? 'true' : 'false');
-    });
-    wrapper.style.maxWidth = (mode === 'mobile') ? '390px' : '880px';
-  });
-})();
-</script>
-```
-
-CSS（套用 BN 配色）：
-
-```css
-.preview-toolbar {
-  display: none;
-  position: fixed;
-  top: 14px;
-  right: 14px;
-  z-index: 9999;
-  background: var(--bn-navy);
-  padding: 4px;
-  border-radius: 6px;
-  gap: 2px;
-  font-family: "Inter", "Noto Sans TC", sans-serif;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.18);
-}
-.preview-toolbar.show { display: flex; }
-.preview-toolbar button {
-  border: 0;
-  padding: 7px 13px;
-  font-size: 12px;
-  font-weight: 700;
-  background: transparent;
-  color: rgba(250, 247, 241, 0.55);
-  cursor: pointer;
-  border-radius: 4px;
-  transition: all 0.15s;
-  font-family: inherit;
-}
-.preview-toolbar button:hover { color: var(--paper); }
-.preview-toolbar button.active {
-  background: var(--bn-orange);
-  color: var(--paper);
-}
-.preview-toolbar .label {
-  font-size: 10px;
-  color: rgba(250, 247, 241, 0.45);
-  padding: 0 8px;
-  align-self: center;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-}
-```
+- 放在 `</div>`（wrapper close）後、`</body>` 前；CSS 加在 `<style>` 內
+- JS 開頭檢查 `new URLSearchParams(location.search).has('preview')`，無參數直接 return（工具列連 DOM class 都不加）
+- 兩顆鈕「桌機」「手機」：點擊切 `wrapper.style.maxWidth`（880px / 390px），active 鈕互斥、同步 `aria-pressed`
+- a11y：`role="toolbar"` + `aria-label="預覽模式切換"`
+- 完整實作直接參考 `bnext-visuals/2026/` 任一近期配件（如 `07-*.html`），全部內建同一套工具列
 
 ### 使用方式
 
@@ -449,12 +344,7 @@ body { text-wrap: pretty; }
 h1, h2, .section-headline, .deck { text-wrap: balance; }
 ```
 
-### 瀏覽器支援
-
-- `text-wrap: pretty`：Chrome 117+（2023/9）、Safari 17.4+（2024/3）、Firefox 121+（2023/12）
-- `text-wrap: balance`：Chrome 114+（2023/5）、Safari 17.5+（2024/5）、Firefox 121+
-
-舊版瀏覽器不識別會自動 ignore，**不會壞，只是沒有優化效果**。完美 graceful degradation。
+舊版瀏覽器不識別 `text-wrap` 會自動 ignore，**不會壞，只是沒有優化效果**——graceful degradation，放心用。
 
 ### 自查情境
 
@@ -491,7 +381,7 @@ h1, h2, .section-headline, .deck { text-wrap: balance; }
 - [ ] 圓角用 0px / 8px / 24px（不用 4px / 6px）
 - [ ] 無 box-shadow、無 gradient
 - [ ] `.wrapper` 設定 `container-type: inline-size` + `transition: max-width 0.25s ease`
-- [ ] 雙軌設計用 `@container (max-width: 640px)`（非 `@media`，除 body padding 等 wrapper 外元素）
+- [ ] 雙軌以 `@container (max-width: 640px)` 為主軌（`@media` 僅 body 等 wrapper 外元素＋至多一條漸進增強 fallback）
 - [ ] 內建 `?preview=1` 觸發的預覽工具列（桌機／手機切換鈕）
 - [ ] iframe 寬度 100%、max-width 880px
 - [ ] viewport meta 正確（`width=device-width, initial-scale=1`）
@@ -521,15 +411,9 @@ iframe 不依賴《數位時代》網站字體，**必須**載入 Google Fonts C
 - 技術術語第一次出現時加中文白話解釋
 - **配件內英文術語強制補中文括號**：配件常是讀者首次接觸該詞、且沒有完整上下文（不像稿件可在段落中補白話）。例如 `IDEA（概念）`、`MVP（最小可行產品）`、`LAUNCH（發布）`、`SCALE（規模化）`、`TAM（市場總額）`、`SOC 2（系統與組織控制標準）`。中文用小一級字體 + Cool 600 顏色，避免搶英文標題的視覺重量
 
-### 破折號限制（配件一律 0 次）
+### 破折號（配件一律 0 次）
 
-**每個配件的破折號「——」「—」總數一律為 0 次**（與 `bwt-visual-checklist.md` 一致）。配件內文都是短句，破折號會稀釋衝擊力；需要停頓、補充或對比時，改用句號、逗號或拆成兩句。
-
-- ❌ 「以為程式碼是護城河——其實是累積的領域深度」
-- ✅ 「以為程式碼是護城河，其實是累積的領域深度」（用逗號）
-- ✅ 「把『建構』當『驗證』。42% 新創倒在打造沒人要的東西」（拆成兩句）
-
-**自查指令**：產出 HTML 後跑 `grep -c "——" <file>`，必須為 0。
+規則本體見 [`bwt-style-guide.md`](bwt-style-guide.md) 與 [`bwt-visual-checklist.md`](bwt-visual-checklist.md) §五；統一自查指令：`grep -cE "[—－]" <file>`，必須為 0。
 
 ---
 
@@ -538,3 +422,4 @@ iframe 不依賴《數位時代》網站字體，**必須**載入 Google Fonts C
 | 日期 | 變更 |
 |---|---|
 | 2026-05-18 | 初版建立。從 `bnext-visuals/2026/05-layoffs-tracker` 案例抽取規範。 |
+| 2026-07-28 | 規範重整：決策表對齊「純寫死＋100px buffer」結論（全面禁止 postMessage）；量測流程統一（1280×800 / fonts.ready / 1500ms / +100px）；RWD 改「@container 主軌＋至多一條 @media fallback」；刪配色字體節錄（指向 design-standard）；logo 表補齊 7 檔並改以 `ls` 目錄為準、顯示尺寸定案（預設 32px，密集 20–22px）；預覽工具列縮為需求 bullets；刪瀏覽器版本表；破折號改一行引用。 |

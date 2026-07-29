@@ -49,10 +49,8 @@
 | 表格內行高 | 1.7 | CJK 表格行高（`--leading-body-sm`） |
 | 註腳字級 | 13px | 註腳字級 |
 | 註腳行高 | 1.5 | 註腳行高 |
-| 斑馬紋偶數列 | `background:#F5F3EF` | BN paper-2（淺底） |
-| 強調 row 左側豎條 | `border-left:4px solid #FF6B1A` | 第一個 cell 加豎條（mechanism 3：區塊錨點） |
-| 強調 row label 文字色 | `#FF6B1A` | 第一個 cell label 染品牌橘 |
-| 強調 row 其他 cell | `font-weight:700; color:#1A1A1A;` | 其他 cell 加粗黑字（不染橘） |
+
+斑馬紋與強調列的具體色值不在本表重列，以下方 HTML 範本為準（hex 一律對齊 `bwt-design-standard.md` tokens）。表格標題字級 19px 為**經核可的產品級 token**（登記於 design-standard「產品級字級 tokens」段）。
 
 ---
 
@@ -161,161 +159,20 @@
 
 ---
 
-## 元素 inline style 清單
+## 範本變體差異表
 
-下表整理每個元素的完整 inline style，便於照表填寫：
+所有元素的完整 inline style **以上方「基本骨架」與各變體範本為 canonical 版本**，不逐元素重抄；照範本複製後只改差異：
 
-### 外層 `<div>`（卡片容器）
-
-```
-margin:24px 0;
-border:1px solid #D4D0C8;
-border-radius:8px;
-overflow:hidden;
-background:#FAF7F1;
-color:#1A1A1A;
-font-family:'Noto Sans TC','PingFang TC',-apple-system,'Microsoft JhengHei',sans-serif;
-```
-
-### 標題列 `<div>`（緊接外層之下）
-
-```
-padding:14px 20px;
-font-weight:700;
-background:#ECE8DF;
-border-bottom:1px solid #D4D0C8;
-color:#1A1A1A;
-font-size:19px;
-line-height:1.5;
-letter-spacing:0.02em;
-```
-
-### 包覆 table 的 `<div>`（提供橫向滑動）
-
-```
-overflow-x:auto;
--webkit-overflow-scrolling:touch;
-```
-
-### `<table>` 本體
-
-```
-width:100%;
-min-width:480px;
-border-collapse:collapse;
-font-size:15px;
-line-height:1.7;
-color:#1A1A1A;
-```
+| 變體 | 相對一般 cell 的差異 |
+|---|---|
+| 數字欄 `<td>` | `text-align:right;` ＋ `font-family:Inter,'Noto Sans TC',sans-serif;font-feature-settings:'tnum' 1;` ＋ `white-space:nowrap;` |
+| 排序欄 `<th>` / `<td>` | `text-align:center;`（數字字體規則同上） |
+| 列項首欄（label）`<td>` | `font-weight:700;white-space:nowrap;` |
+| 強調列：第一個 cell | 加 `border-left:4px solid #FF6B1A;` ＋ `color:#FF6B1A;` ＋ `font-weight:700;` |
+| 強調列：其他 cells | 僅 `font-weight:700;`（文字色維持 `#1A1A1A` 不染橘，避免整列搶眼） |
+| 偶數列斑馬紋 `<tr>` | `<tr style="background:#F5F3EF;">`；⚠️ **強調列不套斑馬紋**（避免雙重背景） |
 
 > **min-width 建議值**：2 欄 480px、3 欄 560px、4 欄以上 640px / 720px。確保手機版有充足橫向滑動空間。
-
-### `<th>`（表頭）
-
-```
-padding:14px 18px;
-border-bottom:1px solid #D4D0C8;
-text-align:left;       ← 數字欄改 right、排序欄改 center
-background:#ECE8DF;
-font-weight:700;
-white-space:nowrap;
-color:#1A1A1A;
-```
-
-### `<td>` 一般文字欄
-
-```
-padding:14px 18px;
-border-bottom:1px solid #D4D0C8;
-text-align:left;
-vertical-align:top;
-color:#1A1A1A;
-```
-
-### `<td>` 列項首欄（label）
-
-```
-padding:14px 18px;
-border-bottom:1px solid #D4D0C8;
-text-align:left;
-vertical-align:top;
-color:#1A1A1A;
-font-weight:700;
-white-space:nowrap;
-```
-
-### `<td>` 數字欄
-
-```
-padding:14px 18px;
-border-bottom:1px solid #D4D0C8;
-text-align:right;
-vertical-align:top;
-color:#1A1A1A;
-font-family:Inter,'Noto Sans TC',sans-serif;
-font-feature-settings:'tnum' 1;
-white-space:nowrap;
-```
-
-### `<td>` 排序欄（置中）
-
-```
-padding:14px 18px;
-border-bottom:1px solid #D4D0C8;
-text-align:center;
-vertical-align:top;
-color:#1A1A1A;
-font-family:Inter,'Noto Sans TC',sans-serif;
-font-feature-settings:'tnum' 1;
-```
-
-### 強調列：第一個 cell
-
-加 `border-left:4px solid #FF6B1A;` + 文字色染品牌橘 `color:#FF6B1A;` + 加粗 `font-weight:700;`：
-
-```
-padding:14px 18px;
-border-left:4px solid #FF6B1A;
-border-bottom:1px solid #D4D0C8;
-text-align:left;
-vertical-align:top;
-color:#FF6B1A;
-font-weight:700;
-white-space:nowrap;
-```
-
-### 強調列：其他 cells
-
-僅加粗，文字色維持 `#1A1A1A`（不染橘，避免整列搶眼）：
-
-```
-padding:14px 18px;
-border-bottom:1px solid #D4D0C8;
-font-weight:700;
-color:#1A1A1A;
-... (其他 align、white-space、font-family 等視 cell 類型而定)
-```
-
-### 偶數列斑馬紋 `<tr>`
-
-整 row 加底色：
-
-```html
-<tr style="background:#F5F3EF;">...</tr>
-```
-
-⚠️ **強調列不要套斑馬紋**，避免雙重背景。
-
-### 註腳 `<p>`
-
-```
-padding:8px 16px;
-margin:0;
-color:#5C6470;
-font-size:13px;
-line-height:1.5;
-background:#FAF7F1;
-```
 
 ---
 

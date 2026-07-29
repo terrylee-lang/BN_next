@@ -24,19 +24,13 @@ description: |
 
 **先使用 Read 工具讀取 `~/.claude/agents/bwt-style-guide.md`**，確保 brief 中的人名、公司名、技術名詞符合《數位時代》用語規範。
 
+**與視覺規範系統的定界**：本 Skill 產出的封面**插畫**（Claude Design 生成路徑）不受 BN 元件 tokens 約束（可用漸層、自由配色）；若走 BN 元件或 16:9 圖卡路徑，則受 [`bwt-design-standard.md`](bwt-design-standard.md) 與 [`bwt-visual-checklist.md`](bwt-visual-checklist.md) 約束（無 gradient、warm ivory 底等）。④ 情緒色彩的建議主色屬插畫路徑，僅供設計工具參考。
+
 ---
 
 ## Step 0：取得稿件內容
 
-依下列順序取得稿件全文：
-
-1. **本地檔案**（以 `/` 或 `~/` 開頭，副檔名為 `.md`）→ 使用 `Read` 工具直接讀取
-2. **Notion 連結**（notion.so URL 或 page ID）→ 使用 `mcp__claude_ai_Notion__notion-fetch` 讀取
-3. **網址** → 先掃 `~/Claude Project/inbox/` 所有 md 檔案的 frontmatter `source`（嚴格相等優先；其次 hostname + path，忽略 query string、fragment、尾端斜線），命中則讀本機；未命中才使用 `web_fetch`
-4. **使用者直接貼入的文字** → 直接使用
-5. 失敗 → 立即停止並向使用者索取原文
-
-X / Twitter 連結無法讀取，直接請使用者貼入文字。
+依`bwt-style-guide.md`「來源讀取優先序」取得稿件全文（本地檔 `Read` → inbox frontmatter `source` 匹配 → `web_fetch` → 失敗即停、向使用者索取原文；X / Twitter 直接索取文字）。Notion 連結用 `mcp__claude_ai_Notion__notion-fetch`（參數名 `id`）讀取；使用者直接貼入的文字直接使用。
 
 ---
 
@@ -117,13 +111,13 @@ Brief 產出後，附一段建議：
 ```
 ## 建議下一步
 
-選一個方向（A/B/C），把這份 brief + 《數位時代》Design Tokens 一起貼進 Claude Design。
+選一個方向（A/B/C），把這份 brief + 《數位時代》Design Tokens（`~/.claude/agents/bwt-design-standard.md`）一起貼進 Claude Design。
 
 第一版通常不會命中，用編輯腦迭代即可：
 - 「主元素往中央挪」
 - 「加一條裝飾斜線平衡右下留白」
 - 「hook 引言字級再大一級」
-- 「背景改冷色漸層」
+- 「背景改冷色漸層」（漸層僅插畫路徑可用，見前置作業定界）
 
 3–5 輪對話通常可以收斂到可用版本。
 ```
@@ -166,17 +160,6 @@ Brief 是起跑點，不是最終版。留給 Claude Design 或設計師發揮�
 
 ## 使用情境範例
 
-**情境 1｜本機稿件**：
-> Terry：幫我想「draft/20260417-tutorial-Claude自學英文4提示詞框架.md」的主視覺
-
-> Claude：[Read 稿件 → Step 1–3 → 輸出 brief]
-
-**情境 2｜Notion 連結**：
-> Terry：https://www.notion.so/xxx 這篇的 visual brief 幫我跑一下
-
-> Claude：[notion-fetch → Step 1–3 → 輸出 brief]
-
-**情境 3｜臨時貼文字**：
-> Terry：我要寫一篇「AI 幻覺率」的稿，大概是講 Anthropic 三款模型包辦最低幻覺率前段班。先幫我想一下視覺。
-
-> Claude：[直接用貼上的摘要 → 基於已知資訊產 brief，並在 ⑤ 必要文字區註明「請補充完稿後的金句」]
+- **本機稿件**：「幫我想 draft/xxx.md 的主視覺」→ Read 稿件 → Step 1–3 → 輸出 brief
+- **Notion 連結**：「這篇的 visual brief 幫我跑一下」→ notion-fetch → Step 1–3 → 輸出 brief
+- **臨時貼文字**（未完稿）：直接用貼上的摘要產 brief，並在 ⑤ 必要文字區註明「請補充完稿後的金句」

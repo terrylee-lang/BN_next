@@ -3,7 +3,7 @@ name: lint-vault
 model: sonnet
 effort: low
 description: |
-  Obsidian Vault 健康檢查 Skill。掃描 ~/Claude Project/ 所有筆記，找出孤兒筆記、缺連結、過時內容、格式不符等問題，輸出待辦清單供 Terry 決定是否修正。
+  Obsidian Vault 健康檢查 Skill。掃描 ~/Claude Project/ 所有筆記，找出孤兒筆記、缺連結、過時內容、格式不符等問題，輸出待辦清單供使用者決定是否修正。
 
   請在以下情境下主動使用此 Skill：
   - 使用者說「幫我檢查 vault」、「跑 lint」、「vault 健康檢查」
@@ -113,7 +113,9 @@ description: |
 
 ### 8. Memory 健康檢查（Memory Lint）
 
-掃描 `~/.claude/projects/-Users-terrylee-Claude-Project/memory/` 下所有記憶檔案（不含 `MEMORY.md` 索引本身），檢查六類問題：
+掃描當前專案的 memory 目錄下所有記憶檔案（不含 `MEMORY.md` 索引本身），檢查六類問題。
+
+**memory 目錄位置動態解析**（不要寫死路徑）：Claude Code 依 cwd 自動管理，格式為 `~/.claude/projects/[cwd-encoded]/memory/`（cwd 的 `/` 換成 `-`，例如 cwd 為 `~/Claude Project` 時，目錄名為 `-Users-<你的帳號>-Claude-Project`）。執行前先 `ls ~/.claude/projects/` 確認當前專案的實際目錄名，再掃描其下的 `memory/`。若該目錄不存在（還沒寫過任何 memory），第 8 類整節跳過，回報「尚無 memory 檔案」。
 
 **A. 過時**：記憶內容涉及已變更的事實（例如提到的檔案路徑已不存在、流程已改、工具已換）。
 
@@ -125,7 +127,7 @@ description: |
 
 - `sunset-by: YYYY-MM` 已到日期 → 列入重評清單
 - `retention: quarterly` 且檔案 mtime 距今 > 90 天 → 列入重評清單
-- 沒有 `retention:` 欄位的 memory → 列入「補欄位」清單（給 Terry 機會補標 permanent / quarterly / sunset-by）
+- 沒有 `retention:` 欄位的 memory → 列入「補欄位」清單（給使用者機會補標 permanent / quarterly / sunset-by）
 
 **E. 升級候選（同主題 ≥ 3 條）**：掃描 MEMORY.md 描述欄位，找出同一主題群（譬如 Notion 寫回、視覺配件、技術白話化、查核準確性）累積 ≥ 3 條 feedback memory 的群組，建議整併到對應 Skill 規範檔。
 
@@ -140,7 +142,7 @@ description: |
 ```
 【Memory 健康檢查】
 
-容量狀態：當前 44 條 / 50 條警戒線（72%）、MEMORY.md 8,315 字元
+容量狀態：當前 <實際條目數> 條 / 50 條警戒線（<百分比>）、MEMORY.md <實際字元數> 字元
 
 [A] 過時：
 - feedback_xxx.md — 提到的路徑 ~/old/path 已不存在，建議更新或移除

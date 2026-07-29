@@ -123,6 +123,15 @@ font-feature-settings: 'tnum' 1;
 - **拉丁字符 display** letter-spacing：`-0.02em`（display 級別字緊收）
 - **等寬字符**：不設 letter-spacing
 
+#### 經核可的產品級字級 tokens（授權子規範自持）
+
+以下兩組字級不在上表，屬**產品級 tokens**，經核可由對應子規範單一自持、不回填本表：
+
+- **16:9 主視覺圖卡字體表**（1920×1080 viewport 專用）→ 住 [`bwt-visual-checklist.md`](bwt-visual-checklist.md) §三
+- **表格標題字級 19px** → 住 [`bwt-html-table-component.md`](bwt-html-table-component.md)
+
+除此之外，子規範不得另立字級 / 色號；新增產品級 token 需 Terry 核可並在此登記。
+
 ---
 
 ### 4. 間距（4px 基準）
@@ -341,4 +350,5 @@ bundle 內容含：
 
 | 日期 | 變更 |
 |---|---|
-| 2026-05-13 | 初版建立。從 Claude Design 匯出的 Business Next Design System bundle 抽取 tokens、整理為共通美術製作標準。目前僅 `bwt-html-table-component.md` 為子規範，套用於 `etf-explainer` Skill。 |
+| 2026-05-13 | 初版建立。從 Claude Design 匯出的 Business Next Design System bundle 抽取 tokens、整理為共通美術製作標準。當時僅 `bwt-html-table-component.md` 為子規範。 |
+| 2026-07-28 | 視覺規範重整：子規範已達 3 檔（table / iframe / checklist），索引表以本檔為唯一目錄；rubric 歸 `bwt-visual-checklist.md`、工作流歸 `visual-asset.md`、tokens 唯一居所在本檔；新增「經核可的產品級字級 tokens」段。 |
