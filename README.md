@@ -38,12 +38,12 @@ git -C ~/.claude/agents pull
 ```json
 {
   "env": {
-    "NOTION_TOKEN": "請向 Terry 索取"
+    "NOTION_TOKEN": "ntn_你自己的 integration secret"
   }
 }
 ```
 
-Token 為公司內部整合金鑰，可供全體同仁共用，請向 Terry 索取，請勿外流至公司以外。
+Token 為**你自己建立**的 Notion internal integration secret（到 [notion.so/my-integrations](https://www.notion.so/my-integrations) 建立）。產稿資料庫各自獨立、不共用他人稿單，金鑰也不在人與人之間傳遞。建置細節見 [bn-claude-code-init.md](./bn-claude-code-init.md) Step 5b。
 
 完整環境建置教學請參閱：[AI 自動產稿系統 — 環境建置教學](https://www.notion.so/32769f170dad819cac44cea570f03eb9)
 

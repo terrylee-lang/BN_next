@@ -49,10 +49,10 @@
 
 | Skill 名稱 | 觸發時機 |
 | --- | --- |
-| `notion-orchestrator` | 說「跑今天的稿件」，或「跑 [負責人] 的稿件」（負責人下拉選項：先泰、柔瑋、美欣、若彤、建鈞、祈安、宗穎、莞淇；<你的名字> 若不在清單內，請 Terry 到資料庫加上） |
+| `notion-orchestrator` | 說「跑今天的稿件」，或「跑 [負責人] 的稿件」（「負責人」欄位的選項由你在自己的資料庫自行設定） |
 | `news-daily` | 貼上外文新聞連結或說「幫我編譯這篇」（650-1000 字） |
-| `deep-analysis` | 提供 PDF、長文、YouTube 連結，說「幫我寫深度分析」（最多 2,500 字） |
-| `draft-polish` | 說「幫我潤稿」、貼上 NotebookLM 草稿（2000-2500 字） |
+| `deep-analysis` | 提供 PDF、長文、YouTube 連結，說「幫我寫深度分析」（目標 2,500 字以內） |
+| `draft-polish` | 說「幫我潤稿」、貼上 NotebookLM 草稿（目標 2,000-2,500 字） |
 | `tutorial-article` | 貼 X／Twitter 連結或方法論素材，說「幫我寫教學文」（800-1500 字） |
 | `social-post` | 貼文章連結，說「幫我寫社群貼文」（FB／IG） |
 | `article-checker` | 說「幫我查核」、「幫我 fact check」 |
@@ -101,7 +101,7 @@
 
 ### Notion（產稿中心資料庫）
 
-- 用途：AI 產稿中心資料庫（掃描待辦、寫回成品）。核心資料庫：「AI產稿中心 v2（Claude Code）」，URL 與欄位定義見 `~/.claude/agents/notion-orchestrator.md`「資料庫資訊」。
+- 用途：AI 產稿中心資料庫（掃描待辦、寫回成品）。核心資料庫：**你自建的產稿資料庫**（URL 換成自己的；欄位定義可參考 `~/.claude/agents/notion-orchestrator.md`「資料庫資訊」）。
 - **連接方式**：走 claude.ai 連接器（Settings → Connectors → Notion 授權），**不要用 `claude mcp add` 自建**——notion-orchestrator 內文寫死工具前綴 `mcp__claude_ai_Notion__*`，自建 server 的前綴不同會全部呼叫失敗。
 - **參數小抄（同形錯誤曾跨 session 重犯 26 次，照抄不要猜）**：
   - `notion-fetch` 的參數名只有 `id`——傳 `url` 或 `page_id` 當參數名會報 validation error；`id` 的**值**可以放 UUID 或 notion.so 網址

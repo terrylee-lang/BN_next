@@ -59,7 +59,7 @@ for b in jq pdftotext pdftoppm pdfinfo; do ln -sf "$(brew --prefix)/bin/$b" ~/.l
 2. **工作資料夾（vault）路徑**？直接按 Enter 用預設 `~/Claude Project/`
    → **強烈建議用預設**：共享 repo 內 12 支以上 Skill 內文寫死這個路徑（inbox 素材匹配、bnext-visuals 本地位置）。選別的名字不會報錯，會**靜默失效**。若使用者堅持，Step 3 必須在 CLAUDE.md 寫入「路徑代換規則」那一行。
 3. **你的 GitHub 帳號**？（Step 6 建視覺配件托管 repo 用；還沒有帳號就先跳過，之後補做）
-4. **要跑 Notion 產稿流程嗎？**（要 → Step 5 需要向 Terry 索取 `NOTION_TOKEN`，並確認你的 Notion 帳號有「AI產稿中心 v2」權限）
+4. **要跑 Notion 產稿流程嗎？**（要 → Step 5 你會**自建一個產稿資料庫與自己的 integration token**，不共用他人的稿單）
 5. **有在用 Obsidian 嗎？**（有 → Step 4 額外寫入專案層 CLAUDE.md 並提醒開啟為 vault）
 6. **要接 bnext-service（Pluto 後台）嗎？**（用途：撈各刊文章與 pageview、寫入內容池。不確定就先選要，只讀不寫沒有風險）
 
@@ -228,9 +228,15 @@ test -f <vault>/research/_index.md && test -f <vault>/draft/_register.md && echo
 
 ### 5b. `NOTION_TOKEN`（批次掃描用）
 
-`notion-orchestrator` Step 1 的批次篩選走 Notion HTTP API（MCP 不支援結構化 filter），需要公司內部整合金鑰。
+`notion-orchestrator` Step 1 的批次篩選走 Notion HTTP API（MCP 不支援結構化 filter），需要一個 integration token。
 
-1. 請使用者**向 Terry 索取 token**（公司內部整合金鑰，可全體同仁共用，禁止外流）。
+**產稿資料庫各自獨立**：不共用他人的稿單，你自建一份自己的。理由是稿單是個人工作佇列，共用會混淆負責人歸屬與狀態；各自持有 token 也避免金鑰在人與人之間傳遞。
+
+1. 指示使用者**自建 Notion integration 與資料庫**：
+   - 到 [notion.so/my-integrations](https://www.notion.so/my-integrations) 建一個 internal integration（名稱自取，如「Claude Code 產稿」），複製 `ntn_` 開頭的 Internal Integration Secret
+   - 在自己的 Notion 建一個產稿資料庫，欄位至少要有：標題、狀態（select，選項含「未開始」「進行中」「完成」）、類型、來源、負責人、摘要
+   - 在該資料庫頁面右上「⋯」→ Connections → 加入剛建的 integration（沒做這步 API 會回 404）
+   - 把資料庫 URL 記下來，Step 3 要寫進你的 CLAUDE.md 取代範本裡的預設 URL
 2. **不要請使用者把 token 貼進對話。** 指示他自己編輯 `~/.claude/settings.local.json`，在 `env` 區塊加入：
    ```json
    {
@@ -364,7 +370,7 @@ rg -n "terrylee-lang" ~/.claude/CLAUDE.md                                       
 4. **個人偏好**：直接跟 Claude 說「記住這個」，它會寫入記憶；你自己的規則寫進 `~/.claude/CLAUDE.md`（不會被 `git pull` 覆蓋）
 5. **進階制度檔為個人層、不隨 repo 交接**（派工 playbook、判斷 rubric、每日收工 SOP、memory 政策、research 筆記格式範本）——先把基本流程跑順，需要時再向 Terry 索取
 6. **需要找 Terry 的事**（把實際卡住的項目列出來）：
-   - Notion「AI產稿中心 v2」資料庫存取權，以及「負責人」下拉加上你的名字
-   - `NOTION_TOKEN`（公司內部整合金鑰）
+   - Notion 產稿資料庫由你自建（Step 5b），不需他人給權限；`notion-orchestrator.md` 內的預設 URL 記得換成自己的
+   - `NOTION_TOKEN`（你自建的 integration secret）
    - bnext-service（Pluto）MCP 的帳號授權
    - `bwt-lint.sh`（選配的機械檢查腳本，`article-checker` Step 0 有它才跑；沒有會自動降級，不影響查核）

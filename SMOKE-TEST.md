@@ -132,7 +132,7 @@ rg -n "voice-reference" ~/.claude/agents/*.md
 
 **動作**
 
-先 `rg -n "資料庫 URL" ~/.claude/agents/notion-orchestrator.md` 取得「AI產稿中心 v2」的網址，再用 Notion MCP 的 `notion-fetch`，**參數名只有 `id`**，值放該網址。
+先確認 `notion-orchestrator.md` 內的資料庫 URL 已換成你自己的（`rg -n "資料庫 URL" ~/.claude/agents/notion-orchestrator.md`），再用 Notion MCP 的 `notion-fetch`，**參數名只有 `id`**，值放該網址。
 
 **預期**
 
