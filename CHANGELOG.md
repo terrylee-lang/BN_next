@@ -7,6 +7,24 @@
 
 ---
 
+## v3.0.1 — 2026-07-29
+
+**Notion 產稿資料庫改各自建置，不共用稿單與 token**
+
+源頭：Terry 裁決——實務上不需要共用稿單，新同事自建一份即可。稿單是個人工作佇列，共用會混淆負責人歸屬與狀態；各自持有 integration token 也避免金鑰在人與人之間傳遞。連帶消除交接包原本的兩個阻塞（NOTION_TOKEN 傳遞管道、「負責人」下拉需請人代加選項）。
+
+- `bn-claude-code-init.md`：Step 1 問答第 4 題與 Step 5b 改為自建流程（[notion.so/my-integrations](https://www.notion.so/my-integrations) 建 internal integration、自建資料庫與必要欄位、資料庫頁面 Connections 授權這一步漏做會回 404）；Step 8 移除「向 Terry 索取資料庫權限與負責人選項」
+- `CLAUDE-template.md`：核心資料庫改為「你自建的產稿資料庫」；「負責人」選項改為自行設定；補述 `~/.claude/skills/` stub 帶 `disable-model-invocation: true` 的機制（**stub 存在 ≠ 可用 Skill 工具呼叫**，避免安裝驗證時誤判為規範矛盾）
+- `SMOKE-TEST.md`：T7 前置條件改為「確認 `notion-orchestrator.md` 內的資料庫 URL 已換成自己的」
+- `README.md`：`NOTION_TOKEN` 說明改為自建 integration secret，移除「公司內部金鑰可全體同仁共用」
+- `ADAPTATION.md`：「CLAUDE.md 非公開、找 Terry 索取範例」過期指引改指 `CLAUDE-template.md`
+
+**補 v3.0.0 漏改**：`CLAUDE-template.md` 的 deep-analysis「最多 2,500 字」、draft-polish「2000-2500 字」改為「目標」（全域 3,500 字唯一硬上限的裁決，該檔原漏同步）。
+
+> **個人層同步提醒（不在本 repo）**：`~/.local/bin/bwt-lint.sh`（article-checker Step 0 呼叫的機械檢查腳本）的規則來源是 `bwt-style-guide.md` 與 `article-checker.md`，v3.0.0 改動後已同步四處：「值得注意的是」從禁詞改為每篇上限 1 次的計數檢查、白話轉場詞從「總次數上限 2」改為「同一轉場詞不重複」、破折號字元集補上 U+FF0D、字數表改「目標」並新增全域 3,500 字硬上限檢查（etf 除外）。**自行維護此腳本的人，改規範後記得同步腳本。**
+
+---
+
 ## v3.0.0 — 2026-07-28
 
 **全系統總體檢：活矛盾修復、約束單點化、交接包改造**

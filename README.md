@@ -136,7 +136,7 @@ Claude 會自動掃描 AI產稿中心 v2，篩選待辦條目（「未開始」�
 
 ## 版本紀錄
 
-最新版本：**v3.0.0（2026-07-28）** — 全系統總體檢：修復 8 處規範互相打架的活矛盾（「值得注意的是」口徑、轉場詞、iframe 高度策略、RWD 寫法、破折號等）、約束單點化（`bwt-style-guide` 升為跨 Skill 共用段落唯一權威、全稿種字數上限統一 3,500 字）、`article-checker` 三軸改造（新增 Codex 協作協議）、交接包改造（新增 `CLAUDE-template.md`＋`SMOKE-TEST.md`，`bn-claude-code-init.md` 升級為互動式安裝主體）
+最新版本：**v3.0.1（2026-07-29）** — Notion 產稿資料庫改各自建置（不共用稿單與 token）。前一版 v3.0.0（2026-07-28）：— 全系統總體檢：修復 8 處規範互相打架的活矛盾（「值得注意的是」口徑、轉場詞、iframe 高度策略、RWD 寫法、破折號等）、約束單點化（`bwt-style-guide` 升為跨 Skill 共用段落唯一權威、全稿種字數上限統一 3,500 字）、`article-checker` 三軸改造（新增 Codex 協作協議）、交接包改造（新增 `CLAUDE-template.md`＋`SMOKE-TEST.md`，`bn-claude-code-init.md` 升級為互動式安裝主體）
 
 完整異動紀錄請見 [CHANGELOG.md](./CHANGELOG.md)。
 
