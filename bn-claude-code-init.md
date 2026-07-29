@@ -12,6 +12,8 @@
 4. **破壞性動作前先備份並口頭確認**：覆蓋既有 `~/.claude/CLAUDE.md`、動既有 `~/.claude/agents/` 目錄、刪任何檔案。
 5. 全程繁體中文回報。安裝過程中若使用者的環境與本檔描述不符（版本、路徑、已裝過一半），先回報差異再提方案，不要靜默套用預設值。
 6. 本檔提到的 `<vault>` 一律代換為 Step 1 問到的工作資料夾路徑；`<ACC>` 代換為使用者的 GitHub 帳號。
+7. **開場先講兩件事，省掉後面的來回**：(a) 安裝會寫入 `~/.claude/` 與 `<vault>/`，Claude Code 跳出權限詢問時請使用者按允許；(b) Skills 與 agents 清單**要重開 session 才會載入**，所以 Step 7 的驗證前一定要請使用者重開一次 session。
+8. **不要為了讓檢查點通過而修改 Skill 或規範檔內容**。規範檔若真有 bug，記錄檔名與行號回報，不要就地改——那是全編輯部共用的。
 
 ---
 
@@ -53,17 +55,36 @@ for b in jq pdftotext pdftoppm pdfinfo; do ln -sf "$(brew --prefix)/bin/$b" ~/.l
 
 ## Step 1：互動問答（一次問完，等使用者回覆再動手）
 
-一次列出以下六題，等回答齊全再進 Step 2：
+**先把「需要本人親手做」的事一次講完**，讓使用者知道會被打斷幾次、各要多久，不要邊裝邊冒出來：
+
+| # | 事項 | 用在哪 | 約需 |
+|---|------|--------|------|
+| 1 | claude.ai → Settings → Connectors 授權 Notion | Step 5a | 2 分鐘 |
+| 2 | 自建 Notion 產稿資料庫 ＋ integration，token 填進 `settings.local.json` | 下方第 7 題、Step 5b | 10 分鐘 |
+| 3 | 建 GitHub public repo `bnext-visuals` 並開 Pages | Step 6 | 5 分鐘 |
+| 4 | 互動式 session 執行 `/mcp` 完成 bnext-service OAuth | Step 5c | 2 分鐘 |
+
+其中第 2 項最花時間，**請使用者現在就開始弄**（清單見下方第 7 題），你同時往下跑 Step 2 到 Step 4，這幾步不依賴它。
+
+接著一次列出以下七題，等回答齊全再進 Step 2：
 
 1. **你的中文名字**（用於文末署名與 CLAUDE.md）
 2. **工作資料夾（vault）路徑**？直接按 Enter 用預設 `~/Claude Project/`
-   → **強烈建議用預設**：共享 repo 內 12 支以上 Skill 內文寫死這個路徑（inbox 素材匹配、bnext-visuals 本地位置）。選別的名字不會報錯，會**靜默失效**。若使用者堅持，Step 3 必須在 CLAUDE.md 寫入「路徑代換規則」那一行。
+   → **強烈建議用預設**：共享 repo 內有 6 個 Skill／規範檔內文寫死這個路徑（`lint-vault`、`visual-asset`、`bwt-style-guide`、`bwt-design-standard`、`bwt-iframe-visual-component`、`bwt-html-table-component`）。選別的名字不會報錯，會**靜默失效**。若使用者堅持，Step 3 必須在 CLAUDE.md 寫入「路徑代換規則」那一行。
 3. **你的 GitHub 帳號**？（Step 6 建視覺配件托管 repo 用；還沒有帳號就先跳過，之後補做）
-4. **要跑 Notion 產稿流程嗎？**（要 → Step 5 你會**自建一個產稿資料庫與自己的 integration token**，不共用他人的稿單）
+4. **要跑 Notion 產稿流程嗎？**（要 → 見第 7 題；產稿資料庫與 token 都是你自己的，不共用他人的稿單）
 5. **有在用 Obsidian 嗎？**（有 → Step 4 額外寫入專案層 CLAUDE.md 並提醒開啟為 vault）
 6. **要接 bnext-service（Pluto 後台）嗎？**（用途：撈各刊文章與 pageview、寫入內容池。不確定就先選要，只讀不寫沒有風險）
+7. **（第 4 題答「要」才問）你的產稿資料庫 URL？** 還沒建就請使用者現在建，你把清單給他：
+   - 到 [notion.so/my-integrations](https://www.notion.so/my-integrations) 建 internal integration（名稱自取，如「Claude Code 產稿」），複製 `ntn_` 開頭的 Internal Integration Secret（**先不要貼進對話**，Step 5b 會請他自己填進設定檔）
+   - 在自己的 Notion 建產稿資料庫，欄位比照 `notion-orchestrator.md`「欄位說明」表；最少要有：標題、稿件類型、負責人、來源 1、備註、摘要、狀態（select，選項含「未開始」「進行中」「完成」「失敗」）、完成時間、字數
+   - 「負責人」下拉自行設定（至少要有他自己的名字，否則「跑 [名字] 的稿件」永遠篩不到）
+   - 資料庫頁面右上「⋯」→ Connections → 加入剛建的 integration（**沒做這步 API 一律回 404**）
+   - 把資料庫 URL 貼回來（Step 3 要寫進他的 CLAUDE.md）
 
-**檢查點**：把六個答案整理成一張表覆述，請使用者確認「OK」才進 Step 2。
+> 為什麼在這裡就要 URL：Step 3 產生的個人 CLAUDE.md 需要寫入這個 URL。等到 Step 5b 才問會變成回頭改已完成的檔案，也會讓 Step 7 的佔位符檢查誤判。使用者一時拿不到 URL → CLAUDE.md 先寫 `<待補：你的產稿資料庫 URL>`，並在 Step 5b 結束前務必回頭 Edit 補上、重跑一次 Step 3 檢查點。
+
+**檢查點**：把七個答案整理成一張表覆述，請使用者確認「OK」才進 Step 2。
 
 ---
 
@@ -98,7 +119,7 @@ ls -d ~/.claude/agents 2>/dev/null && git -C ~/.claude/agents remote -v 2>/dev/n
 **檢查點**：以下三行都要符合。
 
 ```bash
-ls ~/.claude/agents/*.md | wc -l            # 應 ≥ 24
+ls ~/.claude/agents/*.md | wc -l            # 應 ≥ 25
 ls ~/.claude/agents/bwt-*.md                # 應為 5 份（見下）
 git -C ~/.claude/agents status --short      # 應為空（工作區乾淨）
 ```
@@ -114,7 +135,7 @@ git -C ~/.claude/agents status --short      # 應為空（工作區乾淨）
 
 > `bwt-voice-reference.md` 是個人風格指紋檔，**刻意不在共享 repo**，缺少是正常的，任何 Skill 都不會因為它缺席而報錯。
 
-**產稿 Skills**：`news-daily.md`、`deep-analysis.md`、`draft-polish.md`、`tutorial-article.md`、`social-post.md`、`etf-explainer.md`、`article-checker.md`、`headline-generator.md`、`notion-orchestrator.md`
+**產稿 Skills**：`news-daily.md`、`longform.md`、`draft-polish.md`、`social-post.md`、`etf-explainer.md`、`article-checker.md`、`headline-generator.md`、`notion-orchestrator.md`，以及過渡期退路 `deep-analysis.md`、`tutorial-article.md`（已由 `longform.md` 接手，使用者明確說「用舊的」才走）
 
 **視覺 Skills**：`visual-brief.md`、`visual-asset.md`
 
@@ -144,6 +165,8 @@ version: 1.0.0
 
 `notion-orchestrator` 的 stub **額外加一行** frontmatter `disable-model-invocation: true`（它會批次寫回 Notion，不該被模型自動觸發，只由使用者明確呼叫）。
 
+**其餘 6 支刻意不建 stub**：`visual-asset`、`visual-brief`、`headline-generator`、`etf-explainer`、`lint-vault`、`retrospective` 只走 Agent 工具（`subagent_type`）。所以使用者打 `/visual-asset` 不會有東西，這是預期行為，不是安裝失敗——請在 Step 8 一併告知。日後想讓某支也能用 `/名稱` 觸發，自己補一個帶 `disable-model-invocation: true` 的 stub 即可（stub 是個人層檔案，不進共享 repo）。
+
 **檢查點**：`ls ~/.claude/skills/ | wc -l` = 7（若使用者原本已有其他 skills 則為 7 + 原有數量）；且提醒使用者「Skill 清單要重開 session 才會重新載入」。
 
 ---
@@ -158,7 +181,7 @@ version: 1.0.0
 2. 產生新內容：
    - **刪掉開頭的範本說明區塊**（第一行到 `---` `---` 雙分隔線為止）
    - **刪掉所有以 `> 範本註記`／`> 範本註記：` 開頭的引言行**
-   - 代入 Step 1 的答案：`<你的名字>`、`<你的 vault 路徑>`、`<你的 GitHub 帳號>`
+   - 代入 Step 1 的答案：`<你的名字>`、`<你的 vault 路徑>`、`<你的 GitHub 帳號>`，以及第 7 題的**產稿資料庫 URL**（取代範本「MCP 整合 → Notion」段裡的預設庫；`notion-orchestrator.md` 內寫的那個 URL 是 Terry 環境的預設值，**以本檔為準、不要去改 repo 內的檔案**）
    - 使用者**不跑 Notion 流程** → 刪掉「MCP 整合 → Notion」整段與觸發語表的 `notion-orchestrator` 那列
    - 使用者**不接 bnext-service** → 刪掉該段
    - 使用者**沒有個人風格指紋檔** → 刪掉「個人風格指紋（選配）」那一條
@@ -181,7 +204,7 @@ rg -n "<你的|範本註記|terrylee-lang" ~/.claude/CLAUDE.md   # 應 0 命中
 **動作**（`<vault>` = Step 1 的路徑）
 
 ```bash
-mkdir -p <vault>/{inbox,research,draft,daily-notes,archive,people,projects,personal,pic}
+mkdir -p <vault>/{inbox,research,draft,daily-notes,archive,people,projects,personal,pic,.trash}
 mkdir -p <vault>/projects/bnext-visuals
 ```
 
@@ -195,7 +218,8 @@ mkdir -p <vault>/projects/bnext-visuals
 | `people/` | 重要人物資料卡 |
 | `projects/` | 中長期專案文件（含 `bnext-visuals/` 配件本地副本） |
 | `personal/` | 私人內容（不參與自動寫回、不被 lint-vault 掃描） |
-| `pic/` | 圖片素材 |
+| `pic/` | 圖片素材（不參與 lint-vault 掃描） |
+| `.trash/` | 刪除緩衝區（檔案先移入 `.trash/YYYYMMDD/`，14 天後清空；移入此處為可逆操作，不需確認） |
 
 再建兩個自動維護的索引檔（不存在才建，已存在不要覆蓋）：
 
@@ -223,20 +247,17 @@ test -f <vault>/research/_index.md && test -f <vault>/draft/_register.md && echo
 
 請使用者到 claude.ai → Settings → Connectors → 連接 Notion 並授權；**停下等他回報完成**。
 
-**檢查點**：呼叫 `notion-fetch`（參數名只有 `id`，值放 `notion-orchestrator.md`「資料庫資訊」裡的資料庫網址），應回傳含「稿件類型」「負責人」「狀態」的結構。
-- 回 404／no access → 使用者的 Notion 帳號沒有這個資料庫權限，**請他找 Terry 分享**，並順便確認「負責人」下拉有他的名字（否則 `跑 [名字] 的稿件` 永遠篩不到）。
+**檢查點**：呼叫 `notion-fetch`（參數名只有 `id`，值放 **Step 1 第 7 題使用者自己的資料庫 URL**，不是 `notion-orchestrator.md` 裡那個 Terry 環境的預設值），應回傳含「稿件類型」「負責人」「狀態」的結構。
+- 回 404／no access → 九成是資料庫沒有把 integration 加進 Connections（Step 1 第 7 題第 4 點），或 URL 貼錯；請使用者確認，這是他自己的庫，不需要別人給權限。
+- 回傳結構但「負責人」下拉沒有他的名字 → 請他自己在資料庫加上該選項，否則 `跑 [名字] 的稿件` 永遠篩不到。
 
 ### 5b. `NOTION_TOKEN`（批次掃描用）
 
 `notion-orchestrator` Step 1 的批次篩選走 Notion HTTP API（MCP 不支援結構化 filter），需要一個 integration token。
 
-**產稿資料庫各自獨立**：不共用他人的稿單，你自建一份自己的。理由是稿單是個人工作佇列，共用會混淆負責人歸屬與狀態；各自持有 token 也避免金鑰在人與人之間傳遞。
+**產稿資料庫各自獨立**：不共用他人的稿單，你自建一份自己的（Step 1 第 7 題已請使用者建好，資料庫與 integration 都是他自己的）。理由是稿單是個人工作佇列，共用會混淆負責人歸屬與狀態；各自持有 token 也避免金鑰在人與人之間傳遞。
 
-1. 指示使用者**自建 Notion integration 與資料庫**：
-   - 到 [notion.so/my-integrations](https://www.notion.so/my-integrations) 建一個 internal integration（名稱自取，如「Claude Code 產稿」），複製 `ntn_` 開頭的 Internal Integration Secret
-   - 在自己的 Notion 建一個產稿資料庫，欄位至少要有：標題、狀態（select，選項含「未開始」「進行中」「完成」）、類型、來源、負責人、摘要
-   - 在該資料庫頁面右上「⋯」→ Connections → 加入剛建的 integration（沒做這步 API 會回 404）
-   - 把資料庫 URL 記下來，Step 3 要寫進你的 CLAUDE.md 取代範本裡的預設 URL
+1. 確認 Step 1 第 7 題已完成：資料庫存在、integration 已加進該庫的 Connections、URL 已寫進 Step 3 產生的 `~/.claude/CLAUDE.md`。**若當時填的是 `<待補：你的產稿資料庫 URL>`，現在回頭 Edit 補上**，並重跑一次 Step 3 的檢查點。
 2. **不要請使用者把 token 貼進對話。** 指示他自己編輯 `~/.claude/settings.local.json`，在 `env` 區塊加入：
    ```json
    {
@@ -267,8 +288,10 @@ OAuth 走集團 Google auth gateway，需在**互動式** session 執行 `/mcp` 
 ### 5d. Playwright（選配）
 
 ```bash
-claude mcp add playwright npx @playwright/mcp@latest
+claude mcp add playwright -- npx @playwright/mcp@latest
 ```
+
+（`--` 之後的東西一律當成子行程指令，不會被 CLI 當自己的選項吃掉。這是目前 `claude mcp add --help` 對 stdio server 的建議寫法。）
 
 僅用於需互動操作的頁面與量 iframe 配件高度，**不作為內容讀取備援**。
 
@@ -350,7 +373,7 @@ rg -n "terrylee-lang" ~/.claude/CLAUDE.md                                       
 
 ## Step 7：跑安裝驗證
 
-`Read ~/.claude/agents/SMOKE-TEST.md`，依序執行 T1–T11，輸出該檔末尾的回報表。
+**先請使用者重開一次 session**（Skills 與 agents 清單只在 session 啟動時載入，不重開的話 T2、T3 一定失敗，會誤判成安裝壞了）。重開後 `Read ~/.claude/agents/SMOKE-TEST.md`，依序執行 T1–T11，輸出該檔末尾的回報表。
 
 - T1–T5 **必須全過**（環境基本盤）。任一項失敗 → 回到對應 Step 修，不要跳過。
 - T6、T7 依 Step 1 第 4 題；T8 依第 6 題；T9 依是否已完成 Step 6。
@@ -369,8 +392,11 @@ rg -n "terrylee-lang" ~/.claude/CLAUDE.md                                       
 3. **更新 Skills**：`git -C ~/.claude/agents pull`（團隊統一更新；本機若改過 repo 內檔案會衝突，改動請先跟 Terry 討論再推回 repo——那是全編輯部共用的）
 4. **個人偏好**：直接跟 Claude 說「記住這個」，它會寫入記憶；你自己的規則寫進 `~/.claude/CLAUDE.md`（不會被 `git pull` 覆蓋）
 5. **進階制度檔為個人層、不隨 repo 交接**（派工 playbook、判斷 rubric、每日收工 SOP、memory 政策、research 筆記格式範本）——先把基本流程跑順，需要時再向 Terry 索取
-6. **需要找 Terry 的事**（把實際卡住的項目列出來）：
-   - Notion 產稿資料庫由你自建（Step 5b），不需他人給權限；`notion-orchestrator.md` 內的預設 URL 記得換成自己的
-   - `NOTION_TOKEN`（你自建的 integration secret）
-   - bnext-service（Pluto）MCP 的帳號授權
+6. **兩個容易被誤認成故障的預期行為**：
+   - `/visual-asset`、`/visual-brief`、`/headline-generator`、`/etf-explainer`、`/lint-vault`、`/retrospective` 打不出來是正常的——這 6 支只走 Agent 工具，用自然語言觸發（「幫我做配件」、「幫我想標題」）即可
+   - 之後 `git pull` 更新 Skills 後，同樣要重開 session 才生效
+7. **真正需要找 Terry 的事**（只列這幾類，其餘都是自助）：
+   - bnext-service（Pluto）MCP 的帳號授權名單
    - `bwt-lint.sh`（選配的機械檢查腳本，`article-checker` Step 0 有它才跑；沒有會自動降級，不影響查核）
+   - 個人層制度檔範例（每日收工 SOP、`ops/` 四件套、memory 政策、research 筆記格式）——見 README「這個 repo 交接什麼、不交接什麼」
+   - 註：Notion 資料庫與 `NOTION_TOKEN` 都由你自建，**不需要任何人給權限**

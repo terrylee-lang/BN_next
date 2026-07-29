@@ -2,7 +2,7 @@
 
 安裝完成後跑這一輪，確認「裝完真的能動」，而不是「檔案真的存在」。日後環境出怪事、或 `git pull` 之後懷疑壞了，也可以單獨重跑。
 
-**給 Claude 的執行指示**：這份檔案是給你（Claude Code）讀的。依序執行 T1 到 T11，每項照「動作 → 預期 → 失敗怎麼修」三段處理：動作照做、拿實際輸出比對預期、不符就依「失敗怎麼修」修一次再重測。**不要為了讓測試通過而修改 Skill 或規範檔內容**——規範檔若真有 bug，記錄下來回報，不要就地改。全部跑完輸出最後一節的回報表。
+**給 Claude 的執行指示**：這份檔案是給你（Claude Code）讀的。**開跑前先確認使用者已在安裝完成後重開過 session**（Skills 與 agents 清單只在啟動時載入，沒重開的話 T2、T3 必失敗，會誤判成安裝壞了）。然後依序執行 T1 到 T11，每項照「動作 → 預期 → 失敗怎麼修」三段處理：動作照做、拿實際輸出比對預期、不符就依「失敗怎麼修」修一次再重測。**不要為了讓測試通過而修改 Skill 或規範檔內容**——規範檔若真有 bug，記錄下來回報，不要就地改。全部跑完輸出最後一節的回報表。
 
 **必過分級**：
 
@@ -27,8 +27,8 @@ for f in ~/.claude/agents/*.md; do head -1 "$f" | grep -q '^---$' && basename "$
 - 第一行 ≥ **25**
 - `bwt-*` 共 **5 份**：`bwt-style-guide.md`、`bwt-design-standard.md`、`bwt-visual-checklist.md`、`bwt-iframe-visual-component.md`、`bwt-html-table-component.md`
   （常被誤以為有第 6 份：`bwt-voice-reference.md` 是個人風格指紋檔，**不在共享 repo**，缺少是正常的，見 T5）
-- 第三行 = **14**（有 frontmatter 的 Skill 檔：news-daily、deep-analysis、draft-polish、tutorial-article、social-post、etf-explainer、article-checker、headline-generator、notion-orchestrator、visual-brief、visual-asset、lint-vault、retrospective、longform；再加上你自建的 agent 會更多）
-  （`longform.md` 是實驗中的新 Skill，見 README「Skills 一覽」的註記。它存在是正常的，但預設不會被觸發）
+- 第三行 = **14**（有 frontmatter 的 Skill 檔：news-daily、longform、draft-polish、social-post、etf-explainer、article-checker、headline-generator、notion-orchestrator、visual-brief、visual-asset、lint-vault、retrospective，加上過渡期退路 deep-analysis、tutorial-article；再加上你自建的 agent 會更多）
+  （`longform.md` 是 1,500 字以上長稿的主線，「幫我寫長文／深度分析／教學文」都導向它；`deep-analysis.md`、`tutorial-article.md` 保留為退路，明確說「用舊的」才走）
 
 **失敗怎麼修**
 
@@ -50,6 +50,7 @@ ls ~/.claude/skills/
 **預期**
 
 - `~/.claude/skills/` 下有 7 個目錄（news-daily、deep-analysis、draft-polish、tutorial-article、social-post、article-checker、notion-orchestrator），每個內含 `SKILL.md`
+  （**只有這 7 支有 stub**。`longform`、`visual-asset`、`visual-brief`、`headline-generator`、`etf-explainer`、`lint-vault`、`retrospective` 刻意沒有，打 `/名稱` 沒反應是預期行為，用自然語言或 Agent 工具觸發）
 - session 開頭注入的 skill 清單看得到 news-daily 等名稱
 - Skill 回報「會讀 `bwt-style-guide.md`」，並成功讀到內容（無 file not found）
 
@@ -133,7 +134,7 @@ rg -n "voice-reference" ~/.claude/agents/*.md
 
 **動作**
 
-先確認 `notion-orchestrator.md` 內的資料庫 URL 已換成你自己的（`rg -n "資料庫 URL" ~/.claude/agents/notion-orchestrator.md`），再用 Notion MCP 的 `notion-fetch`，**參數名只有 `id`**，值放該網址。
+用 Notion MCP 的 `notion-fetch`，**參數名只有 `id`**，值放**你個人 `~/.claude/CLAUDE.md` 裡登記的產稿資料庫 URL**（`rg -n "產稿資料庫" ~/.claude/CLAUDE.md`）。`notion-orchestrator.md` 裡那個 URL 是 Terry 環境的預設值，**不要去改 repo 檔案**，以個人 CLAUDE.md 為準。
 
 **預期**
 
@@ -146,8 +147,8 @@ rg -n "voice-reference" ~/.claude/agents/*.md
 - 報 validation error → 你可能傳了 `url` 或 `page_id`；參數名固定是 `id`
 - 報 not connected → 到 claude.ai → Settings → Connectors 重新授權 Notion（非互動 session 無法完成 OAuth，要在瀏覽器做）
 - 工具前綴不是 `mcp__claude_ai_Notion__`（例如 `mcp__notion__`）→ 你是用 `claude mcp add` 自建的 server。notion-orchestrator 寫死前綴會呼叫失敗：移除自建 server，改走 claude.ai 連接器
-- 回 404／no access → 你的 Notion 帳號沒有這個資料庫的權限，請 Terry 分享給你
-- 「負責人」沒有你的名字 → 請 Terry 在資料庫加上該下拉選項，否則 `跑 [你的名字] 的稿件` 篩不到東西
+- 回 404／no access → 資料庫沒把 integration 加進 Connections（資料庫頁面右上「⋯」→ Connections），或 URL 貼錯。這是你自己的庫，不需要別人給權限
+- 「負責人」沒有你的名字 → 自己在資料庫加上該下拉選項，否則 `跑 [你的名字] 的稿件` 篩不到東西
 
 ---
 
@@ -164,7 +165,7 @@ rg -n "voice-reference" ~/.claude/agents/*.md
 **失敗怎麼修**
 
 - `401 unauthorized` → `~/.claude/settings.local.json` 的 `env.NOTION_TOKEN` 沒填或填錯，重看安裝指南 Step 5
-- `object_not_found` → token 有效但 integration 沒被邀請進資料庫，請 Terry 到資料庫 → Connections 加上
+- `object_not_found` → token 有效但 integration 沒被邀請進資料庫，自己到該資料庫 → Connections 加上
 - `jq: command not found` → `brew install jq`，再在 `~/.local/bin` 建 symlink（Claude Code 的 Bash PATH 不含 `/opt/homebrew/bin`）
 - 401 而你用的是 `NOTION_TOKEN=$(...) curl -H "...$NOTION_TOKEN..."` → 這個寫法在 zsh/bash 永遠展開成空字串（已知坑），改成 inline substitution
 - JSON 解析錯誤 → 你可能手改 `settings.local.json` 改壞了，用 `python3 -m json.tool ~/.claude/settings.local.json` 驗語法
@@ -278,4 +279,4 @@ command -v pdftotext && pdftotext -v 2>&1 | head -1
 - ...
 ```
 
-T1-T5 全過就可以開始產稿。剩下需要別人動手的權限問題，列在表格下方直接找 Terry。
+T1-T5 全過就可以開始產稿。剩下需要別人動手的只有兩類：bnext-service（Pluto）的帳號授權名單、個人層制度檔範例（見 README「這個 repo 交接什麼、不交接什麼」）——列在表格下方找 Terry。Notion 資料庫與 token 都是你自己的，不在這一類。

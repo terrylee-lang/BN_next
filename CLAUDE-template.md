@@ -28,7 +28,7 @@
 
 所有在本機產生的檔案，預設儲存至 `<你的 vault 路徑>`。
 
-> 範本註記：**強烈建議直接用 `~/Claude Project/`**。共享 repo 內 12 支以上 Skill 內文寫死這個路徑（inbox 匹配、bnext-visuals 本地位置、design bundle）。若你堅持用別的路徑，必須保留下面這行，否則 inbox 素材匹配與視覺配件流程會靜默失效：
+> 範本註記：**強烈建議直接用 `~/Claude Project/`**。共享 repo 內有 6 個 Skill／規範檔內文寫死這個路徑（`lint-vault`、`visual-asset`、`bwt-style-guide`、`bwt-design-standard`、`bwt-iframe-visual-component`、`bwt-html-table-component`）。若你堅持用別的路徑，必須保留下面這行，否則 inbox 素材匹配與視覺配件流程會靜默失效：
 >
 > **路徑代換規則**：`~/.claude/agents/` 內任何 Skill 或規範檔出現的 `~/Claude Project/`，一律代換為 `<你的 vault 路徑>`。
 
@@ -39,8 +39,9 @@
 同樣住在 `~/.claude/agents/` 的檔案，呼叫機制分兩種，**用錯會直接報錯**（歷史上錯過 17 次）：
 
 - **Skill 工具可呼叫**（`~/.claude/skills/<名稱>/SKILL.md` 有對應 stub 的才會出現在 Skill 清單）：news-daily、deep-analysis、tutorial-article、draft-polish、social-post、article-checker
-- **只能走 Agent 工具（`subagent_type`）**：notion-orchestrator、visual-asset、visual-brief、headline-generator、etf-explainer、lint-vault、retrospective
-  - 這幾支在 `~/.claude/skills/` 仍應有 stub，但 stub 帶 `disable-model-invocation: true`：**使用者**可用 `/名稱` 觸發，**Claude 自己**要主動呼叫則一律走 Agent 工具。因此 SMOKE-TEST 檢查 stub 數量時，看到它們存在是正常的，不代表可用 Skill 工具呼叫
+- **只能走 Agent 工具（`subagent_type`）**：notion-orchestrator、longform、visual-asset、visual-brief、headline-generator、etf-explainer、lint-vault、retrospective
+  - 其中只有 `notion-orchestrator` 在 `~/.claude/skills/` 有 stub（帶 `disable-model-invocation: true`：**使用者**可用 `/notion-orchestrator` 觸發，**Claude 自己**要主動呼叫則走 Agent 工具）。其餘幾支**沒有 stub**，打 `/名稱` 不會有東西，用自然語言觸發即可（「幫我寫長文」、「幫我做配件」、「幫我想標題」）
+  - 所以 `ls ~/.claude/skills/` 應該是 7 個目錄：上面 Skill 工具那 6 支 ＋ notion-orchestrator。想讓某支 Agent-only 的也能用 `/名稱`，自己補一個帶 `disable-model-invocation: true` 的 stub（個人層檔案，不進共享 repo）
 - 一律**以 session 開頭注入的可用清單為準**；工具不可用即改走另一機制或替代路徑（如 Bash `rg` 代替 Grep），同一工具不重試第三次
 
 ### 產稿 Skills
@@ -51,9 +52,10 @@
 | --- | --- |
 | `notion-orchestrator` | 說「跑今天的稿件」，或「跑 [負責人] 的稿件」（「負責人」欄位的選項由你在自己的資料庫自行設定） |
 | `news-daily` | 貼上外文新聞連結或說「幫我編譯這篇」（650-1000 字） |
-| `deep-analysis` | 提供 PDF、長文、YouTube 連結，說「幫我寫深度分析」（目標 2,500 字以內） |
+| `longform`（**長文，1,500 字以上長稿的主線**） | 說「幫我寫長文」、「這篇寫成長文」；也接收「幫我寫深度分析」「幫我寫教學文」（論證型目標 2,500 字內／步驟型 800-1,500 字）。內建 grill 前置：先讀完全部素材、盤點來源立場、逼問切角到共識，再由大綱決定套論證型或步驟型結構 |
 | `draft-polish` | 說「幫我潤稿」、貼上 NotebookLM 草稿（目標 2,000-2,500 字） |
-| `tutorial-article` | 貼 X／Twitter 連結或方法論素材，說「幫我寫教學文」（800-1500 字） |
+| `deep-analysis` | **過渡期保留的退路**，明確說「用舊的 deep-analysis」才走；預設由 `longform` 接手 |
+| `tutorial-article` | **過渡期保留的退路**，明確說「用舊的教學文」才走；預設由 `longform` 接手 |
 | `social-post` | 貼文章連結，說「幫我寫社群貼文」（FB／IG） |
 | `article-checker` | 說「幫我查核」、「幫我 fact check」 |
 | `headline-generator` | 說「幫我想標題」、「幫我下標」、「給我幾個標題選項」 |
@@ -101,7 +103,8 @@
 
 ### Notion（產稿中心資料庫）
 
-- 用途：AI 產稿中心資料庫（掃描待辦、寫回成品）。核心資料庫：**你自建的產稿資料庫**（URL 換成自己的；欄位定義可參考 `~/.claude/agents/notion-orchestrator.md`「資料庫資訊」）。
+- 用途：AI 產稿中心資料庫（掃描待辦、寫回成品）。核心資料庫：**你自建的產稿資料庫**，URL：`<你的產稿資料庫 URL>`（欄位定義可參考 `~/.claude/agents/notion-orchestrator.md`「欄位說明」）。
+- **覆寫規則**：`notion-orchestrator.md`「資料庫資訊」裡寫的 URL 與 Data Source ID 是 Terry 環境的預設值，**一律以本檔上面那行為準**。不要去改 repo 內的檔案，改了每次 `git pull` 都會衝突。
 - **連接方式**：走 claude.ai 連接器（Settings → Connectors → Notion 授權），**不要用 `claude mcp add` 自建**——notion-orchestrator 內文寫死工具前綴 `mcp__claude_ai_Notion__*`，自建 server 的前綴不同會全部呼叫失敗。
 - **參數小抄（同形錯誤曾跨 session 重犯 26 次，照抄不要猜）**：
   - `notion-fetch` 的參數名只有 `id`——傳 `url` 或 `page_id` 當參數名會報 validation error；`id` 的**值**可以放 UUID 或 notion.so 網址
@@ -141,7 +144,7 @@
 
 - 收到產稿任務時，主動判斷對應的 Skill 並執行，不需等待確認
 - 來源無法讀取時，立即回報，不要自行替換素材繼續產稿
-- 不確定稿件類型時（深度分析 vs 教學文難以判斷），主動詢問，不要猜測
+- 長稿不必事前問「這是深度分析還是教學文」——`longform` 的結構取向由大綱決定。要問的只有真正影響路由的分界：即時新聞（news-daily）vs 長文（longform）、ETF 規格懶人包（etf-explainer）vs 其他，判準見各 Skill frontmatter
 - **一稿一 session**；長專案每個工作天開新 session，進度狀態寫進檔案（如稿件頂部 status 區塊），不依賴對話記憶——超長 session 是 token 上限與出錯率的最大單一來源
 - **已確認過的內容進入修訂輪後**：任何改動先在對話中展示修改前後對照、使用者 OK 才寫回檔案；指令只涉排版／格式時，禁止動文字內容
 - **修訂迴圈的讀寫紀律**：用 offset/limit 只讀受影響段落（整讀限初讀與定稿檢查各一次）；同一檔案的多個 Edit 逐一執行、不併發；`old_string` 從最近一次 Read 輸出複製（小心全半形標點與彎直引號）
@@ -186,12 +189,13 @@ Terry 個人另有一層制度檔（`~/.claude/ops/` 的派工 playbook、判斷
 - `draft/_register.md` — 檔案狀態追蹤表（Claude 自動維護，每列備註 ≤ 100 字，全檔 ≤ 5,000 bytes）
 - `daily-notes/` — 每日工作日誌（檔名 `YYYY-MM-DD.md`）
 - `archive/` — 發布後值得收藏的文章
+- `pic/` — 圖片素材（不參與 lint-vault 掃描）
 - `personal/` — 工作以外的私人內容（不參與自動寫回、不被 lint-vault 掃描）
 - `.trash/` — 刪除緩衝區（先移入 `.trash/YYYYMMDD/`，14 天後清空；移入此處為可逆操作，不需確認）
 
 ## 檔案命名規範
 
-`draft/` 與 `archive/`：`YYYYMMDD-類型-中文主題.md`，類型代碼 `news`／`analysis`／`tutorial`／`polish`／`social`／`etf`。
+`draft/` 與 `archive/`：`YYYYMMDD-類型-中文主題.md`，類型代碼 `news`／`analysis`／`tutorial`／`polish`／`social`／`etf`（`longform` 產出沿用 `analysis`（論證型）或 `tutorial`（步驟型），暫無獨立代碼）。
 `research/`：`YYYYMMDD-中文主題.md`（不需類型代碼）。
 `inbox/`（Web Clipper 原始檔名）、`daily-notes/`、`people/`、`projects/`、`personal/` 不套用。
 

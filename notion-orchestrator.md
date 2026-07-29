@@ -15,6 +15,8 @@ description: |
 
 ## 資料庫資訊
 
+> ⚠️ **以下是預設值，個人 `~/.claude/CLAUDE.md` 登記的產稿資料庫優先。** 產稿資料庫各自建置、不共用稿單（v3.0.1 起）：若你的 CLAUDE.md「MCP 整合 → Notion」有寫自己的資料庫 URL，一律用那個，並忽略下面三行。**不要修改本檔**，改了每次 `git pull` 都會衝突。
+
 - **資料庫名稱**：AI產稿中心 v2（Claude Code）
 - **資料庫 URL**：https://www.notion.so/a438232ce0a94fe6b70d9f2e9199a32a
 - **Data Source ID**：collection://71ff4d7b-3745-4b37-9910-1ee0c0ca8a47

@@ -23,15 +23,21 @@
 **安裝**：只下載這三支檔案放到 `~/.claude/agents/`，或整個 clone 後忽略編輯部的 Skills。
 
 ```bash
-# 方法一：只取這三支
-curl -O https://raw.githubusercontent.com/terrylee-lang/BN_next/main/article-checker.md
-curl -O https://raw.githubusercontent.com/terrylee-lang/BN_next/main/headline-generator.md
-curl -O https://raw.githubusercontent.com/terrylee-lang/BN_next/main/retrospective.md
-mv *.md ~/.claude/agents/
+# 方法一：只取這三支（直接下載到目的地，不要在別的目錄用 mv *.md，會誤搬同目錄其他檔案）
+mkdir -p ~/.claude/agents
+for f in article-checker headline-generator retrospective; do
+  curl -fsSL -o ~/.claude/agents/$f.md \
+    https://raw.githubusercontent.com/terrylee-lang/BN_next/main/$f.md
+done
 
 # 方法二：全部 clone，不影響——Claude Code 只在被觸發時才讀對應 skill
+# ⚠️ ~/.claude/agents 已存在（裡面有你自己的 agent 檔）時，clone 會失敗。
+#    先改名備份再 clone，然後把自己的檔案逐一搬回，不要整包倒回：
+#    mv ~/.claude/agents ~/.claude/agents.backup-$(date +%Y%m%d)
 git clone https://github.com/terrylee-lang/BN_next.git ~/.claude/agents
 ```
+
+**這三支怎麼觸發**：放進 `~/.claude/agents/` 後走 Agent 工具（`subagent_type: article-checker`）或直接說「幫我查核這篇」。想用 `/article-checker` 斜線指令，要另外在 `~/.claude/skills/article-checker/SKILL.md` 放一個指回本體的薄 stub，做法見 `bn-claude-code-init.md` Step 2b。
 
 **注意**：`article-checker` 與 `headline-generator` 預設會讀 `bwt-style-guide.md`（《數位時代》風格規範）。你有兩個選擇：
 
@@ -118,7 +124,7 @@ description: |
 
 如果你看中某支 `[編輯部]` Skill 想挪用，以下是它們的硬依賴點：
 
-### `news-daily` / `deep-analysis` / `draft-polish` / `tutorial-article` / `social-post` / `etf-explainer`
+### `news-daily` / `longform` / `draft-polish` / `social-post` / `etf-explainer`（以及過渡期退路 `deep-analysis` / `tutorial-article`）
 
 需要調整：
 - **風格規範檔**：`bwt-style-guide.md` 改成你部門的
@@ -128,9 +134,9 @@ description: |
 
 ### `notion-orchestrator`
 
-重度綁定《數位時代》Notion 資料庫「AI產稿中心 v2」。要挪用必須：
-- 新建自己部門的 Notion 資料庫，依 Skill 文件重建欄位結構
-- 修改 Skill 內的資料庫 ID（搜尋 `a438232ce0a94fe6b70d9f2e9199a32a`）
+重度綁定 Notion 產稿資料庫（編輯部每人各自建一份，Skill 內寫的是 Terry 環境的預設值）。要挪用必須：
+- 新建自己部門的 Notion 資料庫，依 Skill「欄位說明」重建欄位結構，並到該庫 Connections 加入你的 integration
+- 把資料庫 URL 寫進你自己的 `~/.claude/CLAUDE.md`（覆寫規則），而不是改 Skill 檔內的 `a438232ce0a94fe6b70d9f2e9199a32a`——改了之後每次 `git pull` 都會衝突
 - 依你部門的稿件類型（不是 `即時新聞`／`深度分析`）調整 Step 2a 的派發邏輯
 
 ### `lint-vault`

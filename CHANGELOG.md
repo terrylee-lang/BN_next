@@ -3,7 +3,53 @@
 《數位時代》Skills 庫的完整版本紀錄。
 
 > **更新流程**：每次更新 Skills 後，在此檔案最上方補上版本號、日期、異動說明，再 commit & push。
-> 版本號規則：新增 Skill → 次版號 +1（v2.x.0）；修改既有 Skill → 修訂號 +1（v2.x.x）。
+> 版本號規則：新增 Skill → 次版號 +1（v3.x.0）；修改既有 Skill 或交接文件 → 修訂號 +1（v3.x.x）。
+
+---
+
+## v3.2.0 — 2026-07-29
+
+**交接包自助化：貼一個 repo 網址，同事的 Claude Code 就能自己把產稿環境裝起來**
+
+源頭：交接包（`bn-claude-code-init.md` ＋ `CLAUDE-template.md` ＋ `SMOKE-TEST.md`）v3.0.0 已就位，但入口在 README 第 144 行，第一屏還是給人看的介紹。實測發現一個決定架構的限制：**用網頁抓取工具讀 GitHub repo 頁面拿到的是摘要改寫版**（要求逐字引用 README 前 30 行，回來的是摘要），clone 指令、檢查點、參數小抄都可能被壓縮掉。所以網址只能承載「一句開機指令」，安裝細節必須 clone 後用 Read 讀本機檔案。
+
+### README：新增「⚡ 開機指令」為第一屏
+
+- 人類端只有一句話：在 Claude Code 說「照 <repo 網址> 的開機指令幫我設定」
+- AI 端壓到三步（確認有 Bash 與家目錄寫入權限 → clone → Read `bn-claude-code-init.md` 執行到底），並明寫「不要憑這一頁推導安裝步驟，本頁經網頁抓取會失真」
+- 非編輯部同事分流到 `ADAPTATION.md`，不要整套照裝
+- 新增「需要本人動手的四件事」表（Notion 連接器授權、自建資料庫＋token、建 `bnext-visuals` repo 開 Pages、Pluto OAuth），各標所在步驟與所需時間
+- 新增「這個 repo 交接什麼、不交接什麼」表：明列 5 項刻意不隨附的個人層檔案（`bwt-voice-reference.md`、每日收工 SOP、`ops/` 四件套、memory 政策與筆記格式範本、`bwt-lint.sh`）、缺了會怎樣、要的話怎麼拿。AI 不再去找不存在的檔案
+- 補 `git`／`jq`／`poppler`／連接器到前置需求表；`pdftotext` 與 `jq` 的 symlink 要求寫進表格（Claude Code 的 Bash PATH 不含 `/opt/homebrew/bin`）
+
+### 安裝器：人工事項前置化，修掉會讓 AI 中途卡死的反向依賴
+
+- **Step 1 開場先攤開四件人工事項**，並把「建 Notion 資料庫＋integration」升為第 7 題（原本埋在 Step 5b）。修掉原本的順序 bug：Step 5b 要求「把資料庫 URL 記下來，**Step 3** 要寫進 CLAUDE.md」，而 Step 3 早已跑完，AI 照做會卡住。現在 URL 在 Step 1 就到手，Step 5b 只處理 token
+- Step 5b 保留一條退路：URL 一時拿不到就先寫佔位符，5b 結束前回頭補並重跑 Step 3 檢查點
+- **Notion「各自建置」口徑改乾淨**：Step 5a 檢查點改用使用者自己的資料庫 URL，失敗排查從「請他找 Terry 分享」改為「integration 沒加進 Connections 或 URL 貼錯」；Step 8 移除「把 `notion-orchestrator.md` 內的預設 URL 換成自己的」（與 Step 6c「不要動 repo 內檔案」相矛盾），改走 CLAUDE.md 覆寫規則
+- 執行原則新增兩條：開場先講「會寫入 `~/.claude/`，權限詢問請按允許」與「Skills 清單要重開 session 才載入」；以及「不要為了讓檢查點通過而改規範檔」
+- Step 2 檔案清單補上 `longform.md`，檔案數檢查點 `≥ 24` 改 `≥ 25`（與 SMOKE-TEST T1 對齊）
+- Step 2b 明寫「其餘 6 支刻意不建 stub、只走 Agent 工具」，並說明想要 `/名稱` 就自己補 stub
+- Step 4 補建 `.trash/`（範本附錄與收工流程都依賴它，原本沒建）
+- Step 5d Playwright 指令補 `--`（`claude mcp add playwright -- npx @playwright/mcp@latest`），與現行 `claude mcp add --help` 對 stdio server 的寫法一致
+- Step 7 明寫「先請使用者重開 session 再跑驗證」，避免 T2、T3 誤判成安裝失敗
+- Step 8 改列「兩個容易被誤認成故障的預期行為」＋「真正需要找 Terry 的三類事」（Pluto 授權、`bwt-lint.sh`、個人層制度檔範例）
+
+### 個人 CLAUDE.md 範本：補上 longform
+
+- 產稿 Skills 表新增 `longform`（標為 1,500 字以上長稿主線），`deep-analysis`／`tutorial-article` 降為「過渡期退路，明確說『用舊的』才走」。原本範本完全沒有 longform，新同事照範本生成的 CLAUDE.md 等於裝了卻永遠不會觸發
+- 「不確定稿件類型時（深度分析 vs 教學文）主動詢問」改為 longform 口徑：長稿不事前選稿種，要問的只有真正影響路由的分界
+- stub 名單改為描述現況：只有 `notion-orchestrator` 有帶 `disable-model-invocation: true` 的 stub，其餘 Agent-only 的沒有 stub（原本寫成 7 支都應有，與安裝器的 7 個 stub、SMOKE-TEST T2 的預期三方打架）
+- Notion 段新增覆寫規則（本檔的資料庫 URL 優先於 `notion-orchestrator.md` 的預設值）；附錄補 `pic/`、補 longform 產出的檔名代碼沿用規則
+- 「12 支以上 Skill 寫死 `~/Claude Project`」更正為 6 個檔案並列出檔名（實查結果）
+
+### 其他
+
+- `SMOKE-TEST.md`：T1 的 frontmatter 清單改為 longform 主線口徑、T2 補「只有 7 支有 stub」說明、T6／T7 去除「請 Terry 分享／加 Connections」的共用庫殘留、開頭與結尾補「先重開 session」與「只有兩類事要找 Terry」
+- `ADAPTATION.md`：`mv *.md ~/.claude/agents/` 改為逐檔 `curl -o`（原寫法會誤搬同目錄其他 `.md`）、補 clone 前的既有目錄警語、補「這三支怎麼觸發（Agent 工具，要斜線指令得自建 stub）」、Q3 skill 清單改為 longform 口徑、`notion-orchestrator` 改造建議改走 CLAUDE.md 覆寫而非改 Skill 檔
+- `notion-orchestrator.md`：「資料庫資訊」加註「個人 CLAUDE.md 優先、不要改本檔」
+- `bwt-style-guide.md`：「正文字數（全域規則）」正式登記 ETF 懶人包 3,500–4,500 字為唯一例外（原本例外只寫在 `etf-explainer.md`，而本節自稱「唯一硬上限就是本條」，形成單點化原則的破口）
+- 版本號規則的示例從 `v2.x` 更新為 `v3.x`（README、CHANGELOG）
 
 ---
 
