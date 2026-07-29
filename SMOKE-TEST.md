@@ -24,10 +24,11 @@ for f in ~/.claude/agents/*.md; do head -1 "$f" | grep -q '^---$' && basename "$
 
 **預期**
 
-- 第一行 ≥ **24**
+- 第一行 ≥ **25**
 - `bwt-*` 共 **5 份**：`bwt-style-guide.md`、`bwt-design-standard.md`、`bwt-visual-checklist.md`、`bwt-iframe-visual-component.md`、`bwt-html-table-component.md`
   （常被誤以為有第 6 份：`bwt-voice-reference.md` 是個人風格指紋檔，**不在共享 repo**，缺少是正常的，見 T5）
-- 第三行 = **13**（有 frontmatter 的 Skill 檔：news-daily、deep-analysis、draft-polish、tutorial-article、social-post、etf-explainer、article-checker、headline-generator、notion-orchestrator、visual-brief、visual-asset、lint-vault、retrospective；再加上你自建的 agent 會更多）
+- 第三行 = **14**（有 frontmatter 的 Skill 檔：news-daily、deep-analysis、draft-polish、tutorial-article、social-post、etf-explainer、article-checker、headline-generator、notion-orchestrator、visual-brief、visual-asset、lint-vault、retrospective、longform；再加上你自建的 agent 會更多）
+  （`longform.md` 是實驗中的新 Skill，見 README「Skills 一覽」的註記。它存在是正常的，但預設不會被觸發）
 
 **失敗怎麼修**
 

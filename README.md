@@ -66,6 +66,7 @@ Token 為**你自己建立**的 Notion internal integration secret（到 [notion
 | `social-post.md` | `[編輯部]` | 社群貼文：文章 → Facebook / IG 貼文（含《數位時代》品牌風格） |
 | `tutorial-article.md` | `[編輯部]` | 教學文：X 方法論 / 工具技巧 → 教學型文章 |
 | `etf-explainer.md` | `[編輯部]` | ETF 懶人包：ETF 規格 + 公開說明書 + 媒體素材 → SEO 流量型懶人包稿件（9 個 H2 + Q&A） |
+| `longform.md` | `[編輯部]` ⚠️ **實驗中** | 長文：合併 deep-analysis 與 tutorial-article 的新一代 skill，內建 grill 前置（動筆前先讀完素材、盤點來源立場、逼問切角到共識），再由大綱決定套論證型或步驟型結構。**目前僅驗證過論證型路徑，步驟型尚未實測**；`deep-analysis` 與 `tutorial-article` 仍是預設，本檔要明確說「用 longform」或「幫我寫長文」才會走。穩定後將取代舊兩支 |
 | `notion-orchestrator.md` | `[編輯部]` | 主腦：掃描「AI產稿中心 v2」Notion 資料庫，自動派發 Skill 批次產稿 |
 | `lint-vault.md` | `[編輯部]` | Vault 健康檢查：掃描 Obsidian vault 孤兒筆記、缺連結、過時內容 |
 | `visual-brief.md` | `[編輯部]` | 主視覺發想：稿件 → 給 Claude Design 或其他設計工具的結構化視覺 brief |
@@ -136,7 +137,7 @@ Claude 會自動掃描 AI產稿中心 v2，篩選待辦條目（「未開始」�
 
 ## 版本紀錄
 
-最新版本：**v3.0.2（2026-07-29）** — 三大重點字數統一 50 字、etf 字數例外確認保留。v3.0.1：Notion 產稿資料庫改各自建置（不共用稿單與 token）。前一版 v3.0.0（2026-07-28）：— 全系統總體檢：修復 8 處規範互相打架的活矛盾（「值得注意的是」口徑、轉場詞、iframe 高度策略、RWD 寫法、破折號等）、約束單點化（`bwt-style-guide` 升為跨 Skill 共用段落唯一權威、全稿種字數上限統一 3,500 字）、`article-checker` 三軸改造（新增 Codex 協作協議）、交接包改造（新增 `CLAUDE-template.md`＋`SMOKE-TEST.md`，`bn-claude-code-init.md` 升級為互動式安裝主體）
+最新版本：**v3.1.0（2026-07-29）** — 新增 `longform.md` 長文 Skill（⚠️ **實驗中，不是預設路徑**）：合併 deep-analysis 與 tutorial-article，內建 grill 前置（動筆前讀完素材、盤點來源立場、逼問切角到共識），結構取向由大綱決定。目前僅驗證過論證型路徑，舊 Skill 全部保留為預設，要走新的須明確說「用 longform」。v3.0.2：三大重點字數統一 50 字、etf 字數例外確認保留。v3.0.1：Notion 產稿資料庫改各自建置（不共用稿單與 token）。v3.0.0（2026-07-28）：— 全系統總體檢：修復 8 處規範互相打架的活矛盾（「值得注意的是」口徑、轉場詞、iframe 高度策略、RWD 寫法、破折號等）、約束單點化（`bwt-style-guide` 升為跨 Skill 共用段落唯一權威、全稿種字數上限統一 3,500 字）、`article-checker` 三軸改造（新增 Codex 協作協議）、交接包改造（新增 `CLAUDE-template.md`＋`SMOKE-TEST.md`，`bn-claude-code-init.md` 升級為互動式安裝主體）
 
 完整異動紀錄請見 [CHANGELOG.md](./CHANGELOG.md)。
 
