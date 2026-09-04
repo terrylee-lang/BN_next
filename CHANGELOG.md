@@ -7,6 +7,34 @@
 
 ---
 
+## v3.2.6 — 2026-09-04
+
+**首次實推 Pluto 內容池後補齊三個缺口：draft/ 回填程序、推送參數規則、讀感確認定義**
+
+源頭：同日兩篇 Notion 流程稿（Xbox 雲端遊戲時數限制、Oura IPO）走完「Notion 斷線暫存 draft/ → 回填 Notion → Codex 修訂 → 讀感確認 → `content-pool-add` 推送（id 349／350）」全程，三處規範沒寫、只能現場重建：暫存到 draft/ 之後怎麼寫回；`content-pool-add` 的 `writer`／`permlink`／`page_title` 該填什麼；CLAUDE.md 品管流程最後一步「文體／讀感最終確認」查什麼。另發現「字數」欄在三處各有一種算法。
+
+### notion-orchestrator.md
+
+- 新增 **2f-ter 復原程序**：連接器恢復後從 draft/ 副本回填 Notion 的五步（定位頁面、內文回填、屬性回填、驗證、清理）；明訂驗證未過不得清理、draft 頂部工作標題不帶進內文、找不到頁面就停下問而非另建
+- 欄位表：`permlink` 原寫「留空則推送時自動生成」為誤——`content-pool-add` 該參數必填、後台不生成，改為由推送者依規則產 slug；`SEO 標題` 補回退鏈（建議標題 → 標題）；`字數` 給出唯一定義（去 Markdown 後非空白字元數、不含文末兩行）
+- 「對照 Pluto 參數」段補 `title` 回退、`content` 一比一，並指向 `bwt-pluto-push-spec.md` 的參數映射
+
+### bwt-pluto-push-spec.md：新增「推送參數映射」
+
+- `writer` 填 `authorinfo` 回傳的註冊名（如 Terry Lee），非署名行中文名（首推回傳 `creator` 由 API 帳號自動帶中文名，兩者用途不同）；`permlink` 產生規則與範例；`page_title` 回退鏈；`content` 一比一含文末兩行、`reference` 另傳
+- 待 Terry 確認：資料來源同時在 `content` 文末與 `reference` 參數，後台是否重複顯示（看 id 349／350）；未確認前維持一比一映射
+
+### article-checker.md：新增「文體／讀感最終確認」
+
+- 把 CLAUDE.md 流程圖裡存在但未定義的最後一站寫成五項檢查：補丁句、數字堆疊、語氣被削平、限定語過載、文末兩行與元件標記回查。不查事實不改口徑，改動先展示對照
+- 五項全部來自同日兩篇的實際命中（Xbox 第 1、3 項，Oura 第 2 項）
+
+### etf-explainer.md
+
+- 字數欄「實際中文字＋英數字折算」改為沿用 orchestrator 唯一定義，消掉第三種算法
+
+---
+
 ## v3.2.5 — 2026-09-04
 
 **素材只給題目、沒給路徑時，會漏看 inbox 直接 web_search：新增「先掃 inbox 再對外找」前置步驟**

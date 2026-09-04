@@ -38,6 +38,19 @@ description: Pluto 後台（content-pool）推送規格的裁決紀錄。要把�
 
 ---
 
+## 推送參數映射（2026-09-04 首次實推裁決，`content-pool-add`）
+
+Notion 欄位→參數的基本對應在 `notion-orchestrator.md`「對照 Pluto `content-pool-add` 參數」；本節補該處沒寫、實推時才發現必須決定的四項：
+
+| 參數 | 規則 | 依據 |
+|---|---|---|
+| `writer` | 填 Pluto 的**作者註冊名**：用 `authorinfo`（`site=bnext`）以中文姓名查，取回傳的 `name`（如「Terry Lee」）。不是文末署名行的中文名；署名行留在 `content` 裡不動 | 首推 id 349／350 回傳 `creator` 由 API 帳號自動帶「李先泰」、`writer` 為所填值，兩者用途不同 |
+| `permlink` | **必填**（schema required），後台不會自動生成。由推送者依標題產英文 kebab-case slug：≤100 字元、只用小寫字母、數字與連字號、不含中文；取「主體-事件」二到五個詞（例：`xbox-cloud-gaming-monthly-hour-limit`、`oura-ipo-s1-filing-revenue-loss`）。Notion「permlink」欄有值就照用 | 舊欄位表寫「留空則自動生成」為誤，2026-09-04 改正 |
+| `page_title` | 回退鏈：Notion「SEO 標題」→「建議標題」→「標題」，取第一個非空者 | 首推時前兩欄皆空 |
+| `content` ＋ `reference` | `content` 帶**完整頁面內文**（含頂部三大重點與摘要區塊、文末資料來源與署名兩行），`content_type` 填 `markdown`；`reference` 另傳文末那一行解析出的 JSON 陣列（規則見 `bwt-style-guide.md`「署名格式」） | 一比一映射，推送層不改稿 |
+
+**待 Terry 確認**：資料來源同時存在於 `content` 文末與 `reference` 參數，後台是否顯示兩次——開 id 349／350 檢視。若重複，改為推送時從 `content` 剔除文末資料來源行（署名行是否保留一併裁決）；未確認前維持一比一映射。
+
 ## 待補（不要憑猜實作）
 
 1. **《數位時代》的 `media-upload` site 值**：現行 enum（mc／mt／mschool／people／eightlife／fc／expo／meet-en／sushi／quickread／other）**沒有 bn**。對方表示要用的是 bn／mt／sd，但 bn 與 sd 不在 enum 內。未取得正式值之前不要用 `other` 硬推
