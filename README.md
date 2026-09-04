@@ -175,7 +175,7 @@ Claude 會掃描**你自己的**產稿資料庫（URL 寫在你的 `~/.claude/CL
 
 ## 版本紀錄
 
-最新版本：**v3.2.0（2026-07-29）** — 交接包可自助化：README 第一屏新增「⚡ 開機指令」（貼 repo 網址給 Claude Code 即可自助安裝，因網頁抓取會摘要失真，指令刻意壓到三步、細節一律 clone 後讀本機檔）、人工事項前置到 Step 1、新增「交接什麼／不交接什麼」清單；同步修掉安裝器 17 處過時與互相矛盾（Notion 資料庫「各自建置」口徑未改乾淨、Step 5b 反向依賴已跑完的 Step 3、stub 名單三份文件三套、longform 未列入檔案清單與個人 CLAUDE.md 範本、`.trash/` 未建、Playwright 指令缺 `--`）。v3.1.0：新增 `longform.md` 長文 Skill。v3.0.2：三大重點字數統一 50 字、etf 字數例外確認保留。v3.0.1：Notion 產稿資料庫改各自建置（不共用稿單與 token）。v3.0.0（2026-07-28）：全系統總體檢：修復 8 處規範互相打架的活矛盾、約束單點化（`bwt-style-guide` 升為跨 Skill 共用段落唯一權威、全稿種字數上限統一 3,500 字）、`article-checker` 三軸改造、交接包改造（新增 `CLAUDE-template.md`＋`SMOKE-TEST.md`）
+最新版本：**v3.2.5（2026-09-04）** — 素材讀取新增「先掃 inbox 再 web_search」前置步驟（`bwt-style-guide.md` 共用章節＋`longform.md` Step 1a），避免只給題目沒指路徑時漏看已備素材、大綱重工。v3.2.4：新增「正文的來源歸屬分界」，區分客觀數據直接敘述 vs 媒體詮釋才掛出處。v3.2.3：鐵律新增「無幽靈段落」子條，規範裡的「必答」槽位是檢查提示、不是生產指令，素材撐不住就略過。v3.2.2：對齊 Pluto 後台推送規格——資料來源行確立為結構化 `reference` 資料、新增「文章元件語意標記」（抽言／延伸閱讀／重點框／影音）、Notion 資料庫欄位對齊實際 select 選項（負責人 6 人、稿件類型 3+1 種）、新增 `bwt-pluto-push-spec.md`。v3.2.1：事實查核鐵律補「摘要不算讀到」子條，`web_search`／`web_fetch` 摘要僅供判斷來源、引用一律回原文核對。v3.2.0：交接包可自助化：README 第一屏新增「⚡ 開機指令」（貼 repo 網址給 Claude Code 即可自助安裝，因網頁抓取會摘要失真，指令刻意壓到三步、細節一律 clone 後讀本機檔）、人工事項前置到 Step 1、新增「交接什麼／不交接什麼」清單；同步修掉安裝器 17 處過時與互相矛盾（Notion 資料庫「各自建置」口徑未改乾淨、Step 5b 反向依賴已跑完的 Step 3、stub 名單三份文件三套、longform 未列入檔案清單與個人 CLAUDE.md 範本、`.trash/` 未建、Playwright 指令缺 `--`）。v3.1.0：新增 `longform.md` 長文 Skill。v3.0.2：三大重點字數統一 50 字、etf 字數例外確認保留。v3.0.1：Notion 產稿資料庫改各自建置（不共用稿單與 token）。v3.0.0（2026-07-28）：全系統總體檢：修復 8 處規範互相打架的活矛盾、約束單點化（`bwt-style-guide` 升為跨 Skill 共用段落唯一權威、全稿種字數上限統一 3,500 字）、`article-checker` 三軸改造、交接包改造（新增 `CLAUDE-template.md`＋`SMOKE-TEST.md`）
 
 完整異動紀錄請見 [CHANGELOG.md](./CHANGELOG.md)。
 

@@ -76,9 +76,10 @@
 
 **規則本體的唯一居所是 `~/.claude/agents/bwt-style-guide.md`「來源讀取優先序（跨 Skill 共用）」**，本檔不複寫，避免兩份規則各自漂移。取素材前讀那一節，重點只記三件事：
 
-1. 本地檔案優先、URL 先掃 `<你的 vault 路徑>/inbox/` 的 frontmatter `source` 命中就讀本機全文，都沒有才 `web_fetch`
-2. **讀不到就停**：立即回報並向使用者索取原文（用 Dia 瀏覽器萃取 Markdown 貼入），**不自行替換素材繼續產稿**
-3. **不使用 Playwright 作為內容讀取備援**——snapshot 吃大量無關 DOM，浪費 token 且品質差
+1. **只給題目、沒給具體路徑或連結時，先用關鍵字掃一輪 `inbox/`**（不只是比對 frontmatter）——使用者常是素材先丟 inbox 才下指令，訊息裡不會每次重複點名
+2. 本地檔案優先、URL 先掃 `<你的 vault 路徑>/inbox/` 的 frontmatter `source` 命中就讀本機全文，都沒有才 `web_fetch`
+3. **讀不到就停**：立即回報並向使用者索取原文（用 Dia 瀏覽器萃取 Markdown 貼入），**不自行替換素材繼續產稿**
+4. **不使用 Playwright 作為內容讀取備援**——snapshot 吃大量無關 DOM，浪費 token 且品質差
 
 ### 付費牆媒體（Bloomberg、WSJ、日經、Business Insider）
 
