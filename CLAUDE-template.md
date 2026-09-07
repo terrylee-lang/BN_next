@@ -93,7 +93,7 @@
 
 ## 寫作風格規範
 
-- **所有產稿 Skill 啟動前必讀** `~/.claude/agents/bwt-style-guide.md`：兩岸用語轉換、人名與公司名規範、禁止詞彙、**事實查核鐵律**、技術性稿件白話化原則、署名格式。
+- **所有產稿 Skill 啟動前必讀** `~/.claude/agents/bwt-style-guide.md`：統一用字與常見錯字表（含兩岸用語）、人名與公司名規範、禁止詞彙、**事實查核鐵律**、技術性稿件白話化原則、署名格式。
 - **署名**：文末署名行的責任編輯 = 稿件負責人。走 Notion 流程時取「負責人」欄位；自己交辦的稿件寫 `<你的名字>`。
 - **個人風格指紋（選配）**：若你有自己的語氣偏好檔（例如 `~/.claude/<你的名字>-voice-reference.md`），在這裡寫出路徑與「哪幾支 Skill 產稿時要額外讀」。**沒有這個檔就整段刪掉**——repo 內所有對個人風格檔的引用都是條件句（「若存在則讀」），缺檔不會報錯，不需要去建一個空檔案。
 - **視覺類任務**（visual-asset、etf-explainer 等產出視覺製品時）：動手前先讀 `~/.claude/agents/bwt-visual-checklist.md`（工作流與交付 checklist），由它指路其餘規範——`bwt-design-standard.md`（design tokens 總綱，single source of truth，**禁止憑外部觀察自建色票**）、`bwt-iframe-visual-component.md`（iframe 實作）、`bwt-html-table-component.md`（表格元件）。

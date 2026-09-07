@@ -36,7 +36,7 @@ description: |
 
 | 需要什麼 | 去哪讀 |
 |---|---|
-| 兩岸用語、人名與公司名、日期格式、禁止出現的寫法（AI 味句式總表）、**正文字數硬上限**、來源讀取優先序、事實查核鐵律、技術性稿件白話化原則、署名格式、Notion 寫回內文格式 | `~/.claude/agents/bwt-style-guide.md`，**動筆前必讀**，全 Skill canonical |
+| 統一用字與常見錯字（含兩岸用語）、人名與公司名、日期格式、禁止出現的寫法（AI 味句式總表）、**正文字數硬上限**、來源讀取優先序、事實查核鐵律、技術性稿件白話化原則、署名格式、Notion 寫回內文格式 | `~/.claude/agents/bwt-style-guide.md`，**動筆前必讀**，全 Skill canonical |
 | Terry 個人聲音指紋 | `~/.claude/bwt-voice-reference.md`，**若存在則讀，不存在直接略過**，不因缺席報錯（此檔為個人掛載，不隨共用 repo 交接） |
 | 標題定案完整流程與各稿種標題規格 | `~/.claude/agents/headline-generator.md`（唯一權威）。本檔只給方向不自立字數規格 |
 | 成品查核 | `~/.claude/agents/article-checker.md`，產稿完成後一律跑一輪 |

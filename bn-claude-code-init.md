@@ -127,7 +127,7 @@ git -C ~/.claude/agents status --short      # 應為空（工作區乾淨）
 安裝後應存在的檔案：
 
 **共用規範（5 份 bwt-*）**
-- `bwt-style-guide.md`（寫作風格規範：兩岸用語、禁用詞、**事實查核鐵律**、來源讀取優先序、署名格式）
+- `bwt-style-guide.md`（寫作風格規範：統一用字與常見錯字、兩岸用語、禁用詞、**事實查核鐵律**、來源讀取優先序、署名格式）
 - `bwt-visual-checklist.md`（視覺任務入口 checklist：設計優先序、產品類型判斷、16:9 SOP、交付 spot-check）
 - `bwt-design-standard.md`（美術製作標準總綱：BN Design System 完整 tokens）
 - `bwt-iframe-visual-component.md`（iframe 配件子規範）

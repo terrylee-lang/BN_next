@@ -320,7 +320,7 @@ border-left: 4px solid #FF6B1A;
 
 | 規範 | 負責層面 | 檔案 |
 |---|---|---|
-| **寫作風格** | 兩岸用語、人名、日期、禁用詞彙、技術白話化、署名 | [`bwt-style-guide.md`](bwt-style-guide.md) |
+| **寫作風格** | 統一用字與常見錯字、兩岸用語、人名、日期、禁用詞彙、技術白話化、署名 | [`bwt-style-guide.md`](bwt-style-guide.md) |
 | **美術製作** | Design tokens、設計原則、配件結構 | 本檔（`bwt-design-standard.md`） + 各子規範 |
 | **個人聲音指紋** | Terry 個人語氣偏好 | `bwt-voice-reference.md`（Terry 個人，不進共享 repo） |
 
