@@ -398,5 +398,6 @@ rg -n "terrylee-lang" ~/.claude/CLAUDE.md                                       
 7. **真正需要找 Terry 的事**（只列這幾類，其餘都是自助）：
    - bnext-service（Pluto）MCP 的帳號授權名單
    - `bwt-lint.sh`（選配的機械檢查腳本，`article-checker` Step 0 有它才跑；沒有會自動降級，不影響查核）
+   - `jev-check`（選配的 TypeSafe Jev 影子查核腳本，`article-checker` Step 0b 有它才跑；沒有會自動略過，不影響查核；2026-09-21 起 Terry 個人層試驗）
    - 個人層制度檔範例（每日收工 SOP、`ops/` 四件套、memory 政策、research 筆記格式）——見 README「這個 repo 交接什麼、不交接什麼」
    - 註：Notion 資料庫與 `NOTION_TOKEN` 都由你自建，**不需要任何人給權限**

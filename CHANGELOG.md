@@ -7,6 +7,45 @@
 
 ---
 
+## v3.2.13 — 2026-10-29
+
+**用字表補「產品改名用新名」通則；Pluto 圖片上傳 site 值結案**
+
+源頭：安裝同事提供的本機 Skill `tutorial-step-image`（教學步驟圖，住 `~/.claude/skills/`、不進本 repo）時做上下游體檢，發現兩處共用規範落後於現實。
+
+### bwt-style-guide.md
+
+- 「譯名對照與量詞」新增「產品改名後一律用現行正式名稱」通則，首例 Gemini Notebook（原 NotebookLM，Google 2026-07-16 改名）；素材來源寫舊名時照改
+- 「文章元件語意標記」的圖片註記同步：site 值已有，仍人工處理的原因改為「圖片與圖說嵌進內容的對應尚未實作」
+
+### README.md
+
+- 版本紀錄補 v3.2.12（先前漏記）與 v3.2.13
+
+### bwt-pluto-push-spec.md
+
+- 「待補」第 1 條結案：`request_photo_upload` 的 site enum 已含 `bn` 與 `sd`（實測 schema），《數位時代》圖片上傳填 `bn`
+
+---
+
+## v3.2.12 — 2026-09-21
+
+**article-checker：新增 Step 0b「Jev 影子查核」（TypeSafe Jev 掛鉤，環境有才跑，兩週試驗）**
+
+源頭：Terry 2026-09-21 決定試接 TypeSafe 的 System One 模型 Jev（只回傳型別化判斷與機率、不生成文字）當查核流程的第二個獨立模型。當日 19 題繁中斷言對英文／中文原文回歸測試 19/19，一篇真實分析稿端到端試跑並調參後接入。個人層腳本 `~/.local/bin/jev-check`（本體 `~/.claude/ops/tools/jev/jev_check.py`）不隨 repo 交接；沒有腳本或金鑰時 Step 0b 自動略過，同事的查核流程不變。影子模式：Jev 標記只是候選，不得單憑它修稿；Codex 輪後回填命中數，2026-10-05 依「召回 80% 以上、誤報每篇 2 條以下、自動放行零漏抓」三門檻決定轉正或拔除。
+
+### article-checker.md
+
+- 前置作業新增 Step 0b：job JSON 合約、執行方式、標記處理（矛盾／未支撐／疑似升級逐條核對；找不到對應段落對照鐵律 2）、報告新增一節、Codex 輪後 `jev-check note` 回填；排除專刊與 embargo 稿件；三種降級情境；明寫 Jev 不取代 Step 2 web_search
+- 輸出格式加第 8 項「Jev 影子查核」（沒跑則省略）
+- Codex 協作協議「執行紀律」加「Jev 回填」一條
+
+### README.md／bn-claude-code-init.md
+
+- 不隨附的個人層檔案表與選配腳本清單各加 `jev-check` 一列，說明缺了會自動略過
+
+---
+
 ## v3.2.11 — 2026-09-14
 
 **成品內文不再放頂部「三大重點＋摘要」區塊，摘要只進屬性欄，重點一二三停產**

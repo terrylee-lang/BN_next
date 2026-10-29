@@ -53,7 +53,7 @@ Notion 欄位→參數的基本對應在 `notion-orchestrator.md`「對照 Pluto
 
 ## 待補（不要憑猜實作）
 
-1. **《數位時代》的 `media-upload` site 值**：現行 enum（mc／mt／mschool／people／eightlife／fc／expo／meet-en／sushi／quickread／other）**沒有 bn**。對方表示要用的是 bn／mt／sd，但 bn 與 sd 不在 enum 內。未取得正式值之前不要用 `other` 硬推
+1. ~~**《數位時代》的 `media-upload` site 值**：現行 enum 沒有 bn～~~ **已解決（2026-10-29）**：`request_photo_upload` 的 site enum 已含 `bn` 與 `sd`（實測 schema：bn／mc／mt／mschool／bzschool／sd／activity／advertising／book／people／eightlife／fc／quickread／expo／sushi／meet-en／other／pluto）。《數位時代》圖片上傳填 `bn`，source 填「數位時代實測」（tutorial-step-image 首用）
 2. **stage 環境接法**：URL、endpoint 或參數不明
 3. **`textblock` 的 style type1 到 type6 各自視覺**：此題未獲答覆，暫時一律 `style:"default"`
 4. **新版規格書**：對方重產中

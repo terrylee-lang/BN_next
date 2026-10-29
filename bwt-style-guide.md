@@ -173,6 +173,8 @@
 
 無中文譯名、直接用英文：Google、Netflix、Spotify、YouTube、Instagram、Snapchat、WeChat、LINE、7-11。
 
+**產品改名後一律用現行正式名稱**，第一次出現可加括號註舊名，後續只用新名：Gemini Notebook（原 NotebookLM，Google 2026-07-16 改名）。素材或草稿來源仍寫舊名時照改，不跟著素材走（2026-10-29 Terry 裁決；tutorial-step-image 同規則）。
+
 **量詞**：一輛車（不做「一台」）；一家企業、一家超商（藥局用「間」：100間藥局）；一名專家（不用「一位」，2026-09-07 Terry 裁決全量套用）。
 
 ---
@@ -506,7 +508,7 @@ API 參數名稱、code block、錯誤碼這類內容，**不直接列給一般�
 | 重點框 | `**重點框**：內容` | textblock | 一律 `style:"default"`。plugin 另有 type1 到 type6，後台尚未提供視覺說明，取得後改為 `**重點框（type2）**：` |
 | 影音 | `**影音**：[標題](URL)` | video | 限 youtube／vimeo／dailymotion／ted／giphy。`site` 由網域判定、不由編輯指定。稿件內不寫原生 `<iframe>` |
 
-圖片與圖說未納入：`picture` 的 `src` 取自 `media-upload` 回傳的 object（已確認），但《數位時代》的 site 值尚未由後台提供，故仍維持人工處理。
+圖片與圖說未納入：`picture` 的 `src` 取自 `media-upload` 回傳的 object（已確認）。圖片上傳本身已可走 `request_photo_upload`（site 填 `bn`，2026-10-29 確認，見 `bwt-pluto-push-spec`），但圖片與圖說嵌進文章內容的對應尚未實作，故仍維持人工處理。
 
 推送層規格（plugin 轉換、HTML 隔離、已確認裁決與待補項）見 `bwt-pluto-push-spec.md`，要推內容池或產文章內嵌 HTML 時載入。
 
