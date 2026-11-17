@@ -280,5 +280,5 @@ description: |
 
 - 完成後直接在對話中輸出完整 Markdown 全文。
 - **Notion 流程稿件**：直接寫回 Notion，不存 `draft/`。Notion 頁面即 single source of truth。
-- **非 Notion 稿件**（inbox 或臨時交辦）：存入 `draft/` 並更新 `draft/_register.md`，命名依專案 CLAUDE.md「檔案命名規範」。類型代碼目前尚無 `longform` 選項，暫依大綱取向沿用 `analysis`（論證型）或 `tutorial`（步驟型），是否新增 `longform` 代碼待下游清理時裁定。
+- **非 Notion 稿件**（inbox 或臨時交辦）：存入 `draft/` 並更新 `draft/_register.md`，命名依專案 CLAUDE.md「檔案命名規範」：論證型用 `analysis`、步驟型用 `tutorial`。
 - **產稿完成後一律跑 article-checker 一輪**，發現錯誤修回原成品位置後才回報完成。多輪改寫後主動補跑，不等追問。

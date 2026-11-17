@@ -139,7 +139,7 @@ git -C ~/.claude/agents status --short      # 應為空（工作區乾淨）
 
 **視覺 Skills**：`visual-brief.md`、`visual-asset.md`
 
-**工具型 Skills**：`retrospective.md`、`lint-vault.md`
+**工具型 Skills**：`retrospective.md`、`lint-vault.md`、`explain-menu.md`（主對話 Read 後執行，不需建 stub，也不會出現在 Agent 清單）
 
 **交接文件**：`README.md`、`CHANGELOG.md`、`ADAPTATION.md`（跨部門改造指引）、`CLAUDE-template.md`、`SMOKE-TEST.md`、本檔
 

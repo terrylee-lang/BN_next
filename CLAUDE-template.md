@@ -42,6 +42,7 @@
 - **只能走 Agent 工具（`subagent_type`）**：notion-orchestrator、longform、visual-asset、visual-brief、headline-generator、etf-explainer、lint-vault、retrospective
   - 其中只有 `notion-orchestrator` 在 `~/.claude/skills/` 有 stub（帶 `disable-model-invocation: true`：**使用者**可用 `/notion-orchestrator` 觸發，**Claude 自己**要主動呼叫則走 Agent 工具）。其餘幾支**沒有 stub**，打 `/名稱` 不會有東西，用自然語言觸發即可（「幫我寫長文」、「幫我做配件」、「幫我想標題」）
   - 所以 `ls ~/.claude/skills/` 應該是 7 個目錄：上面 Skill 工具那 6 支 ＋ notion-orchestrator。想讓某支 Agent-only 的也能用 `/名稱`，自己補一個帶 `disable-model-invocation: true` 的 stub（個人層檔案，不進共享 repo）
+- **主對話 `Read` 後執行（不是 Skill 也不是 Agent）**：explain-menu。流程中要等使用者勾選，不能派背景子代理；檔案刻意不加 frontmatter，所以不會出現在任何工具清單
 - 一律**以 session 開頭注入的可用清單為準**；工具不可用即改走另一機制或替代路徑（如 Bash `rg` 代替 Grep），同一工具不重試第三次
 
 ### 產稿 Skills
@@ -69,6 +70,7 @@
 | --- | --- |
 | `lint-vault` | 說「幫我檢查 vault」、「跑 lint」、「vault 健康檢查」 |
 | `retrospective` | 說「幫我覆盤」、「跑 retrospective」——用於系統討論層級；產稿類 feedback 改用「丟發布連結比對差異」流程 |
+| `explain-menu`（讀懂選單） | 說「這篇太難」、「給我輸出選項」、「幫我降難度」、「這個怎麼講清楚」，或讀感確認提示「難度訊號」後。**先 Read `~/.claude/agents/explain-menu.md` 在主對話依步驟執行**：診斷卡點、給輸出形式選單（文字／圖解／互動，影片僅在要求時），勾選後分派執行。時機在 article-checker 第一輪之後、貼 Codex 之前 |
 
 ---
 

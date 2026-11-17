@@ -7,6 +7,70 @@
 
 ---
 
+## v3.3.2：2026-11-16
+
+**設定檔脫節修正三處（`notion-orchestrator`、`longform`）**
+
+源頭：2026-11-16 prompt-audit 逐檔比對，找到三處規範彼此打架或指向已搬走的內容。
+
+### notion-orchestrator.md
+
+- 2b 類型對照：`深度分析`與`教學文`改派 `longform`（原派 `deep-analysis`／`tutorial-article`），與 `longform` description 及個人 CLAUDE.md 範本「預設走 longform、明說用舊的才走舊 Skill」一致；兩者難判時不再暫停詢問，結構取向由 longform 大綱決定
+- 2c 付費牆指針：由「依全域 CLAUDE.md」改為「依 `bwt-style-guide.md`「來源讀取優先序」」（清單早已單點化到該章）
+
+### longform.md
+
+- 「輸出與存檔」：刪除「類型代碼尚無 `longform` 選項、待裁定」，改寫為已定案的對應（論證型 `analysis`、步驟型 `tutorial`）
+
+---
+
+## v3.3.1：2026-11-16
+
+**`notion-orchestrator` 2e 新增「Markdown 寫回的兩個已知變形」**
+
+源頭：〈為什麼「少即是多」才是Claude 5.5的正確打開方式？〉（longform 分析型，Notion 流程）第一次寫回後 2f 回讀抓到兩種變形：`CLAUDE.md` 裸寫被 MCP 自動包成含前後中文的無效連結（`[於是不少人在CLAUDE.md](http://...)`），以及「`。**` 後面緊接中文」的粗體句閉合失敗、以字面 `\*\*` 顯示（5 處）。兩者都是 MCP 的 Markdown 轉換行為，不是稿件錯誤，但會原樣進到可發布頁面。
+
+### notion-orchestrator.md
+
+- 2e「寫入方式」段新增兩條：檔名、指令、設定鍵一律用行內代碼包住，不裸寫；粗體句的句末標點移到 `**` 外或讓粗體結束在段尾。2f 回讀時逐項比對，看到 `\*\*` 或 `http://%E…` 假連結即中招
+
+---
+
+## v3.3.0：2026-11-06
+
+**新增 `explain-menu.md`（讀懂選單）；白話化原則新增第 7 條「八成簡化寫法」；讀感最終確認新增第 6 項「難度訊號」**
+
+源頭：Karpathy HackerTube 教學文（Notion 流程，推內容池 948）讀感確認之後，Terry 問「讀完難度太高嗎」。診斷結果是中段「做了什麼」與第 4 步、限制段寫成工程師密度（術語約十個、配額數字、Workflow 計費），與標題鎖定的「普通人」讀者錯位，起因是兩輪查核補進的精確細節疊加。改寫時套用卡帕西 2026-10-01 X 貼文的四種輸出形式（文字用 ASD-STE100 簡化技術英文、圖表、互動網頁、解說影片；本刊 2026-10-02 已報導）：步驟段八成簡化、術語統一、注意事項前置、中段改兩張圖解，補跑複查 0 錯誤。Terry 要求把這套方法轉成 Skill，供資安等艱澀稿件選用輸出形式。三項裁決（Terry 2026-11-06）：文字層規則寫進 style-guide 共用章節；Skill 放共用 repo；影片層只在要求時處理。另裁定不與讀感分析合併：讀感是發布前最後一站、只修傷痕，結構性改動必須落在還有查核的位置。
+
+### explain-menu.md（新增）
+
+- 四步：診斷卡點（術語密度／流程或因果鏈／數字與規模／操作步驟／抽象機制）→ 給選單（文字／圖解／互動，影片不主動列）→ 使用者勾選後分派 → 護欄（改動段落輕量複查、術語表回查、文末兩行回查）
+- 時機：article-checker 第一輪之後、貼 Codex 之前；素材艱澀時也可在 longform 大綱階段先跑
+- 主對話 Read 後執行、不派子代理（要等勾選）；刻意不加 frontmatter，避免被註冊成 Agent 類型
+- 文字層規則不在本檔複寫，指向 style-guide
+
+### bwt-style-guide.md
+
+- 「技術性稿件白話化原則」新增第 7 條「操作段落用八成簡化寫法」：適用範圍只到步驟、設定、注意事項、檢查清單；五條規則（一句一動作、一詞一義先建術語表、條件與注意事項前置、讀者用不到的精確細節壓成白話、改寫後回查事實）；附 HackerTube 稿前後對照
+- 章首「五條具體原則」更正為「七條」（原本已有 6 條，計數早已過時）
+
+### article-checker.md
+
+- 「文體／讀感最終確認」新增第 6 項「難度訊號」：只提示「建議回頭跑 explain-menu」並指出段落，本站不做結構改寫
+
+### 交接文件
+
+- CLAUDE-template：呼叫方式對照新增第三類「主對話 Read 後執行」；工具型 Skills 表新增 explain-menu 觸發語
+- README：檔案表新增 explain-menu；版本紀錄更新
+- bn-claude-code-init：工具型 Skills 清單加 explain-menu（不需 stub）
+- SMOKE-TEST：frontmatter 檔數預期由 14 更正為 15（v3.2.2 新增的 bwt-pluto-push-spec 一直未計入，屬舊誤差），並註明 explain-menu 不計入
+
+### 個人層同步（不在本 repo）
+
+- 全域 `~/.claude/CLAUDE.md`：呼叫方式對照與工具型 Skills 表同步新增
+
+---
+
 ## v3.2.15 — 2026-11-06
 
 **article-checker：移除 Step 0b「Jev 影子查核」，試驗未達轉正門檻**
