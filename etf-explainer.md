@@ -14,7 +14,7 @@ description: |
 
   ⚠️ 與其他 Skill 的區別：
   - 一般 ETF 即時新聞（如「XX 投信發行新 ETF」單一事件）→ 使用 news-daily
-  - ETF 商品推薦比較（多檔 ETF 對比、投資策略分析）→ 使用 deep-analysis
+  - ETF 商品推薦比較（多檔 ETF 對比、投資策略分析）→ 使用 longform
   - ETF 規格懶人包（單檔深度介紹給民眾看）→ 使用本 Skill
 ---
 

@@ -8,7 +8,7 @@
 
 ## 適用範圍
 
-**所有產出視覺配件的 Skill 都應遵守本標準**（包括 etf-explainer、未來的 deep-analysis 配件、tutorial-article 配件等）。
+**所有產出視覺配件的 Skill 都應遵守本標準**（包括 etf-explainer、visual-asset，以及未來 longform 稿件的配件等）。
 
 **子規範索引**（依配件類型分檔，引用本標準的 tokens）：
 

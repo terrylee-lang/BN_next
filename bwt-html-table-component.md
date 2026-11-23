@@ -8,7 +8,7 @@
 
 ## 適用範圍
 
-**目前僅 `etf-explainer` Skill 套用本規範**。其他產稿 Skill（deep-analysis、tutorial-article、news-daily、draft-polish）暫不適用，仍維持原 Markdown 表格輸出。待 etf-explainer 試行穩定後，再評估擴散至其他 Skill。
+**目前僅 `etf-explainer` Skill 套用本規範**。其他產稿 Skill（longform、news-daily、draft-polish）暫不適用，仍維持原 Markdown 表格輸出。待 etf-explainer 試行穩定後，再評估擴散至其他 Skill。
 
 ---
 

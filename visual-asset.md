@@ -73,11 +73,11 @@ rubric 全數住 [`bwt-visual-checklist.md`](bwt-visual-checklist.md)（唯一�
 | 流程 / 步驟 | 階段卡片橫向排列 | 階段卡片直向排列 |
 | 對照 / 表格資料 | 直接呼叫 bwt-html-table-component 規範 | 同左 |
 
-### Step 3：產出 HTML 到 `draft/`
+### Step 3：產出 HTML 到 `pic/`
 
 依 [`bwt-iframe-visual-component.md`](bwt-iframe-visual-component.md) 的 HTML 結構模板撰寫。**強制雙軌**：以 `@container (max-width: 640px)` 為主軌（`@media` 僅作漸進增強 fallback，規則見該檔「雙軌設計強制規則」）。
 
-存到 `draft/YYYYMMDD-news-主題視覺配件.html`，讓 Terry 預覽。
+存到 vault 的 `pic/YYYYMMDD-<類型>-主題視覺配件.html`（類型代碼沿用所屬稿件：`news`、`analysis`、`tutorial`、`etf` 等），讓 Terry 預覽。視覺檔不放 `draft/`。
 
 **Logo 加入策略**：Google s2 Favicon API、自托管判斷與 SOP、顯示尺寸，一律依 [`bwt-iframe-visual-component.md`](bwt-iframe-visual-component.md)「Logo 加入規範」（唯一居所，含 Clearbit 禁令）。
 
@@ -157,7 +157,7 @@ rubric 全數住 [`bwt-visual-checklist.md`](bwt-visual-checklist.md)（唯一�
 當 Step 0 判斷為主視覺圖卡（非 iframe 配件）時：
 
 - **SOP 全量（規格、字體預設表、layout 預算、PIL 置中量測、Chrome headless 渲染、spot-check）唯一居所在 [`bwt-visual-checklist.md`](bwt-visual-checklist.md) §三**，參數以該檔為準
-- **存放**（本檔負責的工作流部分）：`~/Claude Project/draft/YYYYMMDD-<類型>-<主題>-keyvisual.html` + `.png` + 圖檔素材同目錄
+- **存放**（本檔負責的工作流部分）：`~/Claude Project/pic/YYYYMMDD-<類型>-<主題>-keyvisual.html` + `.png` + 圖檔素材同目錄
 - 交付：渲染後的 PNG 成品可直接附圖（不同於 iframe 配件的「給 URL 不給截圖」原則）
 
 ---
@@ -169,3 +169,4 @@ rubric 全數住 [`bwt-visual-checklist.md`](bwt-visual-checklist.md)（唯一�
 | 2026-05-18 | 初版建立。從 `bnext-visuals/2026/05-layoffs-tracker` 案例抽取工作流。 |
 | 2026-05-20 | 新增「16:9 主視覺圖卡」產品類型與 Step 0 類型判斷。預設字體尺寸表、Banner logo 置中 SOP、spot-check checklist。從 Google I/O 懶人包案例抽取。 |
 | 2026-07-28 | 瘦身為純工作流：rubric（設計優先序、產品類型表、色票教訓）與 16:9 SOP 全量移居 `bwt-visual-checklist.md`；修 @media→@container 主軌；刪 postMessage「配件端已內建發送機制」過期描述與死引用（高度＝純寫死＋100px buffer）；logo 與量測參數指向 `bwt-iframe-visual-component.md` 不再自帶。 |
+| 2026-11-23 | 輸出路徑由 `draft/` 改為 `pic/`（視覺產出唯一落點）；檔名類型代碼不再寫死 `news`，沿用所屬稿件。 |

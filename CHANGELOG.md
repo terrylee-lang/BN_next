@@ -7,6 +7,65 @@
 
 ---
 
+## v3.4.0：2026-11-23
+
+**`longform` 轉正，`deep-analysis` 與 `tutorial-article` 移除；規則對齊與譯名升級**
+
+源頭：2026-11-23 系統上下游檢查。原則是讓規範追上實際工作方式，只刪減、不增建。`longform` 的論證型與步驟型兩條路徑都已實跑（步驟型 2026-11-06），過渡期結束。
+
+### ⚠️ 更新後要做的事（已安裝的同事）
+
+- `git pull` 後 `deep-analysis.md`、`tutorial-article.md` 會消失。「幫我寫深度分析」「幫我寫教學文」一律由 `longform` 接手，不再有「用舊的」這條退路
+- 刪掉本機的 `~/.claude/skills/deep-analysis/` 與 `~/.claude/skills/tutorial-article/` 兩個 stub 目錄（本體已不存在，留著會指向空檔）。`ls ~/.claude/skills/` 應剩 5 個目錄
+- 個人的 `~/.claude/CLAUDE.md` 若照舊範本寫了這兩支，對照新版 `CLAUDE-template.md` 刪掉對應兩列與 Skill 工具名單裡的名字
+
+### 刪除
+
+- `deep-analysis.md`、`tutorial-article.md`：內容已併入 `longform.md`（3a 論證型、3b 步驟型）
+
+### longform.md
+
+- frontmatter 與開頭的過渡期說明刪除
+- 「單一觀點來源的收斂紀律」成為唯一權威：對照表從 `deep-analysis.md` 搬入，`draft-polish.md` 的指針改指這裡
+
+### bwt-style-guide.md
+
+- 人名規範新增「譯名分歧以中央社為準」與已定案個案表：古爾曼（Mark Gurman）、克瑞斯（Colette Kress）、Alexandr Wang 保留英文原名（「汪滔」是 DJI 創辦人）
+- 署名格式「名稱慣例」：Bloomberg 一律寫《彭博》，正文歸屬、文末資料來源、Pluto `reference` title 皆同，其他英文媒體名不類推（2026-11-17 裁決）；來源歸屬分界的案例同步改寫
+- 相對時間「永遠禁用」清單補齊為唯一版本（加入今天、明天、昨天、本周、近日、日前），`article-checker` 規則 F 不再另列清單
+- 事實查核鐵律適用名單、AI 味句式總表的 Skill 名單改列 `longform`
+
+### article-checker.md
+
+- Step 0 刪除「『上周四』符合 style guide 口語寫法例外」：style-guide 沒有這條例外，「上周」屬永遠禁用
+- 規則 F 的搜尋清單改為指向 style-guide
+
+### notion-orchestrator.md
+
+- 2e 新增「多張表格之間必須夾一段文字」：相鄰的 pipe 表格會被 MCP 併成一張並截掉欄位（實坑 2026-07-31 蘋果財報稿）
+- 2b 類型對照刪除「備註明寫用舊的才派舊 Skill」
+
+### lint-vault.md
+
+- 刪除第 6 類「筆記量門檻提醒」（超過 30 篇建議分層），類別由八類改七類
+- `valid` 時效標記過期只報最後修改在近 90 天內的筆記
+- Draft 清理的 30 天改以「最後修改」計；`done` 檔不再建議搬 `archive/`（archive 已凍結，只檢查 ETF 長青稿維護卡）
+- MEMORY.md 容量門檻的單位由「字元」更正為 bytes（`wc -c`）
+
+### visual-asset.md
+
+- iframe 配件與 16:9 主視覺的本機輸出路徑由 `draft/` 改為 `pic/`；檔名類型代碼不再寫死 `news`，沿用所屬稿件
+
+### 指針與交接文件
+
+- `etf-explainer.md`、`headline-generator.md`、`bwt-html-table-component.md`、`bwt-design-standard.md`、`bwt-iframe-visual-component.md`：提到 deep-analysis／tutorial-article 處改為 longform
+- `README.md`：Skills 表刪兩列、longform 列拿掉過渡期與「步驟型尚未實測」、補 `bwt-pluto-push-spec.md`
+- `SMOKE-TEST.md`、`bn-claude-code-init.md`：`bwt-*` 由 5 份改 6 份（補 `bwt-pluto-push-spec.md`）；有 frontmatter 的檔 15 改 13；Skill 工具 stub 由 7 支改 5 支，Agent-only 名單補 `longform`
+- `CLAUDE-template.md`：Skill 工具名單與觸發表刪兩支舊 Skill；retrospective 列刪除「產稿類 feedback 改用丟發布連結比對差異流程」（全系統沒有定義這個流程）
+- `ADAPTATION.md`：Q3 的 notion-orchestrator 步驟編號由 2a 更正為 2b／2c
+
+---
+
 ## v3.3.2：2026-11-16
 
 **設定檔脫節修正三處（`notion-orchestrator`、`longform`）**

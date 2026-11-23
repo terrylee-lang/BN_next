@@ -25,11 +25,11 @@ for f in ~/.claude/agents/*.md; do head -1 "$f" | grep -q '^---$' && basename "$
 **預期**
 
 - 第一行 ≥ **25**
-- `bwt-*` 共 **5 份**：`bwt-style-guide.md`、`bwt-design-standard.md`、`bwt-visual-checklist.md`、`bwt-iframe-visual-component.md`、`bwt-html-table-component.md`
-  （常被誤以為有第 6 份：`bwt-voice-reference.md` 是個人風格指紋檔，**不在共享 repo**，缺少是正常的，見 T5）
-- 第三行 = **15**（有 frontmatter 的檔：news-daily、longform、draft-polish、social-post、etf-explainer、article-checker、headline-generator、notion-orchestrator、visual-brief、visual-asset、lint-vault、retrospective，加上過渡期退路 deep-analysis、tutorial-article，以及推送規格 bwt-pluto-push-spec；再加上你自建的 agent 會更多）
+- `bwt-*` 共 **6 份**：`bwt-style-guide.md`、`bwt-design-standard.md`、`bwt-visual-checklist.md`、`bwt-iframe-visual-component.md`、`bwt-html-table-component.md`、`bwt-pluto-push-spec.md`
+  （常被誤以為有第 7 份：`bwt-voice-reference.md` 是個人風格指紋檔，**不在共享 repo**，缺少是正常的，見 T5）
+- 第三行 = **13**（有 frontmatter 的檔：news-daily、longform、draft-polish、social-post、etf-explainer、article-checker、headline-generator、notion-orchestrator、visual-brief、visual-asset、lint-vault、retrospective，以及推送規格 bwt-pluto-push-spec；再加上你自建的 agent 會更多）
   （`explain-menu.md` 刻意**沒有** frontmatter：它在主對話 Read 後執行、要等使用者勾選，不能被當成 Agent 派出去，所以只算進第一行、不算進第三行）
-  （`longform.md` 是 1,500 字以上長稿的主線，「幫我寫長文／深度分析／教學文」都導向它；`deep-analysis.md`、`tutorial-article.md` 保留為退路，明確說「用舊的」才走）
+  （`longform.md` 是 1,500 字以上長稿的主線，「幫我寫長文／深度分析／教學文」都導向它；舊的 `deep-analysis.md`、`tutorial-article.md` 已於 v3.4.0 移除，目錄裡還看得到表示沒 pull 到最新）
 
 **失敗怎麼修**
 
@@ -50,8 +50,8 @@ ls ~/.claude/skills/
 
 **預期**
 
-- `~/.claude/skills/` 下有 7 個目錄（news-daily、deep-analysis、draft-polish、tutorial-article、social-post、article-checker、notion-orchestrator），每個內含 `SKILL.md`
-  （**只有這 7 支有 stub**。`longform`、`visual-asset`、`visual-brief`、`headline-generator`、`etf-explainer`、`lint-vault`、`retrospective` 刻意沒有，打 `/名稱` 沒反應是預期行為，用自然語言或 Agent 工具觸發）
+- `~/.claude/skills/` 下有 5 個目錄（news-daily、draft-polish、social-post、article-checker、notion-orchestrator），每個內含 `SKILL.md`
+  （**只有這 5 支有 stub**；v3.4.0 之前裝的環境若還留著 `deep-analysis`、`tutorial-article` 兩個目錄，本體已移除，直接刪掉。`longform`、`visual-asset`、`visual-brief`、`headline-generator`、`etf-explainer`、`lint-vault`、`retrospective` 刻意沒有，打 `/名稱` 沒反應是預期行為，用自然語言或 Agent 工具觸發）
 - session 開頭注入的 skill 清單看得到 news-daily 等名稱
 - Skill 回報「會讀 `bwt-style-guide.md`」，並成功讀到內容（無 file not found）
 

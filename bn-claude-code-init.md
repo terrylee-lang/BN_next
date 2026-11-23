@@ -120,22 +120,23 @@ ls -d ~/.claude/agents 2>/dev/null && git -C ~/.claude/agents remote -v 2>/dev/n
 
 ```bash
 ls ~/.claude/agents/*.md | wc -l            # 應 ≥ 25
-ls ~/.claude/agents/bwt-*.md                # 應為 5 份（見下）
+ls ~/.claude/agents/bwt-*.md                # 應為 6 份（見下）
 git -C ~/.claude/agents status --short      # 應為空（工作區乾淨）
 ```
 
 安裝後應存在的檔案：
 
-**共用規範（5 份 bwt-*）**
+**共用規範（6 份 bwt-*）**
 - `bwt-style-guide.md`（寫作風格規範：統一用字與常見錯字、兩岸用語、禁用詞、**事實查核鐵律**、來源讀取優先序、署名格式）
 - `bwt-visual-checklist.md`（視覺任務入口 checklist：設計優先序、產品類型判斷、16:9 SOP、交付 spot-check）
 - `bwt-design-standard.md`（美術製作標準總綱：BN Design System 完整 tokens）
 - `bwt-iframe-visual-component.md`（iframe 配件子規範）
 - `bwt-html-table-component.md`（HTML 表格元件子規範）
+- `bwt-pluto-push-spec.md`（Pluto 內容池推送規格的裁決紀錄）
 
 > `bwt-voice-reference.md` 是個人風格指紋檔，**刻意不在共享 repo**，缺少是正常的，任何 Skill 都不會因為它缺席而報錯。
 
-**產稿 Skills**：`news-daily.md`、`longform.md`、`draft-polish.md`、`social-post.md`、`etf-explainer.md`、`article-checker.md`、`headline-generator.md`、`notion-orchestrator.md`，以及過渡期退路 `deep-analysis.md`、`tutorial-article.md`（已由 `longform.md` 接手，使用者明確說「用舊的」才走）
+**產稿 Skills**：`news-daily.md`、`longform.md`、`draft-polish.md`、`social-post.md`、`etf-explainer.md`、`article-checker.md`、`headline-generator.md`、`notion-orchestrator.md`
 
 **視覺 Skills**：`visual-brief.md`、`visual-asset.md`
 
@@ -147,7 +148,7 @@ git -C ~/.claude/agents status --short      # 應為空（工作區乾淨）
 
 `~/.claude/agents/` 的檔案預設只能用 **Agent 工具（`subagent_type`）** 呼叫。要讓幾支高頻 Skill 也能被 **Skill 工具**直接呼叫（使用者說「幫我編譯」時觸發更順），需要在 `~/.claude/skills/<名稱>/SKILL.md` 放一個薄 stub 指回本體。**兩種機制搞混是歷史上最常見的錯誤（累計 17 次），所以這一步要做，讓環境符合 CLAUDE.md 裡的兩張名單。**
 
-為以下 7 支各建一個 stub：`news-daily`、`deep-analysis`、`draft-polish`、`tutorial-article`、`social-post`、`article-checker`、`notion-orchestrator`。
+為以下 5 支各建一個 stub：`news-daily`、`draft-polish`、`social-post`、`article-checker`、`notion-orchestrator`。
 
 做法：先 `echo $HOME` 取得絕對家目錄（stub 內要寫絕對路徑，不要寫 `~`），再 `Read` 每支 agent 檔開頭取得 frontmatter 的 `description`，然後 Write 出 stub：
 
@@ -165,9 +166,9 @@ version: 1.0.0
 
 `notion-orchestrator` 的 stub **額外加一行** frontmatter `disable-model-invocation: true`（它會批次寫回 Notion，不該被模型自動觸發，只由使用者明確呼叫）。
 
-**其餘 6 支刻意不建 stub**：`visual-asset`、`visual-brief`、`headline-generator`、`etf-explainer`、`lint-vault`、`retrospective` 只走 Agent 工具（`subagent_type`）。所以使用者打 `/visual-asset` 不會有東西，這是預期行為，不是安裝失敗——請在 Step 8 一併告知。日後想讓某支也能用 `/名稱` 觸發，自己補一個帶 `disable-model-invocation: true` 的 stub 即可（stub 是個人層檔案，不進共享 repo）。
+**其餘 7 支刻意不建 stub**：`longform`、`visual-asset`、`visual-brief`、`headline-generator`、`etf-explainer`、`lint-vault`、`retrospective` 只走 Agent 工具（`subagent_type`）。所以使用者打 `/visual-asset` 不會有東西，這是預期行為，不是安裝失敗——請在 Step 8 一併告知。日後想讓某支也能用 `/名稱` 觸發，自己補一個帶 `disable-model-invocation: true` 的 stub 即可（stub 是個人層檔案，不進共享 repo）。
 
-**檢查點**：`ls ~/.claude/skills/ | wc -l` = 7（若使用者原本已有其他 skills 則為 7 + 原有數量）；且提醒使用者「Skill 清單要重開 session 才會重新載入」。
+**檢查點**：`ls ~/.claude/skills/ | wc -l` = 5（若使用者原本已有其他 skills 則為 5 + 原有數量）；且提醒使用者「Skill 清單要重開 session 才會重新載入」。
 
 ---
 
@@ -393,7 +394,7 @@ rg -n "terrylee-lang" ~/.claude/CLAUDE.md                                       
 4. **個人偏好**：直接跟 Claude 說「記住這個」，它會寫入記憶；你自己的規則寫進 `~/.claude/CLAUDE.md`（不會被 `git pull` 覆蓋）
 5. **進階制度檔為個人層、不隨 repo 交接**（派工 playbook、判斷 rubric、每日收工 SOP、memory 政策、research 筆記格式範本）——先把基本流程跑順，需要時再向 Terry 索取
 6. **兩個容易被誤認成故障的預期行為**：
-   - `/visual-asset`、`/visual-brief`、`/headline-generator`、`/etf-explainer`、`/lint-vault`、`/retrospective` 打不出來是正常的——這 6 支只走 Agent 工具，用自然語言觸發（「幫我做配件」、「幫我想標題」）即可
+   - `/longform`、`/visual-asset`、`/visual-brief`、`/headline-generator`、`/etf-explainer`、`/lint-vault`、`/retrospective` 打不出來是正常的——這 7 支只走 Agent 工具，用自然語言觸發（「幫我做配件」、「幫我想標題」）即可
    - 之後 `git pull` 更新 Skills 後，同樣要重開 session 才生效
 7. **真正需要找 Terry 的事**（只列這幾類，其餘都是自助）：
    - bnext-service（Pluto）MCP 的帳號授權名單

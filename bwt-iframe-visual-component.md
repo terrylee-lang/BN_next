@@ -8,7 +8,7 @@
 
 ## 適用範圍
 
-**目前套用 `visual-asset` Skill 產出的所有 iframe 配件**。未來若 deep-analysis、tutorial-article 等 Skill 需要產出 iframe 嵌入式配件，亦遵循本規範。
+**目前套用 `visual-asset` Skill 產出的所有 iframe 配件**。未來若 longform 等 Skill 需要產出 iframe 嵌入式配件，亦遵循本規範。
 
 不適用情境：
 - 文章內表格元件 → 用 [`bwt-html-table-component.md`](bwt-html-table-component.md)

@@ -124,7 +124,7 @@ description: |
 
 如果你看中某支 `[編輯部]` Skill 想挪用，以下是它們的硬依賴點：
 
-### `news-daily` / `longform` / `draft-polish` / `social-post` / `etf-explainer`（以及過渡期退路 `deep-analysis` / `tutorial-article`）
+### `news-daily` / `longform` / `draft-polish` / `social-post` / `etf-explainer`
 
 需要調整：
 - **風格規範檔**：`bwt-style-guide.md` 改成你部門的
@@ -137,7 +137,7 @@ description: |
 重度綁定 Notion 產稿資料庫（編輯部每人各自建一份，Skill 內寫的是 Terry 環境的預設值）。要挪用必須：
 - 新建自己部門的 Notion 資料庫，依 Skill「欄位說明」重建欄位結構，並到該庫 Connections 加入你的 integration
 - 把資料庫 URL 寫進你自己的 `~/.claude/CLAUDE.md`（覆寫規則），而不是改 Skill 檔內的 `a438232ce0a94fe6b70d9f2e9199a32a`——改了之後每次 `git pull` 都會衝突
-- 依你部門的稿件類型（不是 `即時新聞`／`深度分析`）調整 Step 2a 的派發邏輯
+- 依你部門的稿件類型（不是 `即時新聞`／`深度分析`）調整 Step 2b 的類型對照與 Step 2c 的派發邏輯
 
 ### `lint-vault`
 

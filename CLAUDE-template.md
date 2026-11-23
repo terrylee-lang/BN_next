@@ -38,10 +38,10 @@
 
 同樣住在 `~/.claude/agents/` 的檔案，呼叫機制分兩種，**用錯會直接報錯**（歷史上錯過 17 次）：
 
-- **Skill 工具可呼叫**（`~/.claude/skills/<名稱>/SKILL.md` 有對應 stub 的才會出現在 Skill 清單）：news-daily、deep-analysis、tutorial-article、draft-polish、social-post、article-checker
+- **Skill 工具可呼叫**（`~/.claude/skills/<名稱>/SKILL.md` 有對應 stub 的才會出現在 Skill 清單）：news-daily、draft-polish、social-post、article-checker
 - **只能走 Agent 工具（`subagent_type`）**：notion-orchestrator、longform、visual-asset、visual-brief、headline-generator、etf-explainer、lint-vault、retrospective
   - 其中只有 `notion-orchestrator` 在 `~/.claude/skills/` 有 stub（帶 `disable-model-invocation: true`：**使用者**可用 `/notion-orchestrator` 觸發，**Claude 自己**要主動呼叫則走 Agent 工具）。其餘幾支**沒有 stub**，打 `/名稱` 不會有東西，用自然語言觸發即可（「幫我寫長文」、「幫我做配件」、「幫我想標題」）
-  - 所以 `ls ~/.claude/skills/` 應該是 7 個目錄：上面 Skill 工具那 6 支 ＋ notion-orchestrator。想讓某支 Agent-only 的也能用 `/名稱`，自己補一個帶 `disable-model-invocation: true` 的 stub（個人層檔案，不進共享 repo）
+  - 所以 `ls ~/.claude/skills/` 應該是 5 個目錄：上面 Skill 工具那 4 支 ＋ notion-orchestrator。想讓某支 Agent-only 的也能用 `/名稱`，自己補一個帶 `disable-model-invocation: true` 的 stub（個人層檔案，不進共享 repo）
 - **主對話 `Read` 後執行（不是 Skill 也不是 Agent）**：explain-menu。流程中要等使用者勾選，不能派背景子代理；檔案刻意不加 frontmatter，所以不會出現在任何工具清單
 - 一律**以 session 開頭注入的可用清單為準**；工具不可用即改走另一機制或替代路徑（如 Bash `rg` 代替 Grep），同一工具不重試第三次
 
@@ -55,8 +55,6 @@
 | `news-daily` | 貼上外文新聞連結或說「幫我編譯這篇」（650-1000 字） |
 | `longform`（**長文，1,500 字以上長稿的主線**） | 說「幫我寫長文」、「這篇寫成長文」；也接收「幫我寫深度分析」「幫我寫教學文」（論證型目標 2,500 字內／步驟型 800-1,500 字）。內建 grill 前置：先讀完全部素材、盤點來源立場、逼問切角到共識，再由大綱決定套論證型或步驟型結構 |
 | `draft-polish` | 說「幫我潤稿」、貼上 NotebookLM 草稿（目標 2,000-2,500 字） |
-| `deep-analysis` | **過渡期保留的退路**，明確說「用舊的 deep-analysis」才走；預設由 `longform` 接手 |
-| `tutorial-article` | **過渡期保留的退路**，明確說「用舊的教學文」才走；預設由 `longform` 接手 |
 | `social-post` | 貼文章連結，說「幫我寫社群貼文」（FB／IG） |
 | `article-checker` | 說「幫我查核」、「幫我 fact check」 |
 | `headline-generator` | 說「幫我想標題」、「幫我下標」、「給我幾個標題選項」 |
@@ -69,7 +67,7 @@
 | Skill 名稱 | 觸發時機 |
 | --- | --- |
 | `lint-vault` | 說「幫我檢查 vault」、「跑 lint」、「vault 健康檢查」 |
-| `retrospective` | 說「幫我覆盤」、「跑 retrospective」——用於系統討論層級；產稿類 feedback 改用「丟發布連結比對差異」流程 |
+| `retrospective` | 說「幫我覆盤」、「跑 retrospective」——用於系統討論層級 |
 | `explain-menu`（讀懂選單） | 說「這篇太難」、「給我輸出選項」、「幫我降難度」、「這個怎麼講清楚」，或讀感確認提示「難度訊號」後。**先 Read `~/.claude/agents/explain-menu.md` 在主對話依步驟執行**：診斷卡點、給輸出形式選單（文字／圖解／互動，影片僅在要求時），勾選後分派執行。時機在 article-checker 第一輪之後、貼 Codex 之前 |
 
 ---

@@ -13,7 +13,7 @@ description: |
 
 # Lint Vault — Vault 健康檢查 Skill
 
-掃描 `~/Claude Project/` 所有 Markdown 筆記及 memory 目錄，輸出八類問題報告。不自動修改任何檔案。
+掃描 `~/Claude Project/` 所有 Markdown 筆記及 memory 目錄，輸出七類問題報告。不自動修改任何檔案。
 
 ---
 
@@ -45,7 +45,7 @@ description: |
 
 **A. 檔案層級**：找出 `research/` 中超過 6 個月未更新、且內容涉及快速變動領域（AI、科技公司、產業政策）的筆記，標記為「建議複查」。
 
-**B. 事實層級**：掃描 `research/` 與 `archive/` 中所有 `<!-- valid: YYYY-MM -->` 時效標記，若標記時間距今超過 6 個月，單獨列出該條事實。
+**B. 事實層級**：掃描 `research/` 與 `archive/` 中的 `<!-- valid: YYYY-MM -->` 時效標記，若標記時間距今超過 6 個月，單獨列出該條事實。**只報最後修改在近 90 天內的筆記**：更早的筆記沒有人在用，過期標記不列（要重新引用時自然會回原文查證）。
 
 **C. ETF 長青稿複查**：`archive/` 中 ETF 稿（檔名 `YYYYMMDD-etf-*`）為 living document，需定期更新成分股／配息／費率。掃描其「🔄 維護資訊」區塊的「下次複查：YYYY-MM」時點，已到期或過期者列出提醒；未設時點者提示補上。
 
@@ -92,30 +92,22 @@ description: |
   → 可能是不同時間點，建議加上時效標記或更新舊筆記
 ```
 
-### 6. 筆記量門檻提醒（Scale Check）
+### 6. Draft 清理提醒（Draft Cleanup）
 
-統計 `research/` 中的筆記數量（不含 `_index.md`）。若超過 30 篇，在報告末尾加上提醒：
-
-```
-⚠️ research/ 目前有 N 篇筆記，已超過 30 篇門檻。建議評估分層載入機制（在 _index.md 加入優先級欄位，區分常用 / 備查筆記）。
-```
-
-### 7. Draft 清理提醒（Draft Cleanup）
-
-掃描 `draft/` 中所有檔案（不含 `_register.md`），若檔案建立日期距今超過 30 天，列出提醒。同時檢查 `draft/_register.md` 中狀態為 `done` 的檔案，建議刪除或搬至 archive/。
+掃描 `draft/` 中所有檔案（不含 `_register.md`），若檔案最後修改距今超過 30 天，列出提醒。同時檢查 `draft/_register.md` 中狀態為 `done` 的檔案，建議刪除（`archive/` 已凍結，一般稿件不再搬入；ETF 長青稿的歸檔依 `etf-explainer.md`）。
 
 輸出格式：
 ```
 【Draft 清理提醒】
-- draft/draft-foo.md — 建立超過 30 天，建議確認是否仍需要
-- draft/draft-bar.md — register 狀態為 done，建議刪除或搬至 archive/
+- draft/draft-foo.md — 超過 30 天未修改，建議確認是否仍需要
+- draft/draft-bar.md — register 狀態為 done，建議刪除
 ```
 
-### 8. Memory 健康檢查（Memory Lint）
+### 7. Memory 健康檢查（Memory Lint）
 
 掃描當前專案的 memory 目錄下所有記憶檔案（不含 `MEMORY.md` 索引本身），檢查六類問題。
 
-**memory 目錄位置動態解析**（不要寫死路徑）：Claude Code 依 cwd 自動管理，格式為 `~/.claude/projects/[cwd-encoded]/memory/`（cwd 的 `/` 換成 `-`，例如 cwd 為 `~/Claude Project` 時，目錄名為 `-Users-<你的帳號>-Claude-Project`）。執行前先 `ls ~/.claude/projects/` 確認當前專案的實際目錄名，再掃描其下的 `memory/`。若該目錄不存在（還沒寫過任何 memory），第 8 類整節跳過，回報「尚無 memory 檔案」。
+**memory 目錄位置動態解析**（不要寫死路徑）：Claude Code 依 cwd 自動管理，格式為 `~/.claude/projects/[cwd-encoded]/memory/`（cwd 的 `/` 換成 `-`，例如 cwd 為 `~/Claude Project` 時，目錄名為 `-Users-<你的帳號>-Claude-Project`）。執行前先 `ls ~/.claude/projects/` 確認當前專案的實際目錄名，再掃描其下的 `memory/`。若該目錄不存在（還沒寫過任何 memory），第 7 類整節跳過，回報「尚無 memory 檔案」。
 
 **A. 過時**：記憶內容涉及已變更的事實（例如提到的檔案路徑已不存在、流程已改、工具已換）。
 
@@ -134,7 +126,7 @@ description: |
 **F. 容量警戒**：
 
 - 主 vault memory 條目 ≥ 50 → 列入報告開頭警示
-- MEMORY.md 字元數 > 12,000 → 強制建議當天執行 audit
+- MEMORY.md 大小 > 12,000 bytes（以 `wc -c` 計，中文 UTF-8 下 bytes 約為字元數 3 倍，不可混用）→ 強制建議當天執行 audit
 
 **Project memory 額外檢查**：`project_*` memory 若提到的專案已完成、或 mtime 距今 > 60 天無更新跡象，建議移到 vault `projects/`。
 
@@ -142,7 +134,7 @@ description: |
 ```
 【Memory 健康檢查】
 
-容量狀態：當前 <實際條目數> 條 / 50 條警戒線（<百分比>）、MEMORY.md <實際字元數> 字元
+容量狀態：當前 <實際條目數> 條 / 50 條警戒線（<百分比>）、MEMORY.md <wc -c 實際值> bytes
 
 [A] 過時：
 - feedback_xxx.md — 提到的路徑 ~/old/path 已不存在，建議更新或移除
@@ -173,9 +165,8 @@ description: |
 # Vault Lint 報告｜{日期}
 
 ## 容量警戒（report header）
-- research/ 筆記數：N 篇（30 篇門檻）
 - memory 條目數：N 條（50 條警戒線）
-- MEMORY.md 字元數：N（12,000 字元警戒）
+- MEMORY.md 大小：N bytes（12,000 bytes 警戒）
 
 ## 孤兒筆記（N 筆）
 ...
@@ -202,15 +193,15 @@ description: |
 以上問題不會自動修正，請告知哪些需要處理。
 ```
 
-容量警戒區塊永遠輸出，作為 dashboard 開頭。若 research/ 超過 30 篇、memory 超過 50 條、或 MEMORY.md 超過 12,000 字元，在該行末加 ⚠️ 標記。
+容量警戒區塊永遠輸出，作為 dashboard 開頭。若 memory 超過 50 條、或 MEMORY.md 超過 12,000 bytes，在該行末加 ⚠️ 標記。
 
 ---
 
 ## 注意事項
 
 - `_index.md`、`_register.md`、`_archived-*.md`、`.gitkeep`、`.claude-refs/`、`daily-notes/` 不列入一般掃描範圍（`.claude-refs/` 存 Claude 執行用的 SOP，如收工流程；`_archived-*` 為 memory 歸檔快照，皆非 vault 筆記）
-- `archive/` 存的多是發布後凍結的稿件，不檢查 research/ 標準格式欄位；**但參與第 3 類的 `valid` 時效標記掃描，且 ETF 長青稿（`-etf-`）額外檢查維護卡「下次複查」時點**
+- `archive/` 已凍結（一般稿件不再新增），不檢查 research/ 標準格式欄位，也不檢查典藏卡；**只參與第 3 類：`valid` 時效標記掃描（同受近 90 天限制），以及 ETF 長青稿（`-etf-`）維護卡的「下次複查」時點**
 - `personal/` 完全排除，不掃描任何項目
-- `draft/` 僅參與第 7 類清理提醒，不參與格式、連結等檢查
-- 若當天已執行「每日收工流程」的 draft 清理，lint-vault 的第 7 類跳過已處理的檔案，避免重複提醒
+- `draft/` 僅參與第 6 類清理提醒，不參與格式、連結等檢查
+- 若當天已執行「每日收工流程」的 draft 清理，lint-vault 的第 6 類跳過已處理的檔案，避免重複提醒
 - 每次執行後不寫回任何檔案，純回報
